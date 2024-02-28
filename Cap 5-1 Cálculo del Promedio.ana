@@ -1,0 +1,43 @@
+{ Analytica Model Average2, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Average2
+Description: Modelo para mostrar el uso del comando promedio o media Average() al cual hay que agregarle los valores y el índice a lo largo del cual hallará el promedio que en este caso son lo mismo.
+Author: Jorge
+Date: dom, dic 2, 2018 5:14 p.m.
+DiagState: 2,1,0,624,324,17
+FontStyle: Arial,15
+FileInfo: 0,Model Average2,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 5-1 Cálculo del Promedio.ana
+
+Variable Promedio_o_Average
+Title: Promedio o~
+Average
+Description: Comando para hallar el promedio o media.
+Definition: Average(Valores, Valores)
+NodeLocation: 96,128,1
+NodeSize: 48,32
+ValueState: 2,687,145,416,303,,MIDM
+
+Index Valores
+Title: Valores
+Description: Valores puestos arbitrariamente con la finalidad de ver el uso del comando o instrucción Promedio o Average()
+Definition: [2,5,10,15,20,25]
+NodeLocation: 96,64,1
+NodeSize: 48,24
+WindState: 2,343,116,720,350
+ValueState: 2,603,95,416,303,,MIDM
+
+Close Average2
+

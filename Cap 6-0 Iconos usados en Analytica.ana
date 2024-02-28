@@ -1,0 +1,108 @@
+{ Analytica Model Cap_6_0, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Cap_6_0
+Description: Es solo un descriptivo de lo que está en el ibro para ver la forma y qué tipo de nodos son estándares. Dentro de cada uno, en su definición, hemos puesto un número cualquiera a fin que no aparezcan sombreados (sin definir).
+Author: Jorge
+Date: vie, jun 28, 2019 12:40 p.m.
+DiagState: 2,0,0,624,142,17
+FontStyle: Arial,15
+FileInfo: 0,Model Cap_6_0,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 6-0.ana
+
+Decision Decisiones_a_tomar
+Title: Decisiones a Tomar
+Definition: 1
+NodeLocation: 96,40,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,16
+
+Index Indices
+Title: Indices
+Definition: 1
+NodeLocation: 256,40,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,16
+
+Chance Eventos_Inciertos
+Title: Eventos Inciertos~
+(Distrib. de Probabilidad)
+Definition: 1
+NodeLocation: 96,118,1
+NodeSize: 88,48
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Calculos__Variables
+Title: Cálculos, Variables
+Definition: 1
+NodeLocation: 96,196,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,16
+
+Constant Constantes
+Title: Constantes
+Definition: 1
+NodeLocation: 96,264,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,16
+
+Module Modulo
+Title: Módulo
+Author: Jorge
+Date: jue, jul 4, 2019 11:57 a.m.
+NodeLocation: 256,112,1
+NodeSize: 48,24
+
+Close Modulo
+
+Objective Objetivo
+Title: Objetivo
+Definition: 1
+NodeLocation: 256,184,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,16
+
+Decision A_Invierte_
+Title: ¿Invierte?
+Definition: 1
+NodeLocation: 432,88,1
+NodeSize: 56,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,16
+
+Chance A_Exito_
+Title: ¿Exito?
+Definition: 1
+NodeLocation: 576,88,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,16
+
+Objective Objetivo1
+Title: Objetivo
+Definition: A_Invierte_*A_Exito_
+NodeLocation: 512,168,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,16
+
+Close Cap_6_0
+

@@ -1,0 +1,59 @@
+{ Analytica Model Perecibles_y_promedi, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Perecibles_y_promedi
+Description: Modelo desarrollado solo para fines ilustrativos del problema de manejarse solo con promedios.~
+Este tema es hoy muy usado (promedios) y a lo largo del libro vemos que es inconveniente en casos cuando hay incertidumbre o tenemos datos históricos que no son uniformes.
+Author: Jorge
+Date: mié, jul 11, 2018 4:46 p.m.
+DiagState: 2,1,0,624,305,17
+FontStyle: Arial,15
+FileInfo: 0,Model Perecibles_y_promedi,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 6-14 Perecibles y promedios.ana
+
+Index Historico_Mensual
+Title: Histórico Mensual 
+Units: Periodos
+Description: Introducimos 12 periodos.
+Definition: 1..12
+NodeLocation: 64,40,1
+NodeSize: 48,24
+ValueState: 2,184,187,416,303,,MIDM
+Att_PrevIndexValue: [1,2,3,4,5,6,7,8,9,10,11,12]
+
+Variable Perecible
+Title: Perecible
+Units: ítem
+Description: Insertamos una Table indexada por Histórico Mensual e introducimos los valores que correspondan a dicho periodo.
+Definition: Table(Historico_Mensual)(16,13,10,5,1,8,0,0,0,14,13,16)
+NodeLocation: 224,40,1
+NodeSize: 48,24
+ValueState: 2,298,69,416,303,1,MIDM
+GraphSetup: Att_GraphIndexRange Historico_Mensual:1,0~
+Att_ContLineStyle Graph_Primary_Valdim:6~
+Att_ForceCategorical Graph_Primary_Valdim:1
+
+Variable Promedio
+Title: Promedio
+Description: Este es el promedio de nuestros ítems perecibles el que nos da 8 pero sería un error tratar de tomar nuestras deciciones con este promedio puesto que si hacemos clic en el nodo Perecible, veremos a qué errores podemos llegar.~
+~
+
+Definition: Average(Perecible,Historico_Mensual)
+NodeLocation: 64,104,1
+NodeSize: 48,24
+WindState: 2,39,55,720,350
+ValueState: 2,120,123,416,303,,MIDM
+
+Close Perecibles_y_promedi
+

@@ -1,0 +1,150 @@
+{ Analytica Model Monte_hall, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+Att_ContLineStyle Run: 0
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+DistResol := 50
+Att_ContLineStyle Graph_Primary_Valdim: 1
+Att_CatLineStyle Graph_Primary_Valdim: 9
+Att_ContLineStyle Graph_Pdf_Valdim: 1
+Att_ContLineStyle Graph_Cdf_Valdim: 1
+Att_CatLineStyle Graph_CumProb_Valdim: 9
+{!40300|Sys_DomainSelfIndex := 1}
+{!40400|Sys_WindowsMaximized := 1}
+{!40400|Sys_AllNullTreatment := 1}
+{!50016|PlusOnTextReturnsNaN := 0}
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,1,,0,0
+
+
+
+Model Monte_hall
+Title: Monte Hall
+Description: Supongamos que concursamos  un programa de juegos.  Detrás de una de las tres cortinas se esconde un premio.  Seleccionamos la cortina 1.~
+«Antes de abrir su cortina -dice el anfitrión-, permítanme que les muestre una de las cortinas no seleccionadas que no contiene el premio.... ¡La cortina 2 está vacía o tiene una cabra detrás!  ¿Le gustaría cambiar de cortina?»~
+~
+Nuestra tarea es construir un modelo, calculando la probabilidad de ganar el premio si cambia o no las cortinas. De esta forma 'concursando' mil veces (simuladamente claro está) veremos los resultados en cuanto a probabilidades que han engañado la inteligencia de muchos, muchísimos de las más distinguidas instituciones.
+Author: Jorge
+Date: mar, jul 31, 2018 7:03 p.m.
+DefaultSize: 48,24
+NodeSize: 48,24
+DiagState: 2,-3,0,534,600,17
+WindState: 2,102,83,476,224
+FontStyle: Arial, 15
+FileInfo: 0,Model Monte_hall,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 7-10 Monty Hall v.2.ana
+
+Chance Puerta_premio
+Title: Puerta premio
+Definition: ChanceDist(1/3, Puertas )
+NodeLocation: 160,48,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,1,PDFP
+NodeFont: Arial Rounded MT Bold,16
+
+Index Puertas
+Title: Puertas
+Definition: [1,2,3]
+NodeLocation: 288,48,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Decision Puerta_elegida
+Title: Puerta elegida
+Definition: 1
+NodeLocation: 160,112,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,16
+
+Chance Puerta_revelada
+Title: Puerta revelada
+Definition: ChanceDist( Monty_Puede_revelar/sum(Monty_Puede_revelar,Puertas), Puertas )
+NodeLocation: 400,112,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,84,91,416,303,0,SAMP
+NodeFont: Arial Rounded MT Bold,16
+
+Decision A_Cambia_puerta_
+Title: ¿Cambia puerta?
+Definition: Choice( Self, 1 )
+NodeLocation: 160,176,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,16
+Domain: [2,3]
+{!40300|DomainExpr: Discrete(2,3,type:'number')}
+{!40200|Att_ChoiceIndexes: Keyword Self}
+
+Objective A_Gana_
+Title: ¿Gana?
+Definition: Seleccion_final = Puerta_premio
+NodeLocation: 400,176,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,228,235,416,303,0,PDFP,0
+NodeFont: Arial Rounded MT Bold,16
+ReformVal: [Null,Undefined,Undefined,Undefined,2]
+Att_ResultSliceState: [Change_curtains_,2,Sys_localindex('POSSIBLE_VALUES'),1]
+ProbabilityNumberFmt: 2,%,4,0,0,0,4,0,$,0,"ABBREV",0,,,0,0,15
+
+Chance Seleccion_final
+Title: Seleccion final 
+Definition: If A_Cambia_puerta_ Then ~
+      ChanceDist( Elegible/ sum(Elegible, Puertas), Puertas )~
+Else Puerta_elegida
+NodeLocation: 288,240,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,PDFP,0
+NodeFont: Arial Rounded MT Bold,16
+
+Objective Prob_Ganar
+Title: Prob Ganar
+Definition: Probability(A_Gana_)
+NodeLocation: 400,240,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,77,66,416,303,0,MIDM
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,%,4,0,0,0,4,0,$,0,"ABBREV",0,,,0,0,15
+
+Variable Monty_Puede_revelar
+Title: Monty Puede revelar
+Definition: Puertas<>Puerta_elegida and Puertas<>Puerta_premio
+NodeLocation: 288,120,1
+NodeSize: 48,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,68,75,416,303,0,SAMP
+NodeFont: Arial Rounded MT Bold,16
+ReformVal: [Undefined,Puertas,Undefined,Undefined,Undefined,1]
+
+Decision Elegible
+Title: Elegible
+Definition:  Puertas<>Puerta_revelada and Puertas<>Puerta_elegida
+NodeLocation: 160,240,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,40,50,400,300,0,SAMP
+NodeFont: Arial Rounded MT Bold,16
+
+Close Monte_hall
+

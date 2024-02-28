@@ -1,0 +1,45 @@
+{ Analytica Model Mest_5_1_Overbooking, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 10K
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Mest_5_1_Overbooking
+Description: Modelo en el que tenemos 10 de capacidad pero vendemos 11.~
+Esta práctica, llamada 'Overbooking' es ampliamente usada en un gran número de sectores y se hacen utilidades y evitan pérdidas mediante su uso.~
+La hemos desarrollado paso a paso para una mejor comprensión.
+Author: Jorge
+Date: lun, mar 11, 2019 1:06 p.m.
+DiagState: 2,1,0,982,419,17
+FontStyle: Arial,15
+FileInfo: 0,Model Mest_5_1_Overbooking,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 6-1.2 Overbooking (introducción).ana
+
+Variable Ingresos
+Title: Ingresos
+Definition: $1200 * 11 *0.8
+NodeLocation: 96,88,1
+NodeSize: 48,24
+
+Chance Rechazos
+Title: Rechazos
+Definition: Probability(Binomial(11,0.8) = 11) * $4200
+NodeLocation: 96,144,1
+NodeSize: 48,24
+
+Objective Ganancia_Esperada
+Title: Ganancia Esperada
+Definition: Ingresos - Rechazos
+NodeLocation: 96,208,1
+NodeSize: 48,24
+
+Close Mest_5_1_Overbooking
+

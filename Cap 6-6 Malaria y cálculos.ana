@@ -1,0 +1,49 @@
+{ Analytica Model Malaria, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Malaria
+Description: Modelo de cálculos epidemiológicos simple (malaria en este caso), usando las distribuciones Binomial y Poisson.~
+(Malaria y paludismo son sinónimos)
+Author: Jorge
+Date: mié, ene 23, 2019 1:19 p.m.
+DiagState: 2,1,0,745,324,17
+FontStyle: Arial,15
+FileInfo: 0,Model Malaria,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 6-6 Malaria y cálculos.ana
+
+Chance Numero_de_infeccione
+Title: Número de infecciones
+Description: Usamos la distribución de Poisson para modelizar el número de las infecciones
+Definition: Poisson(500)
+NodeLocation: 128,64,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,56,53,416,303,,PDFP
+GraphSetup: Att_CatLineStyle Graph_Prob_Valdim:9
+NodeFont: Arial Rounded MT Bold,15
+
+Objective Numero_de_fallecimie
+Title: Número de fallecimientos
+Description: Con la distribución Binomial(n, p) donde:~
+«n» = Número de infecciones~
+«p» = Probabilidad de mortalidad.~
+Hemos puesto el Número de infecciones generados por la distribución de Poisson como el «n» en la distribución binomial. Es decir, le estamos asignando una variable incierta (descrita por Poisson) a «n».
+Definition: Binomial(Numero_de_infeccione, 10%)
+NodeLocation: 272,64,1
+NodeSize: 64,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,15
+
+Close Malaria
+

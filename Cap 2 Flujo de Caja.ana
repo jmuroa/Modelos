@@ -1,0 +1,73 @@
+{ Analytica Model Cash_Flow_1, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Cash_Flow_1
+Description: Modelo de un Flujo de Caja con 5 periodos (Indice Periodos) y una Tasa de Descuento de 12%.~
+El Flujo de Caja está en el nodo Flujo y es una Table indexada por el nodo índice Periodos. Se han introducido las cifras y calculado el Valor Presente (VP) usando la instrucción NPV(); pero esta instrucción no tiene previsto el flujo cero o F0 que sería la inversión y que se pone con signo negativo en el nodo VPN, donde está previsto el VPN (NPV) - Inversión.
+Author: Jorge
+Date: mar, sep 11, 2018 2:50 p.m.
+DiagState: 2,1,0,927,305,17
+FontStyle: Arial,15
+FileInfo: 0,Model Cash_Flow_1,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 2 Flujo de Caja.ana
+
+Index Periodos
+Att_PrevIndexValue: [1,2,3,4,5]
+Title: Periodos
+Description: El número de periodos a tener en el flujo de caja.
+Definition: 1..5
+NodeLocation: 88,48,1
+NodeSize: 48,24
+
+Constant Tasa_de_Descuento
+Title: Tasa de Descuento
+Units: %
+Description: El costo del dinero por periodo.
+Definition: 12%
+NodeLocation: 216,48,1
+NodeSize: 48,24
+
+Variable Flujo
+Title: Flujo
+Units: $
+Description: Table indexada por Periodos. Dará 5 espacios en blanco donde se deberá ingresar la cantidad para cada periodo.
+Definition: Table(Periodos)(112,125.44,140.49,157.35,176.23)
+NodeLocation: 88,120,1
+NodeSize: 48,24
+DefnState: 2,480,61,416,303,,DFNM
+NumberFormat: 2,F,2,2,0,1,2,0,$,0,"ABBREV",0,,,0,0,15
+
+Objective VP
+Title: VP
+Units: $
+Description: Valor presente del flujo de caja, pero sin considerar la inversión que tendrá que tener signo negativo pues se debe restar al valor presente del flujo de caja previsto.
+Definition: Npv(Tasa_de_Descuento, Flujo, Periodos)
+NodeLocation: 216,120,1
+NodeSize: 48,24
+
+Objective VPN
+Title: VPN
+Units: $
+Description: Valor Presente Neto (VPN o NPV) donde se traen a valor presente los flujos de caja y se le resta la inversión lo que es natural pues alguien sacó dinero de su bolsillo.~
+A esta inversión no se le aplica ninguna tasa de descuento porque no tiene sentido aplicar esta tasa de descuento  a una inyección de capital.
+Definition: -$550 + VP
+NodeLocation: 328,120,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeColor: 39321,1,1
+NodeFont: Arial Rounded MT Bold,16
+NodeFontColor: 65535,65535,65535
+
+Close Cash_Flow_1
+

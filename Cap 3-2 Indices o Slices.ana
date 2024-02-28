@@ -1,0 +1,150 @@
+{ Analytica Model Indices_o_Slices, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Indices_o_Slices
+Description: Uso de varios índices (I, J, K, y A) para mostrar el uso del comando Slice o su versión abreviada y su versatilidad:~
+A[@J = 5] ~
+A[@J = 3..6]~
+A[@J = K]~
+A[@J = 3]
+Author: Jorge
+Date: mar, sep 11, 2018 8:19 p.m.
+DiagState: 2,1,0,624,331,17
+FontStyle: Arial,15
+FileInfo: 0,Model Indices_o_Slices,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 3-2 Indices o Slices.ana
+
+Index I
+Title: I
+Description: Esta secuencia, indicada por el comando Sequence( 10, 40, 10 ), indica que empieza en 10 y finaliza en 40. El step (10) es opcional y le indica al comando que la secuencia deberá ser de 10 en 10 (10, 20, 30, y 40) en lugar de 1 en 1.
+Definition: Sequence( 10, 40, 10 )
+NodeLocation: 104,48,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+
+Index J
+Title: J
+Description: Ingreso de texto con el menú (List of Text) en lugar de usar corchetes [ ] y poner comillas a cada letra.
+Definition: ['a','b','c','d','e','f','g','h']
+NodeLocation: 104,112,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+Att_PrevIndexValue: ['a','b','c','d','e','f','g','h']
+
+Index K
+Title: K
+Description: Secuencia de 1 al 3. 1, 2, y 3. ~
+Los dos puntos (..) indican que los números serán en secuencia y seguidos. Muy útil cuando se tienen muchos, como 1..100 que nos dará 1, 2, ... 99, 100.
+Definition: 1..3
+NodeLocation: 104,176,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+{!40300|Att_SlicerPopupSize: 227,80}
+
+Variable A
+Title: A
+Description: A cada letra del índice J, se le ha asignado un número mediante una Table indexada por J.
+Definition: Table(J)(9,2,3,4,1,9,0,3)
+NodeLocation: 104,240,1
+NodeSize: 48,24
+NodeInfo: 1,1,0,1,1,1,0,,0,,0,,,
+WindState: 2,102,77,476,224
+DefnState: 2,40,50,400,300,0,DFNM
+ValueState: 2,40,50,400,300,0,MIDM
+{!50000|Att_ColumnWidths: [33]}
+
+Variable Corte1
+Title: Corte(A, J, 5)
+Definition: A[@J = 5]
+NodeLocation: 280,64,1
+NodeSize: 72,24
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+Aliases: Alias Al1561826495
+
+Variable Corte
+Title: Corte(A, J, 3..6)
+Definition: A[@J = 3..6]
+NodeLocation: 280,128,1
+NodeSize: 72,24
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+Aliases: Alias Al1561826496
+
+Variable Corte2
+Title: Corte(A , J, K)
+Definition: A[@J = K]
+NodeLocation: 280,200,1
+NodeSize: 72,24
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+Aliases: Alias Al1561826497
+
+Variable Corte3
+Title: Corte(A, J, 3)
+Definition: A[@J = 3]
+NodeLocation: 280,264,1
+NodeSize: 72,24
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+Aliases: Alias Al1561826498
+
+Alias Al1561826495
+Title: Slice(A, J, 5)
+Definition: 1
+NodeLocation: 456,72,1
+NodeSize: 88,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeColor: 1,4,52427
+NodeFont: Arial Rounded MT Bold,16
+Original: Corte1
+NodeFontColor: 65535,65535,65535
+
+Alias Al1561826496
+Title: Slice(A, J, 3..6)
+Definition: 1
+NodeLocation: 456,136,1
+NodeSize: 88,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeColor: 1,4,52427
+NodeFont: Arial Rounded MT Bold,16
+Original: Corte
+NodeFontColor: 65535,65535,65535
+
+Alias Al1561826497
+Title: Slice(A , J, K)
+Definition: 1
+NodeLocation: 456,208,1
+NodeSize: 88,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeColor: 1,4,52427
+NodeFont: Arial Rounded MT Bold,16
+Original: Corte2
+NodeFontColor: 65535,65535,65535
+
+Alias Al1561826498
+Title: Slice(A, J, 3)
+Definition: 1
+NodeLocation: 456,272,1
+NodeSize: 88,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeColor: 1,4,52427
+NodeFont: Arial Rounded MT Bold,16
+Original: Corte3
+NodeFontColor: 65535,65535,65535
+
+Close Indices_o_Slices
+

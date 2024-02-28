@@ -1,0 +1,1066 @@
+{ Analytica Model Overbooking_I, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+{!50016|PlusOnTextReturnsNaN := 0}
+
+
+
+
+Model Overbooking_I
+Description: Modelo un tanto más avanzado de Overbooking, en el que hacemos los cálculos en forma repetitiva por razones didácticas o de mejor entendimiento para resaltar el cómo pensamos una solución paso a paso.~
+Notemos que los pasos repetitivos son solo eso y es cargar al modelo de cálculos ineficientes.~
+Por eso, en el siguiente modelo~
+Cap 6-3 (Overbooking Cielito Lindo, modelo 2).ana evitamos esa repetición. Ambos modelos nos dan los mismos resultados pero el primero (este) es por didáctica y en el mecionado (Cap 6-3 (Overbooking Cielito Lindo, modelo 2)) prima la eficiencia.
+Author: Jorge
+Date: jue, jun 29, 2017 11:59 a.m.
+DiagState: 2,1,0,904,255,17
+FontStyle: Arial,15
+FileInfo: 0,Model Overbooking_I,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 6-2 Overbooking (Cielito Lindo modelo repetitivo).ana
+
+Index Nro_Asientos
+Title: Nro Asientos
+Description: Número total de asientos de que dispone el avión
+Definition: Sequence( 0, 16, 1 )
+NodeLocation: 64,40,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,56,59,416,303,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+{!40404|FreePassObjectCount PILPqzV5c$96GJ5tYKfvCUWdTWgQyWrvAAH11a2Z3JeicejvhF8Slz3$jWmP4lXv3ZSGkUCW$BGd59$RCuDTm3s5RN5CBZ$MlFLDR2amEgivpc_lYLFl1v6E$hQ9OMj6V$5zENvV0s5Md$zjra5Vosz4wYF64e_i1881hO5Xl2ox6HZR5Ek0EWjfPScMuvHRXhmaCQ1gJ3PX86sDvY0CTuQYSrb7Gk9PNQwpkfhJjk15xueW9X4hPjpWVFnQsQlp2edefnV$7ScdhiYXdJntAIHJI6M$gL7VfTJ7kY7cF$LTF3rQClC6Pk3mYlstgNyew_NB_iIkyFiGQMrdDtRr8Z5D7R1hDX_JPJWqkQWuKekz4yewbI$pDP6_oQFpUoZlw0_oO3uqMgVVRB8qd3yGZntPKHETtT4e3Ofw5970fagyFVcdaXO8oKf6yshOs7by287DsQ1dzOtErEyjTFTn9GAFGJch5Y_S8DK4xkCZjzHKABGT$a8kdr00kXUZzQsKCHBymX7sjv8MczhY0pwNhi0RD6rV9av5UBE8lfg6Xt59$w$O7j0cKRLM6ozX9iH_059FT4coGikxrejwS1bBxIRTO4pY0Gb4hdcaamAg4CfE851$9X7bz5$09Q0fHxs8Cttqc6hQHTiwAsaGlRuFmPNOOQqZDWk$G1EZDwcKRq_wzpnW_dK9JWiwPFtR3cu_NukdVPR3TEOclwPEwJ$0KSekgVSXxOqI5EExAoU5kh_8$9V7pNjCZhdsPI2VFCk13CgQEwO$Uko9eSJ914$Jh_JyxnKAJdtxCCJ3GuV1Rhj4jXXYWL4lQ$Tr6i1T8tDb_NnDf6a3Y3b7gFqQ1fIxcH_hP9vgSF2tiZQIB50yusrqqrtx_39FNWfp_BNbq3KcuBWrBYwIi7Y$SwQvRyV3dCoP2hL0iO6qZK5tgUJ8$tmfZVQOMKKLNPSWciox3DNYlzAQgxCVp7TqBZyMoDg8d6c7fDnMyYApS6oTAveN8wiVK9$skdXRNJGFEEFHKOSYemu1BMYkyAQhyEXrAWsEd0QsIlDhBiEmKuT4hIxbGyeM4pZK6vjXND5zsnhdaYWWWYadhmsz5DNXiv6KZp4LdxGbxIg3TtJmDiAhCkHqP$bDrU8qVCvdM6tfSG5xofYSMHEB9888ADGLQXemv3DPbp1GXo4Ng$Lh2RqEf6Y0U_V0Y6gFqR3iL0hN4oYH2qdQE4wnfYSNIFDAAABDGKPVbir_7ITfs5Kar7Qk3Pl6UtHi8a2X1X3cAkKwXApT8pWEyhSC$nbPF6_slgbXUSRQQSUXchnu08ITeq1GVl0IatCYuFd1RrHkBf9fBjGqO_bDrU8qWDwfPAxjXLA1tleXSOKHGFFGIKOSYelu1ALXkyAQgxDWq9UqCb_PpGjBg9gBjHrQ0dFuXCuaI$lVG2reTJ90vnhcYVSRQRSUXbgms_6GQbo_DShyDWp7Tp9XwKlAd4Y1X3a7hFrR3hK_fL2lUE_lXL9_pgXQKE9520$$0148CHNUclv3FSft6NdvCWrAXuGf3UwNrJpJrNwU3fGuW9qVCvdM5sdQE2tjbSMFA52$_zz_037CHOVdnx6HUiwAQi_HcwGd$OnAc2V_SyT$Y5fEqS4jN1iP7raK6tgUI7zqhaTOJG}
+Library Distribution_densiti
+Title: Distribution Densities Library
+Description: The functions in this library return the probability densities (for continuous distributions) and probabilities (for discrete distributions) for the standard distribution functions that are built into Analytica.  It also includes Cumulative distribution functions for continuous distributions and some discrete distributions, and inverse cumulative functions for most continuous distributions.~
+~
+Probability densities are useful for importance sampling.  In importance sampling, you can sample from a distribution different from your target distribution, and then weight each point by f_target(x) / f_sample(x), where f_target is the density (or prob) of your target distribution, f_sample the density (or prob) of your sample distribution.~
+~
+Cumulative distribution functions are used in classical hypothesis testing for determining the p-value (or significance level) of a hypothesis based on a data sample, and inverse cumulative distributions are used in finding confidence intervals.~
+~
+Of course PDF, CDF and Inverse CDF functions are used in many other areas of statistical analysis as well.
+Author: Lonnie Chrisman, Ph.D.~
+Lumina Decision Systems
+Date: Fri, Nov 17, 2006 8:19 AM
+DefaultSize: 48,24
+NodeLocation: 64,120,0
+NodeSize: 56,32
+NodeInfo: 1,1,1,1,1,1,0,0,0,0,
+DiagState: 2,47,22,372,305,17
+WindState: 2,22,724,582,409
+FontStyle: Arial, 15
+Att_PreLoadScript: {!40404|FreePassObjectCount PILPqzV5c$96GJ5tYKfvCUWdTWgQyWrvAAH11a2Z3JeicejvhF8Slz3$jWmP4lXv3ZSGkUCW$BGd59$RCuDTm3s5RN5CBZ$MlFLDR2amEgivpc_lYLFl1v6E$hQ9OMj6V$5zENvV0s5Md$zjra5Vosz4wYF64e_i1881hO5Xl2ox6HZR5Ek0EWjfPScMuvHRXhmaCQ1gJ3PX86sDvY0CTuQYSrb7Gk9PNQwpkfhJjk15xueW9X4hPjpWVFnQsQlp2edefnV$7ScdhiYXdJntAIHJI6M$gL7VfTJ7kY7cF$LTF3rQClC6Pk3mYlstgNyew_NB_iIkyFiGQMrdDtRr8Z5D7R1hDX_JPJWqkQWuKekz4yewbI$pDP6_oQFpUoZlw0_oO3uqMgVVRB8qd3yGZntPKHETtT4e3Ofw5970fagyFVcdaXO8oKf6yshOs7by287DsQ1dzOtErEyjTFTn9GAFGJch5Y_S8DK4xkCZjzHKABGT$a8kdr00kXUZzQsKCHBymX7sjv8MczhY0pwNhi0RD6rV9av5UBE8lfg6Xt59$w$O7j0cKRLM6ozX9iH_059FT4coGikxrejwS1bBxIRTO4pY0Gb4hdcaamAg4CfE851$9X7bz5$09Q0fHxs8Cttqc6hQHTiwAsaGlRuFmPNOOQqZDWk$G1EZDwcKRq_wzpnW_dK9JWiwPFtR3cu_NukdVPR3TEOclwPEwJ$0KSekgVSXxOqI5EExAoU5kh_8$9V7pNjCZhdsPI2VFCk13CgQEwO$Uko9eSJ914$Jh_JyxnKAJdtxCCJ3GuV1Rhj4jXXYWL4lQ$Tr6i1T8tDb_NnDf6a3Y3b7gFqQ1fIxcH_hP9vgSF2tiZQIB50yusrqqrtx_39FNWfp_BNbq3KcuBWrBYwIi7Y$SwQvRyV3dCoP2hL0iO6qZK5tgUJ8$tmfZVQOMKKLNPSWciox3DNYlzAQgxCVp7TqBZyMoDg8d6c7fDnMyYApS6oTAveN8wiVK9$skdXRNJGFEEFHKOSYemu1BMYkyAQhyEXrAWsEd0QsIlDhBiEmKuT4hIxbGyeM4pZK6vjXND5zsnhdaYWWWYadhmsz5DNXiv6KZp4LdxGbxIg3TtJmDiAhCkHqP$bDrU8qVCvdM6tfSG5xofYSMHEB9888ADGLQXemv3DPbp1GXo4Ng$Lh2RqEf6Y0U_V0Y6gFqR3iL0hN4oYH2qdQE4wnfYSNIFDAAABDGKPVbir_7ITfs5Kar7Qk3Pl6UtHi8a2X1X3cAkKwXApT8pWEyhSC$nbPF6_slgbXUSRQQSUXchnu08ITeq1GVl0IatCYuFd1RrHkBf9fBjGqO_bDrU8qWDwfPAxjXLA1tleXSOKHGFFGIKOSYelu1ALXkyAQgxDWq9UqCb_PpGjBg9gBjHrQ0dFuXCuaI$lVG2reTJ90vnhcYVSRQRSUXbgms_6GQbo_DShyDWp7Tp9XwKlAd4Y1X3a7hFrR3hK_fL2lUE_lXL9_pgXQKE9520$$0148CHNUclv3FSft6NdvCWrAXuGf3UwNrJpJrNwU3fGuW9qVCvdM5sdQE2tjbSMFA52$_zz_037CHOVdnx6HUiwAQi_HcwGd$OnAc2V_SyT$Y5fEqS4jN1iP7raK6tgUI7zqhaTOJG}
+{!40400|Att_clearTypeFonts: -1}
+
+Library Cumulative_densities
+Title: Cumulative Densities
+Author: Lonnie
+Date: Wed, Aug 06, 2008 12:30 PM
+DefaultSize: 48,24
+NodeLocation: 80,104,1
+NodeSize: 56,24
+DiagState: 2,257,1,997,677,17
+
+Function CumBinomialInv(u,n,p : atom)
+Title: CumBinomialInv
+Description: The inverse cumuative probability of a Binomial(n,p) distribution.  Suppose you run n random trials, each having probability p of success.  For a given 0<u<1, this computes the number of successes, k, so that the probability of the outcome of n flips having k or fewer successes is less than or equal to u.
+Definition: var flip := p>0.5;~
+if flip then p := 1-p;~
+var q:=1-p;~
+var s := p/q;~
+var a := (n+1)*s;~
+var r := q^n;~
+var iter := 1000;~
+var u0 := u;~
+var x := 0;~
+~
+while (u>r and iter>0) do (~
+   iter := iter - 1;~
+   u := u - r;~
+   x := x + 1;~
+   r := ((a/x) - s) * r~
+);~
+if iter=0 then x := round(CumNormalInv(u0,n*p,sqrt(n*p*q)));~
+if flip then x := n-x;~
+x
+NodeLocation: 88,632,1
+NodeSize: 72,24
+WindState: 2,87,287,883,507
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumChiSquared(x, dof)
+Title: Cum~
+ChiSquared
+Description: The cumulative probability at x for a Chi-squared distribution with dof degree-of-freedom.
+Definition: GammaI(x/2,dof/2)
+NodeLocation: 88,48,1
+NodeSize: 56,24
+WindState: 2,424,469,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumStudentT(t,dof)
+Title: CumStudentT
+Description: The cumulative distribution function function for the Student's T distribution with dof degrees of freedom.
+Definition: var x := (t+sqrt(t^2+dof)) / (2*sqrt(t^2+dof));~
+BetaI(x,dof/2,dof/2)
+NodeLocation: 224,48,1
+NodeSize: 64,24
+WindState: 2,298,533,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumFDist(f,dof1,dof2)
+Title: CumFDist
+Description: The Cumulative Probability Function for the F-distribution.
+Definition: BetaI( dof1*f / (dof1*f + dof2), dof1 / 2, dof2 / 2)
+NodeLocation: 368,48,1
+NodeSize: 56,24
+WindState: 2,348,77,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumChiSquaredInv(p,dof)
+Title: Cum~
+ChiSquaredInv
+Description: The inverse cumulative distribution function for the Chi Squared distribution with dof degrees of freedom.
+Definition: 2*GammaIInv(p,dof/2)
+NodeLocation: 88,120,1
+NodeSize: 64,24
+WindState: 2,293,90,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumStudentTInv(p,dof)
+Title: CumStudentTInv
+Description: The inverse cumulative distribution function for the Student's T distribution with dof degrees of freedom.
+Definition: var x := BetaIInv(p,dof/2,dof/2);~
+var a := (2*x-1)^2;~
+(if p<0.5 then -1 else 1) * sqrt( dof * a / (1-a))~
+
+NodeLocation: 232,120,1
+NodeSize: 72,24
+WindState: 2,447,319,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumFDistInv(p,dof1,dof2)
+Title: CumFDistInv
+Description: The Inverse Cumulative Probability Function for the F-distribution.
+Definition: var x := BetaIInv( p, dof1 / 2, dof2 / 2);~
+dof2 * x / ( dof1 * (1-x) )
+NodeLocation: 376,120,1
+NodeSize: 64,24
+WindState: 2,376,499,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumExponential(x,rate)
+Title: Cum~
+Exponential
+Description: Cumulative probability up to x of an Exponential distribution with given mean.   This is the area to the left of x.
+Definition: 1 - exp(-x*rate)
+NodeLocation: 88,232,1
+NodeSize: 60,25
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumExponentialInv(p,rate)
+Title: Cum~
+ExponentialInv
+Description: The inverse cumulative distribution function for an Exponential distribution with given mean.
+Definition: -rate * ln(1-p)
+NodeLocation: 88,288,1
+NodeSize: 64,24
+WindState: 2,522,661,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumLogistic(x,mean ; scale : optional=1)
+Title: Cum Logistic
+Description: The cumulative probability function for the logistic distribution.  This gives the probability area to the left of x in a Logistic(mean,scale) distribution.
+Definition: 1/(1+exp(-(x-mean)/scale))
+NodeLocation: 216,232,1
+NodeSize: 60,25
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumLogisticInv(p,mean ; scale : optional=1)
+Title: Cum Logistic Inv
+Description: The inverse cumulative distribution function for the logistic distribution.  This is the point x at which the area to the left of x is p.
+Definition: mean - scale * ln(1/p - 1)
+NodeLocation: 216,288,1
+NodeSize: 60,25
+WindState: 2,464,332,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumLogNormal(x ; median,gsdev,mean,stddev : optional atomic)
+Title: Cum LogNormal
+Description: The cumulative distribution function for the LogNormal distribution.~
+This is the probability area to the left of x.~
+You must specify x and then any two of distribution parameters.
+Definition: if IsNotSpecified(median)+IsNotSpecified(gsdev)+~
+    IsNotSpecified(mean)+IsNotSpecified(stddev)<>2 ~
+then Error("You must specify exactly two of the distribution parameters to CumLogNormal");~
+~
+var w := 0;~
+if not IsNotSpecified(mean) and not IsNotSpecified(stddev) then (~
+   w := (stddev/mean)^2+1~
+);~
+~
+if IsNotSpecified(median) then (~
+  median := if IsNotSpecified(gsdev) then mean/sqrt(w)~
+                  else if IsNotSpecified(mean) then (~
+                            var tmp := exp(ln(gsdev)^2);~
+                            stddev/sqrt(tmp*(tmp-1))~
+                   ) else mean * exp(-ln(gsdev)^2/2)~
+);~
+~
+if IsNotSpecified(gsdev) then  (~
+  gsdev := if IsNotSpecified(median) then exp(sqrt(ln(w)))~
+                 else if IsNotSpecified(mean) then exp(sqrt(ln(1+sqrt(1+4*(stddev/median)^2))/2))~
+                 else exp(sqrt(2*ln(mean/median)))~
+);~
+~
+CumNormal(ln(x),ln(median),ln(gsdev))
+NodeLocation: 352,232,1
+NodeSize: 60,24
+WindState: 2,24,570,745,616
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumLogNormalInv(p ; median,gsdev,mean,stddev : optional atomic)
+Title: Cum LogNormalInv
+Description: The inverse cumulative distribution function for the LogNormal distribution.~
+This is the value x such that the probability area to the left of x is p.~
+You must specify p and then any two of distribution parameters.
+Definition: if IsNotSpecified(median)+IsNotSpecified(gsdev)+~
+    IsNotSpecified(mean)+IsNotSpecified(stddev)<>2 ~
+then Error("You must specify exactly two of the distribution parameters to CumLogNormalInv");~
+~
+var w := 0;~
+if not IsNotSpecified(mean) and not IsNotSpecified(stddev) then (~
+   w := (stddev/mean)^2+1~
+);~
+~
+if IsNotSpecified(median) then (~
+  median := if IsNotSpecified(gsdev) then mean/sqrt(w)~
+                  else if IsNotSpecified(mean) then (~
+                            var tmp := exp(ln(gsdev)^2);~
+                            stddev/sqrt(tmp*(tmp-1))~
+                   ) else mean * exp(-ln(gsdev)^2/2)~
+);~
+~
+if IsNotSpecified(gsdev) then  (~
+  gsdev := if IsNotSpecified(median) then exp(sqrt(ln(w)))~
+                 else if IsNotSpecified(mean) then exp(sqrt(ln(1+sqrt(1+4*(stddev/median)^2))/2))~
+                 else exp(sqrt(2*ln(mean/median)))~
+);~
+~
+exp(CumNormalInv(p,ln(median),ln(gsdev)))
+NodeLocation: 352,288,1
+NodeSize: 64,24
+WindState: 2,-7,382,745,616
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumTriangular(x,min,mode,max)
+Title: Cum Triangular
+Description: The cumulative distribution function for the Triangular(min,mode,max) distribution.  This gives the probability area to the left of x.
+Definition: var h := 2/(max-min);~
+if x<min then 0~
+else if x>max then 1~
+else if x<mode then 0.5 * h * (x-min)^2 / (mode-min) ~
+else 0.5 * (max-min) * h - 0.5 * h * (max-x)^2 / (max-mode)
+NodeLocation: 88,384,1
+NodeSize: 60,24
+WindState: 2,573,38,477,260
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumTriangularInv(p,min,mode,max)
+Title: Cum TriangularInv
+Description: The inverse cumulative distribution function for a Triangular(min,mode,max) distribution.  This is the value where p area of probability mass is to the left.
+Definition: var h := 2/(max-min);~
+var a1 := 0.5 * (mode-min) * h;~
+if p<=a1 then~
+   min + sqrt(2*(mode-min) *p / h)~
+else~
+   max - sqrt(2*(max-mode)*(1-p) / h)
+NodeLocation: 88,441,1
+NodeSize: 60,24
+WindState: 2,509,262,508,314
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumUniform(x,lb,ub)
+Title: Cum Uniform
+Description: The cumulative distribution function for the Uniform(lb,ub) distribution.
+Definition: if x<lb or x>ub then 0 else~
+(x-lb) / (ub-lb)
+NodeLocation: 208,384,1
+NodeSize: 48,24
+WindState: 2,642,711,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumUniformInv(p,lb,ub)
+Title: Cum UniformInv
+Description: The inverse cumulative distribution function for the Uniform(lb,ub) distribution.
+Definition: lb + p*(ub-lb)
+NodeLocation: 208,440,1
+NodeSize: 56,24
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumWeibull(x,shape ; scale : optional = 1 )
+Title: Cum Weibull
+Description: The cumulative distribution function for the Weibull distribution.
+Definition: 1-exp( -(x/scale)^shape )
+NodeLocation: 320,384,1
+NodeSize: 48,24
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumWeibullInv(p,shape ; scale : optional=1)
+Title: Cum WeibullInv
+Description: The inverse cumulative probability function for the Weibull distribution
+Definition: scale * ( -ln(1-p) )^(1/shape)
+NodeLocation: 336,440,1
+NodeSize: 56,24
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Text Te99911
+Description: Cumulative functions for some discrete distributions:
+NodeLocation: 136,512,-1
+NodeSize: 112,20
+
+Function CumBinomial(k,n,p)
+Title: Cum Binomial
+Description: The cumulative probability of a Binomial(n,p) distribution up to and including k.  In other words, the probability that a sample drawn from a binomial(n,p) distribution is less than or equal to k.
+Definition: BetaI( 1-p, n-Floor(k), 1+Floor(k) )
+NodeLocation: 80,576,1
+NodeSize: 56,24
+WindState: 2,849,32,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumPoisson(k,mean)
+Title: CumPoisson (x,mean)
+Description: The cumulative probability of a Poisson distribution -- the probability that the poisson outcome is less than or equal to k.
+Definition: if k<0 then 0 else (~
+  k:=Floor(k);~
+  1-GammaI(mean,k+1)~
+)
+NodeLocation: 248,576,1
+NodeSize: 96,24
+WindState: 2,875,27,434,288
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumGeometric(k,p : nonNegative)
+Title: Cum Geometric
+Description: The cumulative geometric distribution.  This returns the probability that you would see fewer than 1 Bernoulli success in k independent trials, where p is the probability of success in each trial.
+Definition: (k>=0) * (1-(1-p)^k)
+NodeLocation: 424,576,1
+NodeSize: 56,24
+WindState: 2,22,527,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumGeometricInv(u,p : nonNegative atom)
+Title: Cum GeometricInv
+Description: The inverse cumulative probability of a Geometric(p) distribution.  This returns the greatest number of trials, k, such that the probability of seeing k or fewer trials is less than or equal to u, given that the probability of success for each independent trial is p.
+Definition: var q := 1-p;~
+if p>0 and q>0 then   Ceil( ln(1-u)/ln(q) )~
+else if (q>0) then       Inf~
+else                           1
+NodeLocation: 432,632,1
+NodeSize: 64,24
+WindState: 2,102,83,476,420
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumNegativeBinomial(k,r,p)
+Title: Cum NegativeBinomial
+Description: The cumulative probability of a NegativeBinomial(r,p) distribution up to and including k.  This is the probability of seeing k or fewer successes by the time you've seen r failures, given that each independent Bernoulli trial has a probability of p of success.
+Definition: 1-BetaI(p,k+1,r)
+NodeLocation: 600,576,1
+NodeSize: 80,24
+WindState: 2,68,83,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function CumNegativeBinomInv(u,r,p)
+Title: Cum NegativeBinomialInv
+Description: The inverse cumulative probability of a NegativeBinomial(r,p) distribution up to and including k.  Suppose you run an experiment until you see r failures, each trial having a probability p of success.  How many successes will you see?  This function computes the u'th fractile.  So for example, if you specify 20% for u, it would compute the number of successes, k, such that there is a 20% probability of seeing k or fewer successes.
+Definition: Ceil( BetaIaInv(1-u, p, r) - 1 )
+NodeLocation: 600,632,1
+NodeSize: 88,24
+WindState: 2,68,83,522,361
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Alias New1411399889
+Title: Cum WeibullInv
+Definition: 1
+NodeLocation: 512,440,1
+NodeSize: 72,24
+NodeColor: 58978,52427,65535
+Original: CumWilcoxonInv
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Alias New1411399886
+Title: Cum Weibull
+Definition: 1
+NodeLocation: 504,384,1
+NodeSize: 64,24
+NodeColor: 58978,52427,65535
+Original: CumWilcoxon
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Close Cumulative_densities
+
+Library Distribution_densit1
+Title: Distribution Densities
+Author: Lonnie
+Date: Wed, Aug 06, 2008 12:30 PM
+DefaultSize: 48,24
+NodeLocation: 80,48,1
+NodeSize: 56,24
+DiagState: 2,370,22,811,617,17
+
+Function LDens_Wishart(x,cv : Number[I,J] ; n : positive ; I,J : Index)
+Title: LDens_Wishart(x,cv,n,I,J)
+Description: The natural log of the density of a Wishart distribution at x.  X in this case is a 2-D matrix indexed by I and J.   (X is usually a scatter matrix). Cv must be positive-definite.~
+~
+The actual density is given by Exp( LnDens_Wishart( x,cv,n,I,J) ), but beware that this is usually a very small number and may underflow the limits of the computer's numeric precision.
+Definition: var isPosDefinite := Min(EigenDecomp(x+Transpose(x,I,J),I,J)[.item='value']>0,J);~
+if isPosDefinite then begin~
+  var p:=size(I);~
+  var tr := Sum(MatrixMultiply(Invert(cv,I,J),I,J,x,I,J)[J=I],I);~
+  var logdet := ln(Determinant(cv,I,J));~
+  var logp := logdet*(0.5*(n-p-1)) + ( -0.5 * tr ) - ln(2) * (0.5*n*p) - ln(Pi)*(p*(p-1)/4) - logdet*(0.5*n) - sum( LGamma(0.5*(n+1-I)), I ) ;~
+  exp(logp)~
+end ~
+  else -INF
+NodeLocation: 136,520,1
+NodeSize: 72,24
+WindState: 2,102,90,693,313
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function LDens_InvertedWishar(x,psi : Number[I,J] ; n : positive ; I,J : index)
+Title: LDens_InvertedWishart(x,Psi,n,I,J)
+Description: The natural log of the density of the Inverted Wishart distribution.  Psi must be positive-definite. The density is zero (ln density -INF) when x is not positive-definite.
+Definition: var isPosDefinite := Min(EigenDecomp(x+Transpose(x,I,J),I,J)[.item='value']>0,J);~
+if isPosDefinite then begin~
+  var p := size(I);~
+  var logDetPsi := ln(Determinant(Psi,I,J));~
+  var logDetX := ln(Determinant(X,I,J));~
+  var tr := sum( -0.5 * MatrixMultiply(Psi,I,J, Invert(x,I,J),I,J)[J=I],I);~
+  logDetPsi * (0.5*n) + logDetX * (-0.5*(n+p+1)) + (-0.5*tr)~
+  - ln(2)*(0.5*n*p) - ln(Pi)*(p*(p-1)/4) - sum( LGamma(0.5*(n+1-I)), I ) ;~
+end ~
+  else -INF
+NodeLocation: 136,576,1
+NodeSize: 96,24
+WindState: 2,101,410,476,224
+{!40600|Att_WikiHelpURL: [wiki]LDens_InvertedWishart}
+
+Function Dens_Normal(x,m,sd : numeric orNull)
+Title: Dens_Normal(x,m,sd)
+Description: The density of a uniform distribution
+Definition: 1/(sd*sqrt(2*Pi) ) * exp( - 0.5 * ( (x-m)/sd)^2 )
+NodeLocation: 88,112,1
+NodeSize: 64,24
+WindState: 2,105,359,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Dens_Uniform(x,min,max:Numeric orNull ; integer : optional boolean = false)
+Title: Dens_Uniform~
+(x,min,max)
+Description: The probability density of x in a uniform distribution.  If the parameter integer is supplied and specified as false, then the probability of a discrete uniform distribution is returned.
+Definition: (min <= x and x<= max) * (~
+   if integer then   1/(floor(max)-ceil(min)+1)~
+   else 1/(max-min)~
+)
+NodeLocation: 224,112,1
+NodeSize: 64,24
+WindState: 2,98,83,597,363
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Dens_Beta(x,a,b : scalar orNull ; lower : optional atom=0, upper : optional atom= 1)
+Title: Dens_Beta~
+(x,a,b)
+Description: The density of a beta distribution at x.
+Definition: var span:=upper-lower;~
+x := (x-lower) / span;~
+~
+If 0<=x<=1 then (~
+  var lax := if a>1 then (a-1)*ln(x) else 0;~
+  var  ax := if a<=1  then  x^(a-1) else 1;~
+  var lbx := if b>1 then (b-1)*ln(1-x) else 0;~
+  var  bx := if b<=1  then (1-x)^(b-1) else 1;~
+  var lbeta := LGamma(a) + LGamma(b) - LGamma(a+b);~
+  exp( lax + lbx - lbeta ) * ax * bx / span;~
+) else if x=null then null~
+else 0
+NodeLocation: 216,48,1
+NodeSize: 56,24
+WindState: 2,405,156,765,439
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Prob_Bernoulli(x ; p : NonNegative orNull)
+Title: Prob_Bernoulli~
+(x,p)
+Description: The probability of a Bernoulli distribution with parameter p at x.  Since a Bernoulli sample consists of 0s and 1s only, the probability is zero everywhere except at x=0 and x=1.
+Definition: if x=null or p=null then null~
+else if x=0 then (1-p)~
+else if x=1 then p~
+else 0
+NodeLocation: 88,48,1
+NodeSize: 64,24
+WindState: 2,574,62,514,279
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Prob_Binomial(x,n,p : NonNegative OrNull)
+Title: Prob_Binomial(x,n,p)
+Description: The probability that x positive events occur in a Binomial sample of size n drawn, where the independent probability of drawing a positive sample in each draw is p.
+Definition: if x<0 or x>n then 0 ~
+else Combinations(x,n) * p^x * (1-p)^(n-x)
+NodeLocation: 344,48,1
+NodeSize: 64,24
+WindState: 2,407,397,527,340
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Prob_ChanceDist(x ; p:NonNegative orNull[I] ; A : Array[I] ; I : Index = Common)
+Title: Prob_ChanceDist~
+(x,P,A,I)
+Description: Returns the probability that a sample from ChanceDist(p,A,I) is x.
+Definition: var j := subIndex(A,x,I);~
+if IsUndef(j) then 0~
+else p[I=j] / sum(p,I)
+NodeLocation: 376,112,1
+NodeSize: 80,24
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Dens_ChiSquared(x ; dof : positive orNull)
+Title: Dens_ChiSquared~
+(x,dof)
+Description: Returns the probability at x of a chi-squared distribution with dof degrees of freedom.
+Definition: 0.5^(dof/2) / Gammafn( dof/2 ) * x^(dof/2-1) * exp(-0.5 * x)
+NodeLocation: 104,176,1
+NodeSize: 80,24
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Dens_Exponential(x,rate : numeric orNull)
+Title: Dens_Exponential~
+(x,rate)
+Description: The density of an exponential distribution with the given rate parameter at x.
+Definition: rate * exp(-rate * x)
+NodeLocation: 272,176,1
+NodeSize: 80,24
+WindState: 2,675,236,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Dens_Gamma(x : Nonnegative orNull; alpha : positive orNull; beta : optional = 1 )
+Title: Dens_Gamma~
+(x,a,b)
+Description: The probability density of a gamma(alpha,beta) distribution at x.
+Definition: beta^(-alpha) * x^(alpha-1) * exp(-x/beta) / gammafn(alpha)
+NodeLocation: 104,240,1
+NodeSize: 64,24
+WindState: 2,473,89,476,218
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Dens_Gaussian(x,m : Number OrNull[I] ; cv : Number[I,J] ; I,J : Index)
+Title: Dens_Gaussian~
+(x,m,cv,I,J)
+Description: The probability density of a point x in a mult-variate Gaussian distribution.  m is the mean vector, cv the covariance matrix defining the Gaussian.
+Definition: var N := size(I);~
+if max(x=null or m=null,I) then null else~
+1/ sqrt( (2*Pi)^N * Determinant(cv,I,J) ) * ~
+exp( -1/2 * sum( sum( (x-m)[I=J]*Invert(cv,I,J), J) * (x-m), I ) )
+NodeLocation: 256,240,1
+NodeSize: 72,24
+WindState: 2,319,347,599,406
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Dens_LogNormal(x ; median,gsdev,mean,stddev : optional atomic)
+Title: Dens_LogNormal~
+(x,median,gsdev)
+Description: The density of the Log Normal distribution
+Definition: if IsNotSpecified(median)+IsNotSpecified(gsdev)+~
+    IsNotSpecified(mean)+IsNotSpecified(stddev)<>2 ~
+then Error("You must specify exactly two of the distribution parameters to Dens_LogNormal");~
+~
+var w := 0;~
+if not IsNotSpecified(mean) and not IsNotSpecified(stddev) then (~
+   w := (stddev/mean)^2+1~
+);~
+~
+if IsNotSpecified(median) then (~
+  median := if IsNotSpecified(gsdev) then mean/sqrt(w)~
+                  else if IsNotSpecified(mean) then (~
+                            var tmp := exp(ln(gsdev)^2);~
+                            stddev/sqrt(tmp*(tmp-1))~
+                   ) else mean * exp(-ln(gsdev)^2/2)~
+);~
+~
+if IsNotSpecified(gsdev) then  (~
+  gsdev := if IsNotSpecified(median) then exp(sqrt(ln(w)))~
+                 else if IsNotSpecified(mean) then exp(sqrt(ln(1+sqrt(1+4*(stddev/median)^2))/2))~
+                 else exp(sqrt(2*ln(mean/median)))~
+);~
+~
+Dens_Normal(ln(x),ln(median),ln(gsdev))/x
+NodeLocation: 256,376,1
+NodeSize: 80,24
+WindState: 2,43,416,611,613
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Dens_Weibull( x : scalar ; shape : positive ; scale : optional positive )
+Title: Dens Weibull(x,shape,scale)
+Description: The probability density of the Weibull distribution at a point x.
+Definition: if x<0 then 0~
+else (~
+  shape / scale * (x/scale)^(shape-1) * exp( -(x/scale)^shape )~
+)
+NodeLocation: 304,520,1
+NodeSize: 72,24
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Dens_StudentT(x,dof)
+Title: Dens_StudentT~
+(x,dof)
+Description: The probability density at x of the Student's T distribution with dof degrees of freedom.
+Definition: var c := (dof+1)/2;~
+GammaFn( c )~
+/ ( Sqrt(dof*Pi) * GammaFn(dof/2) )~
+* ( 1+x^2/dof) ^ -c
+NodeLocation: 96,440,1
+NodeSize: 72,24
+WindState: 2,589,819,475,294
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Dens_Triangular(x,min,mode,max)
+Title: Dens_Triangular~
+(x,min,mode,max)
+Description: The probability density at x of a Triangular distribution.
+Definition: var h := 2/(max-min);~
+~
+if x<min or x>max then 0~
+else if x<mode then (x-min) * h / (mode-min)~
+else (max-x) * h / (max-mode)
+NodeLocation: 264,440,1
+NodeSize: 80,24
+WindState: 2,599,453,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Dens_Logistic(x,mean ; scale : optional=1)
+Title: Dens_Logistic~
+(x,mean,scale)
+Description: The probability density at x of a logistic distribution
+Definition: var ex:= exp(-(x-mean)/scale );~
+ex / ( scale * (1+ex)^2 )
+NodeLocation: 104,376,1
+NodeSize: 64,24
+WindState: 2,560,470,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Dens_CumDist(x : Reduced ; P:NonNegative[I,Run] ; R : ascending Numeric[I,Run] ;~
+I : Index = Common ; Smooth : optional boolean[] = true )
+Title: Dens CumDist~
+(x,P,R,I)
+Description: The probability density at point x in a custom distribution defined using the CumDist function.~
+~
+Currently this uses a very inefficient and noisy method for the smooth=true case (including when smooth isn't specified).
+Definition: var eps := (Max(R,I) - Min(R,I)) * 1e-6;~
+if smooth then begin~
+  { This method doesn't seem to work -- seems like the way to do it though }~
+  if AnalyticaVersion>=40102 then ~
+      ( MonoCubicInterp( R, P, x+Eps/2, I ) - MonoCubicInterp( R,P,x-Eps/2, I)) / Eps~
+  else (~
+      { Here is an alternative approximate method for now.  Unfortunately, it isn't very Analytic }~
+      { Necessary because MonoCubicInterp doesn't work prior to release 4.1.2 }~
+      Index J := 1..max([500,10*size(I)]);~
+     var df := Pdf(Random(CumDist(P,R,I,over:J)),J,samplesPerStep:20,binMethod:1);  ~
+     LinearInterp( df[DensityIndex='X'], df[DensityIndex='Y'], x, df.Step )~
+  )~
+end Else~
+   ( LinearInterp( R, P, x+Eps/2, I ) - LinearInterp( R,P,x-Eps/2, I)) / Eps~
+
+NodeLocation: 544,112,1
+NodeSize: 80,24
+WindState: 2,198,164,666,650
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Prob_Poisson(x,mean)
+Title: Prob_Poisson~
+(x,mean)
+Description: The probability at the integer value x of a Poisson distribution.
+Definition: if abs(Round(x)-x) > 1e-6 then 0~
+else if mean=0 then x=0~
+else (~
+  exp( -mean + x*ln(mean) - LGamma(x+1) )~
+)
+NodeLocation: 432,376,1
+NodeSize: 64,24
+WindState: 2,42,710,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Dens_ProbDist(x : Reduced ; ~
+P : NonNegative[I,Run] ; R : Numeric[I,Run] ; I : Index = Common )
+Title: Dens ProbDist~
+(x,P,R,I)
+Description: The probability density at x in a distribution defined by ProbDist(P,R,I)
+Definition: if x=null then null ~
+else if x<Min(R,I) or x>Max(R,I) then 0~
+else ( ~
+   var a := LinearInterp(R,P,x,I);~
+   index J := CopyIndex(R); ~
+   a / Area(P[@I=@J],J)~
+)
+NodeLocation: 592,376,1
+NodeSize: 80,24
+WindState: 2,525,87,513,359
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Prob_Geometric(k,p)
+Title: Prob_Geometric~
+(k,p)
+Description: The probability at point k in a Geometric(p) discrete distribution.
+Definition: if k<0 or abs(round(k)-k)>1e-6 then 0~
+else (1-p)^(k-1) * p
+Check: p>=0 and p<=1
+NodeLocation: 408,240,1
+NodeSize: 72,24
+WindState: 2,798,3,476,224
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Prob_HyperGeometric(k,trials,posEvents,size : atomic)
+Title: Prob_Hypergeometric~
+(k,trials,posEvents,size)
+Description: The probability at point k in a HyperGeometric(trials,posEvents,size) discrete distribution.
+Definition: if k<0 or k>posEvents or trials-k > size-posEvents or abs(round(k)-k)>1e-6 ~
+then 0~
+else ~
+   Combinations(k,posEvents) ~
+   * Combinations(trials-k,size-posEvents)~
+   / Combinations( trials,size)
+NodeLocation: 120,304,1
+NodeSize: 96,24
+WindState: 2,761,109,571,260
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Dens_FDist(x,d1,d2)
+Title: Dens_FDist~
+(x,d1,d2)
+Description: The probability density at x of an F-distribution with d1 and d2 degrees of freedom.~
+~
+Note that the F-distribution is not a built-in distribution in Analytica.
+Definition: exp( 0.5 * ~
+   (d1 * ln(d1*x) + d2*ln(d2) - (d1+d2)*ln(d1*x+d2) ) )~
+/~
+( x * BetaFn( d1/2, d2/2 ) )
+NodeLocation: 416,176,1
+NodeSize: 56,24
+WindState: 2,443,69,494,301
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Function Prob_NegativeBinomia(k : scalar ; r,p : nonNegative atom)
+Title: Prob NegativeBinomial
+Description: The probability of seeing k successes by the time r failures occur when each independent Bernoulli trial has a probability p of success.
+Definition: if k<0 then 0~
+else if k+r<=50 then~
+   Combinations(k,k+r-1) * p^k * (1-p)^r ~
+else ~
+   BetaI(p,k,r) - BetaI(p,k+1,r)
+NodeLocation: 568,240,1
+NodeSize: 80,24
+WindState: 2,102,83,475,253
+{!40600|Att_WikiHelpURL: [wiki]Prob_NegativeBinomial}
+
+Alias New1411399887
+Title: Dens Weibull(x,shape,scale)
+Definition: 1
+NodeLocation: 480,520,1
+NodeSize: 72,24
+NodeColor: 58978,52427,65535
+Original: ProbWilcoxon
+{!40600|Att_WikiHelpURL: [wiki]}
+
+Close Distribution_densit1
+
+Close Distribution_densiti
+
+Decision A16
+Title: 16
+Description: Venta de 16 tickets
+Definition: 16
+NodeLocation: 184,40,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeColor: 65535,57341,1
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Ingresos_16
+Title: Ingresos 16
+Description: Ingresos brutos si se venden 16 tickets
+Definition: $225*A16
+NodeLocation: 184,104,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,40,50,400,300,0,MIDM
+NodeColor: 19661,65535,42597
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable Prob_Binomial1
+Title: Prob Binomial
+Description: Probab. Binomial para 16 tickets
+Definition: Prob_Binomial(Nro_Asientos,16,0.96)
+NodeLocation: 184,160,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+DefnState: 2,272,55,400,300,0,MIDM
+ValueState: 2,88,91,416,303,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Decision A17
+Title: 17
+Description: Venta de 17 tickets
+Definition: 17
+NodeLocation: 296,40,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeColor: 65535,57341,1
+NodeFont: Arial Rounded MT Bold,15
+
+Variable E1
+Title: E(C1) 17
+Description: Costo Esperado 1
+Definition: $900 +$100*Sum(Nro_Asientos*Prob_Binomial2,Nro_Asientos)+$1600*Prob_Binomial(17,17,0.96)
+NodeLocation: 296,224,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeColor: 65531,39321,65535
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable Ingresos_17
+Title: Ingresos 17
+Description: Ingresos brutos si se venden 17 tickets
+Definition: $225*A17
+NodeLocation: 296,104,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,40,50,400,300,0,MIDM
+NodeColor: 19661,65535,42597
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable Prob_Binomial2
+Title: Prob Binomial
+Description: Probab. Binomial para 17 tickets
+Definition: Prob_Binomial(Nro_Asientos,17,0.96)
+NodeLocation: 296,160,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+DefnState: 2,272,55,400,300,0,MIDM
+ValueState: 2,88,91,416,303,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Variable E2
+Title: E(C2) 17
+Description: Costo Esperado 2
+Definition: $325*Prob_Binomial(17,17,0.96)
+NodeLocation: 296,288,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeColor: 65535,45873,39321
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Decision A18
+Title: 18
+Description: Venta de 18 tickets
+Definition: 18
+NodeLocation: 424,40,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeColor: 65535,57341,1
+NodeFont: Arial Rounded MT Bold,15
+
+Variable E4
+Title: E(C2) 18
+Description: Costo Esperado 2
+Definition: $325*Prob_Binomial(17,18,0.96)+$650*Prob_Binomial(18,18,0.96)
+NodeLocation: 424,288,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeColor: 65535,45873,39321
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable Ingresos_18
+Title: Ingresos 18
+Description: Ingresos brutos si se venden 18 tickets
+Definition: $225*A18
+NodeLocation: 424,104,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeColor: 19661,65535,42597
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable Prob_Binomial3
+Title: Prob Binomial
+Description: Probab. Binomial para 18 tickets
+Definition: Prob_Binomial(Nro_Asientos,18,0.96)
+NodeLocation: 424,160,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+DefnState: 2,272,55,400,300,0,MIDM
+ValueState: 2,88,91,416,303,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Decision A19
+Title: 19
+Description: Venta de 19 tickets
+Definition: 19
+NodeLocation: 544,40,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeColor: 65535,57341,1
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Ingresos_19
+Title: Ingresos 19
+Description: Ingresos brutos si se venden 19 tickets
+Definition: $225*A19
+NodeLocation: 544,104,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeColor: 19661,65535,42597
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable Prob_Binomial4
+Title: Prob Binomial
+Description: Probab. Binomial para 19 tickets
+Definition: Prob_Binomial(Nro_Asientos,19,0.96)
+NodeLocation: 544,160,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+DefnState: 2,272,55,400,300,0,MIDM
+ValueState: 2,88,91,416,303,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Objective Ganancia_16
+Title: Ganancia 16
+Definition: Ingresos_16-E6
+NodeLocation: 184,352,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,0,0,720,350
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Objective Ganancia_17
+Title: Ganancia 17
+Definition: Ingresos_17-E1-E2
+NodeLocation: 296,352,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,0,0,720,350
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+{!50000|Att_ColumnWidths: [53]}
+
+Objective Ganancia_18
+Title: Ganancia 18
+Definition: Ingresos_18-E3-E4
+NodeLocation: 424,352,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Objective Ganancia_4
+Title: Ganancia 19
+Definition: Ingresos_19 -E7-E5
+NodeLocation: 544,352,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Objective Comparacion1
+Title: Comparación
+Description: Nodo en donde hemos seleccionado Ganancia 16, ..., Ganancia 19, y hacemos clic en en ícono Resultado o Ctrl+R.~
+Le hemos camniado el nombre únicamente 
+Definition: [Ganancia_16,Ganancia_17,Ganancia_18,Ganancia_4]
+NodeLocation: 360,440,1
+NodeSize: 64,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,40,50,400,300,0,MIDM
+NodeColor: 39321,55707,65535
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+{!50000|Att_ColumnWidths: [55]}
+
+Variable E3
+Title: E(C1) 18
+Description: Costo Esperado 1
+Definition: $900 +$100*Sum(Nro_Asientos*Prob_Binomial3,Nro_Asientos)+$1600*Prob_Binomial(17,18,0.96)+$1600*Prob_Binomial(18,18,0.96)
+NodeLocation: 432,224,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeColor: 65531,39321,65535
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable E7
+Title: E(C1) 19
+Description: Costo Esperado 1
+Definition: $900 +$100*Sum(Nro_Asientos*Prob_Binomial4,Nro_Asientos)+$1600*Prob_Binomial(17,19,0.96)+$1600*Prob_Binomial(18,19,0.96)+$1600*Prob_Binomial(19,19,0.96)
+NodeLocation: 544,224,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeColor: 65531,39321,65535
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable E5
+Title: E(C2) 19
+Description: Costo Esperado 2
+Definition: $325*Prob_Binomial(17,19,0.96)+$650*Prob_Binomial(18,19,0.96)+$975*Prob_Binomial(19,19,0.96)
+NodeLocation: 544,288,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeColor: 65535,45873,39321
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable E6
+Title: E(C1) 16
+Description: Costo Esperado 1
+Definition: $900 +$100*Sum(Nro_Asientos*Prob_Binomial1,Nro_Asientos)
+NodeLocation: 184,224,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeColor: 65531,39321,65535
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Close Overbooking_I
+

@@ -1,0 +1,170 @@
+{ Analytica Model VPN__Flujos, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+Time := [1,2,3]
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+{!40600|Att_PrevIndexValue AllProbabilityBands: [0,0.01,0.025,0.05,0.1,0.25,0.3333333333333333,0.5,0.6666666666666666,0.75,0.9,0.95,0.0975,0.99,1]}
+{!50016|PlusOnTextReturnsNaN := 0}
+
+
+
+
+Model VPN__Flujos
+Description: Modelo comparativo con los anteriores en donde tratamos el Crecimiento como una variable discreta [5%, 6%, 7%] y en el siguiente lo ponemos como una variable continua descrita por la Normal(6%, 1%, Over: Time).~
+Tal como está descrito en el nodo Crecimiento, el Over: Time, lo ponemos para que trate cada escenario independientemente en el tiempo (Time).~
+Obsérvese que dan lo mismo.~
+
+Author: Jorge
+Date: mié, mar 29, 2017 12:28 p.m.
+DiagState: 2,1,0,631,2,19
+FontStyle: Arial Rounded MT Bold,15
+FileInfo: 0,Model VPN__Flujos,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 7-5 Flujos con escenarios vía distribución Normal.ana
+
+Variable Flujo
+Title: Flujo
+Units: $
+Description: Usamos Dynamic() tal como hemos hecho en el modelo anterior.
+Definition: Dynamic(100, self [Time-1]*(1+Crecimiento1))
+NodeLocation: 248,128,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+ValueState: 2,40,43,416,303,0,MIDM
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0
+
+Constant tasa_de_descuento1
+Title: tasa de descuento
+Units: %
+Description: Usamos la tasa de descuento del modelo anterior.
+Definition: 10%
+NodeLocation: 248,272,1
+NodeSize: 56,24
+WindState: 2,102,77,476,224
+
+Objective VPN
+Title: VPN (original)
+Units: $
+Definition: Npv(tasa_de_descuento1,Sum(Prob_de_retorno * Flujo, Crecimiento1),Time)
+NodeLocation: 392,184,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,0,,0,,0
+WindState: 2,727,29,720,350
+ValueState: 2,40,50,400,300,0,MIDM
+NodeColor: 65535,65532,19661
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0
+
+Index Crecimiento1
+Att_PrevIndexValue: [0.05,0.06,0.07]
+Title: Crecimiento
+Units: %
+Description: Escenarios de crecimiento que aqui hemos denominado tasa de retorno.
+Definition: [5%,6%,7%]
+NodeLocation: 88,200,1
+NodeSize: 64,24
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NumberFormat: 2,%,4,2,0,0,4,0,$,0,"ABBREV",0,,,0,0,15
+
+Variable Prob_de_retorno
+Title: Prob de retorno
+Description: Asignamos probabilidades a las tasas de crecimiento.
+Definition: Table(Crecimiento1)(0.2,0.6,0.2)
+NodeLocation: 248,200,1
+NodeSize: 48,24
+WindState: 2,0,0,720,350
+DefnState: 2,40,50,400,300,0,DFNM
+ValueState: 2,746,304,416,303,0,MIDM
+
+Objective VPN1
+Title: VPN (pretendido?)
+Units: $
+Definition: Sum( Prob_de_retorno * Npv( tasa_de_descuento1, Flujo, Time), Crecimiento1 )
+NodeLocation: 392,272,1
+NodeSize: 64,24
+NodeInfo: 1,1,1,1,1,1,0,,0,,0
+WindState: 2,727,29,720,350
+NodeColor: 65535,65532,19661
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0
+
+Text Te1490825908
+Description: ~
+Esta versión tiene varias ventajas a la de la izquierda (Modelo discreto).  Primero, porque el crecimiento y por ende las tasas de retorno son naturalmente continuos, es más natural modelizarla como un variable continua.~
+Segundo, se puede tratar el crecimiento y/o la tasa de retorno como cantidades que cambian en cada paso de Time.
+NodeLocation: 820,412,-1
+NodeSize: 276,76
+NodeInfo: 1,,,,,1
+NodeColor: 58978,52427,65535
+NodeFontColor: 1028,1028,1028
+
+Chance Crecimiento
+Title: Crecimiento
+Units: %
+Description: Tratamos el Crecimiento como una variable continua mediante la Normal(6%,1%,over:Time). El Over: Time, lo ponemos para que trate cada escenario independientemente en el tiempo (Time).~
+Ya estamos poniendo las probabilidades en forma directa mediante la distribución Normal.
+Definition: Normal(6%,1%,over:Time)
+NodeLocation: 648,136,1
+NodeSize: 64,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,1,PDFP
+GraphSetup: {!40400|Sys_PdfSmoothMethod:1}
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Flujo1
+Title: Flujo
+Units: $
+Description: Como antes, usamos Dynamic() para proyectar en cada periodo de Time, el flujo de caja.
+Definition: Dynamic( 100, Self[Time-1] * (1 + Crecimiento ) )
+NodeLocation: 648,200,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,152,155,637,448,0,MEAN
+NodeFont: Arial Rounded MT Bold,16
+
+Objective VPN2
+Title: VPN
+Units: $
+Definition: Npv(Tasa_de_descuento, Flujo1, Time)
+NodeLocation: 792,192,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,727,29,720,350
+ValueState: 2,681,348,400,229,,MEAN
+NodeColor: 65535,19661,19661
+NodeFont: Arial Rounded MT Bold,19
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0
+
+Constant Tasa_de_descuento
+Title: Tasa de descuento
+Units: %
+Description: Usamos la tasa de descuento anterior (y modelo anterior también).
+Definition: 10%
+NodeLocation: 648,256,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Text Te1555703407
+Title: Modelo discreto
+NodeLocation: 240,196,-1
+NodeSize: 224,140
+NodeInfo: 1,,,,,1
+NodeColor: 52427,65535,62258
+
+Text Te1555703465
+Title: Modelo que supone un crecimiento continuo
+NodeLocation: 728,80,-1
+NodeSize: 176,24
+NodeInfo: 1,,,,,1
+NodeColor: 58978,52427,65535
+
+Close VPN__Flujos
+

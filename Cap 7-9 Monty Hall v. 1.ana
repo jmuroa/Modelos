@@ -1,0 +1,119 @@
+{ Analytica Model Monte_Hall_simulatio, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Monte_Hall_simulatio
+Title: Monte Hall simulation
+Description: El juego de Monty Hall.
+Author: Lonnie
+Date: Thu, Aug 2, 2018 12:06 PM
+DiagState: 2,1,0,938,414,17
+FontStyle: Arial,15
+FileInfo: 0,Model Monte_Hall_simulatio,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 7-9 Monty Hall v. 1.ana
+
+Chance Puerta_con_cabra
+Title: Puerta con cabra
+Description: Uso de la instrucción o comando ChanceDist(P, A, I).~
+Este crea una distribución de probabilidad discreta. "A" es un conjunto de resultados, y "P" es el conjunto de probabilidades correspondiente. "A" y "P" deben estar indexadas por "I".
+Definition: ChanceDist(1/3, Puerta )
+NodeLocation: 168,104,1
+NodeSize: 56,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,98,77,720,350
+ValueState: 2,529,133,416,303,0,PDFP
+NodeFont: Arial Rounded MT Bold,16
+
+Index Puerta
+Att_PrevIndexValue: [1,2,3]
+Title: Puerta
+Description: El Nº de puertas. Está puesto como índice, lo que será muy conveniente para el modelo.
+Definition: [1,2,3]
+NodeLocation: 112,176,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Puerta_revelada
+Title: Puerta revelada
+Description: La puesta que Monty Hall abre, la que no será ni la elegida puesto que ya la abrió ni la que contiene el premio.~
+ArgMax(r, i) devuelve el valor del índice i correspondiente al valor mayor del array "r", que debe ser indexado por "i". Más específicamente, devuelve un valor, ix donde r[i = ix] = Max(r, i). Si hay empates, es decir, "r" tiene dos o más valores iguales, devuelve el valor más cercano al final de "i". De manera similar, ArgMin(r, i) devuelve el valor de "i" para el cual "r" es el más pequeño.
+Definition: ArgMax(Puerta<>Puerta_elegida_inici~
+and Puerta<>Puerta_con_cabra,~
+Puerta)
+NodeLocation: 336,88,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,614,92,416,303,1,PDFP
+NodeFont: Arial Rounded MT Bold,16
+
+Decision Puerta_elegida_inici
+Title: Puerta elegida inicial
+Description: Nodo Choice para elegir la puesta inicial que elegiremos al iniciar el concurso.
+Definition: Choice(Puerta,1)
+NodeLocation: 224,176,1
+NodeSize: 48,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,16
+{!40200|Att_ChoiceIndexes: Index Puerta}
+
+Decision Cambia_su_eleccion
+Title: Cambia su elección
+Description: Nodo de Elección con 'No' y 'Sí' como opciones.
+Definition: Choice(Self,0)
+NodeLocation: 128,264,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,16
+Domain: ['No','Sí']
+{!40300|DomainExpr: Discrete('No','Sí',type:'text')}
+{!40200|Att_ChoiceIndexes: Keyword Self}
+
+Objective A_Gana_
+Title: ¿Gana?
+Description: Cálculo de las probabilidades si decidimos cambiar de puerta (67%) y de no cambiar de puerta (33%).~
+Claramente hay que elegir cambiar de puerta.~
+Este resultado es el resultado de haber participado 1000 veces en el juego en forma simulada puesto que el número de iteraciones que ha hecho el programa es 1K (Ctrl-U; Sample Size = 1000 o 1K; luego las probabilidades resultantes son el resultado de ese número de 'participaciones'.~
+
+Definition: Puerta_Final_selecci = Puerta_con_cabra
+NodeLocation: 416,224,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,509,32,416,303,0,MEAN
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,%,4,0,0,0,4,0,$,0,"ABBREV",0,,,0,0,15
+
+Variable Puerta_Final_selecci
+Title: Puerta Final seleccionada
+Description: Nodo con DetermTable para la elección, tanto de la puerta inicialmente elegida como el cambio a la puerta no revelada.~
+El uso de DetermTable requiere que tengamos un nodo de elección lo cual está puesto así (Choice) en el nodo Puerta elegida inicial.
+Definition: DetermTable(Cambia_su_eleccion)(Puerta_elegida_inici,No_elegido_no_revela)
+NodeLocation: 272,264,1
+NodeSize: 64,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,16
+
+Variable No_elegido_no_revela
+Title: No elegido no revelado
+Description: ArgMax(r, i) devuelve el valor del índice i correspondiente al valor mayor del array "r", que debe ser indexado por "i". Más específicamente, devuelve un valor, ix donde r[i = ix] = Max(r, i). Si hay empates, es decir, "r" tiene dos o más valores iguales o mayores, devuelve el valor más cercano al final de "i". De manera similar, ArgMin(r, i) devuelve el valor de "i" para el cual "r" es el más pequeño.~
+~
+En este caso, <> significa que el índice retornado no puede ser (o es diferente) a la puerta elegida inicialmente y tampoco puede ser la puerta que Monty Hall abrió (que contiene la cabra).
+Definition: ArgMax(Puerta<>Puerta_elegida_inici and Puerta<>Puerta_revelada, Puerta)
+NodeLocation: 408,152,1
+NodeSize: 64,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,541,151,416,303,,PDFP
+NodeFont: Arial Rounded MT Bold,16
+
+Close Monte_Hall_simulatio
+

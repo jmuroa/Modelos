@@ -1,0 +1,77 @@
+{ Analytica Model UDF_VPN0, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+Time := [0,1,2]
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model UDF_VPN0
+Description: Nodo definido por el usuario (UDF o User-Defined Functions) en el que introducimos los parámetros y las fórmulas que queramos o necesitemos. ~
+Hecho esto, está listo para usarse en todo el modelo sin necesidad de repetir cálculos o recurrir a la memoria una vez construido.~
+Hemos tenido cuidado de definir a «I» como Index.~
+Parameters --> (tasa ;  flujo ; I : Index )
+Author: Jorge
+Date: sáb, oct 27, 2018 1:32 p.m.
+DiagState: 2,1,0,1009,349,17
+FontStyle: Arial,15
+FileInfo: 0,Model UDF_VPN0,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 3-7 UDF o User-Defined Functions (VPN).ana
+
+Variable Flujo
+Title: Flujo
+Units: $
+Description: Nodo en donde ponemos el flujo de caja. La diferencia con los comandos VPN, VAN o NPV en los diferentes programas que existen es que todos ellos suponen un flujo sin inversión (cifra negativa en los flujos) y por tanto aplican tasa de descuento a todas las cifras, incluida la inversión.~
+Este error (incluir la inversión como parte del Flujo), es muy común y difícil de detectar puesto que rara vez, si alguna, cambia de signo.
+Definition: Table(Time)(-200,120,130)
+NodeLocation: 112,136,1
+NodeSize: 48,24
+ValueState: 2,56,59,416,303,,MIDM
+{!50000|Att_ColumnWidths: [38]}
+
+Function VPN0(tasa ;  flujo ; I : Index )
+Title:  VPN0
+Units: $
+Description: Nodo o UDF con la fórmula ´del Valor Presente Neto (VPN) y la llamamos VPN0 con el '0' como recordatorio que estamos incluyendo el capital inicial o inversión. En el periodo 'I=0' no aplica ninguna tasa de descuento a la primera cifra (negativa) que sería la inversión.
+Definition: Npv(tasa, flujo, I)*(1 + tasa)
+NodeLocation: 112,64,1
+NodeSize: 48,24
+WindState: 2,102,83,720,350
+
+Variable VPN_incluida_Inversi
+Title: VPN incluida Inversión
+Units: $
+Description: Aplicación del nodo UDF llamado VPN0 el cual no aplica Tasa de Descuento alguna a la inversión, lo cual no tiene sentido pues a ninguna inyección de capital se le puede poner 'Tasa de Descuento'. 
+Definition: VPN0(10%, Flujo,Time)
+NodeLocation: 264,136,1
+NodeSize: 48,32
+ValueState: 2,216,219,416,303,,MIDM
+NumberFormat: 2,D,3,2,0,1,3,0,$,0,"ABBREV",0,,,0,0,15
+
+Variable NPV1
+Title: NPV
+Units: $
+Description: Nodo que hace uso del comando Npv() para el Valor Presente Neto (VPN) .
+Definition: Npv(10%, Flujo, Time)
+NodeLocation: 264,64,1
+NodeSize: 48,24
+NumberFormat: 2,F,3,1,0,1,3,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable Valores_a_obtener
+Title: Valores a obtener
+Units: $
+Description: Nodo comparativo de la aplicación directa del comando -existente en todos los softwares- VPN o su equivalente y nuestra UDF llamada VPN0 para ver la diferencia entre los valores presentes netos, diferentes.
+Definition: [NPV1,VPN_incluida_Inversi]
+NodeLocation: 424,88,1
+NodeSize: 48,24
+NumberFormat: 2,F,4,2,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Close UDF_VPN0
+

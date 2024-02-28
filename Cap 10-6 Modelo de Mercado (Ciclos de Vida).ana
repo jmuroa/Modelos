@@ -1,0 +1,1026 @@
+{ Analytica Model Marketmodel1, encoding="UTF-8" }
+SoftwareVersion 5.3.3
+
+
+{ System Variables with non-default values: }
+Time := Sequence( Ano_inicio, Ano_inicio+max(Vida_del_Producto), 1 )
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+ShowUndef := 0
+SaveOptions := 2
+SaveValues := 0
+AllWarnings := 0
+{!40300|Sys_DomainSelfIndex := 1}
+{!40400|Sys_WindowsMaximized := 1}
+{!50016|PlusOnTextReturnsNaN := 0}
+
+{!-50299|DiagramColor Model: 65535,65535,65535}
+{!-50299|DiagramColor Module: 65535,65535,65535}
+{!-50299|DiagramColor LinkModule: 65535,65535,65535}
+{!-50299|DiagramColor Library: 65535,65535,65535}
+{!-50299|DiagramColor LinkLibrary: 65535,65535,65535}
+{!-50299|DiagramColor Form: 65535,65535,65535}
+{!40300|ProactivelyEvaluate Index: 1}
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0
+NodeColor Text: 65535,65535,65535
+
+
+
+Model Marketmodel1
+Title: Market Model
+Description: Este modelo explora un mercado para un nuevo producto, y las decisiones involucradas.~
+~
+Supuestos:~
++ Un mercado oligopolístico (en el que no somos ni dadores de precios ni tomadores de precios).  ~
++ El precio medio fijado por nuestros competidores es incierto.  Nuestra estrategia de precios consiste en establecer un precio relativo al precio de nuestros competidores (por ejemplo, por encima o por debajo).~
++ La cuota de mercado está determinada por nuestra estrategia publicitaria y nuestra estrategia de precios.~
++ El Precio Promedio de Mercado es un promedio del Precio de la Competencia y Nuestro Precio, ponderado por la Participación de Mercado.~
++ El Precio Promedio de Mercado es entonces usado para determinar el Tamaño Máximo del Mercado (maduro).~
++ El tamaño del mercado varía de acuerdo con el modelo estándar del ciclo de vida del producto, con las fases de crecimiento, madurez y declive.~
+~
+Notar que todas las cantidades agregadas en este modelo (por ejemplo, Ventas, Costo, Ingresos) son dinámicas - modeladas como matrices indexadas por año.
+Author: George Ferguson
+Date: Tue, Aug 8, 1995 4:32 PM
+DefaultSize: 44,20
+DiagState: 2,7,4,627,239,17
+DiagramColor: 52428,52428,52428
+FontStyle: Helvetica, 12
+FileInfo: 0,Model Marketmodel1,2,2,0,0,D:\DATA JORGE\Documents\00 Libro Estadística\Modelos Libro\Cap 10-6 Modelo de Mercado (Ciclos de Vida).ana
+PageSetup: (00030000004800480000000002DA0228FFE1FFE202F902460347052803FC00020000004800480000000002DA0228000100000064000000010001010100000001270F000100010000000000000000000000006808001901900000000000000000000000000000000100000000000000000000000000000000)
+{!40400|Att_clearTypeFonts: -1}
+
+Module Detalles_Modelo
+Title: Detalles Modelo
+Description: Este modelo explora un mercado para un nuevo producto, y las decisiones involucradas.~
+~
+Supuestos:~
++ Un mercado oligopolístico (en el que no somos ni dadores de precios ni tomadores de precios).  ~
++ El precio medio fijado por nuestros competidores es incierto.  Nuestra estrategia de precios consiste en establecer un precio relativo al precio de nuestros competidores (por ejemplo, por encima o por debajo).~
++ La cuota de mercado está determinada por nuestra estrategia publicitaria y nuestra estrategia de precios.~
++ El Precio Promedio de Mercado es un promedio del Precio de la Competencia y Nuestro Precio, ponderado por la Participación de Mercado.~
++ El Precio Promedio de Mercado es entonces usado para determinar el Tamaño Máximo del Mercado (maduro).~
++ El tamaño del mercado varía de acuerdo con el modelo estándar del ciclo de vida del producto, con las fases de crecimiento, madurez y declive.~
+Observar que todas las cantidades agregadas en este modelo (por ejemplo, Ventas, Coste, Ingresos) son dinámicas.~
+Se modelizan como matrices o Table indexadas por año.
+Author: George Ferguson
+Date: Sat, Sep 23, 1995 11:04 PM
+DefaultSize: 48,24
+NodeLocation: 160,368,1
+NodeSize: 88,16
+NodeInfo: 1,1,1,1,1,1,1,,1,
+DiagState: 2,193,213,512,245,17
+NodeColor: 19661,-31887,-1
+FontStyle: Helvetica, 16
+NodeFont: Helvetica, 14
+
+Decision Precio
+Title: Precio
+Units: $
+Description: El Precio Relativo es modelizado como una decisión de fijar el precio de nuestro producto en relación con el Precio promedio de la Competencia para productos similares.~
+Se utiliza una secuencia de valores, donde cada valor representa Nuestro Precio/Precio de la Competencia.
+Definition: Choice(Precios_Relativos,3)
+NodeLocation: 176,176,1
+NodeSize: 48,24
+WindState: 2,309,234,400,600
+DefnState: 1,-434,82,416,303,0,MIDM
+ValueState: 1,169,132,283,190,0,MIDM
+Aliases: Alias Price_strategy, FormNode Relative_price
+NodeColor: 1,65535,49152
+{!40200|Att_ChoiceIndexes: Decision Precios_Relativos}
+
+Decision Presupuesto_Marketin
+Title: Presupuesto Marketing
+Units: $/año
+Description: Presupuesto anual de marketing.
+Definition: Choice(Niveles_presupuesto_,3)
+NodeLocation: 168,240,1
+NodeSize: 64,24
+WindState: 2,65,63,400,600
+DefnState: 1,70,84,416,303,0,MIDM
+ValueState: 2,104,114,338,283,0,MIDM
+Aliases: Alias Marketing_budget1, Alias Advertising_spending, FormNode Additional_advertisi
+NodeColor: 1,65535,49152
+{!40200|Att_ChoiceIndexes: Decision Niveles_presupuesto_}
+
+Module Ingreso_Ventas
+Title: Ingreso Ventas
+Description: Este módulo modeliza las ventas en función del ciclo de vida del producto, el tamaño del mercado y la cuota de mercado.~
+Las ventas son dinámicas, una matriz (Table) indexada por año.
+Author: George Ferguson
+Date: Tue, Aug 8, 1995 7:29 PM
+DefaultSize: 48,24
+NodeLocation: 296,168,1
+NodeSize: 48,32
+DiagState: 2,270,174,478,99,17
+
+Variable Unidades_vendidas
+Title: Unidades vendidas
+Units: unid.
+Description: Número de unidades vendidas cada año.~
+Es el producto de la cuota de mercado y el tamaño del mercado.
+Definition: Particip__de_mercad1 * Tamano_mercado_por_a
+NodeLocation: 472,232,1
+NodeSize: 48,32
+WindState: 2,202,256,400,600
+ValueState: 1,72,82,463,369,1,MIDM
+Aliases: Alias Sales2
+ReformVal: [Time,Niveles_presupuesto_]
+
+Chance Elasticidad_precio
+Title: Elasticidad precio
+Description: La elasticidad de la cuota de mercado con respecto al precio relativo, definida como el porcentaje de cambio en la cuota de mercado debido a un aumento del uno por ciento en el precio.  Una elasticidad de -1 implica que un aumento del 1% en el precio relativo disminuirá la cuota de mercado en un 1%.
+Definition: Triangular( -3, -2, -1 )
+NodeLocation: 120,280,1
+NodeSize: 56,32
+WindState: 2,183,179,400,600
+ValueState: 1,136,146,416,303,0,MIDM
+
+Chance Efectividad_en_Marke
+Title: Efectividad en Marketing
+Units: Particip./$
+Description: Esta es la efectividad del marketing en el aumento de la cuota de mercado, expresada como el aumento porcentual de la cuota de mercado por el aumento porcentual del presupuesto de marketing.
+Definition: Triangular( 0.2, .7, 1.3 )
+NodeLocation: 232,152,1
+NodeSize: 64,24
+WindState: 2,56,59,400,600
+
+Variable Particip__de_mercad1
+Title: Particip. de mercado
+Units: %
+Description: La demanda de cuota de mercado es una cantidad dinámica relacionada con la demanda relativa de nuestro producto en el mercado.  ~
+A efectos de modelización, se permite que este valor exceda el rango real de Market Share de cero a uno, de modo que se puedan capturar los aspectos dinámicos de la demanda (el nodo Market Share realiza esta conversión a market share real).~
+La demanda de cuota de mercado varía con el tiempo.  Comienza en un valor inicial determinado por la Demanda Inicial de Participación de Mercado, y crece sólo durante la porción de Crecimiento del Ciclo de Vida del Producto.  La cantidad de crecimiento está determinada por la cantidad de publicidad y la efectividad de la publicidad.~
+~
+La función Dynamic se utiliza para modelar este cambio en la Participación de Mercado , con su valor inicial fijado en la Cuota de Mercado Inicial.  Los valores futuros son la suma del valor en el período de tiempo anterior y el resultado de la función multiplicadora "If" (utilizada para aumentar la cuota de mercado sólo durante los años de crecimiento), y las funciones Max utilizadas para limitar la ganancia máxima de demanda de cuota de mercado en cualquier período, y la ganancia máxima total de demanda de cuota de mercado que se permite.~
+
+Definition: Using x:= Particip__de_mercado * (Presupuesto_Marketin/Presupuesto_base_mar)^Efectividad_en_Marke~
+DO x/(1+x)
+NodeLocation: 344,232,1
+NodeSize: 48,40
+WindState: 2,386,32,400,600
+ValueState: 1,152,44,416,303,1,MIDM
+ReformVal: [Niveles_presupuesto_,Precios_Relativos]
+
+Chance Particip__nominal_de
+Title: Particip. nominal de mercado
+Units: Unid. Vend./Totales
+Description: La fracción de los compradores que comprarán nuestro producto en el año 1, con un presupuesto de marketing cero, y nuestro precio es el mismo que el de la competencia.~
+
+Definition: Beta( 8, 20, 0, 1 )
+NodeLocation: 112,200,1
+NodeSize: 56,40
+WindState: 2,102,83,476,224
+ValueState: 1,152,162,416,303,1,PDFP
+Aliases: FormNode Market_share_at_same
+GraphSetup: Graphtool:0~
+Distresol:5~
+Diststeps:1~
+Cdfresol:5~
+Cdfsteps:1~
+Symbolsize:6~
+Linestyle:1~
+Frame:1~
+Grid:1~
+Ticks:1~
+Mesh:1~
+Scales:1~
+Rotation:45~
+Tilt:0~
+Depth:70~
+Frameauto:1~
+Showkey:1~
+Xminimum:-0.2~
+Xmaximum:0.6~
+Yminimum:0~
+Ymaximum:5~
+Zminimum:1~
+Zmaximum:1~
+Xintervals:0~
+Yintervals:0~
+Includexzero:0~
+Includeyzero:0~
+Includezzero:0~
+Statsselect:[1,1,1,1,1,0,0,0]~
+Probindex:[0.05,0.25,0.5,0.75,0.95]~
+
+
+Variable Particip__de_mercado
+Title: Particip. de mercado inicial
+Units: %
+Description: La cuota de mercado inicial fraccionada de nuestro producto si respondemos a la demanda.  ~
+Se calcula compensando la Cuota Nominal de Mercado con un valor igual al producto de:~
+    * nuestra desviación relativa del precio de la competencia (es decir, Rel_pr - 1) ~
+   y ~
+   * la elasticidad de precios de la cuota de mercado. 
+Definition: Particip__nominal_de* Precio ^ Elasticidad_precio
+NodeLocation: 232,232,1
+NodeSize: 48,48
+WindState: 2,88,98,400,600
+ValueState: 1,266,108,416,303,1,CONF
+
+Variable Ingresos_por_ventas
+Title: Ingresos por ventas
+Units: $
+Definition: (Nuestro_precio*Unidades_vendidas)
+NodeLocation: 600,232,1
+NodeSize: 48,40
+WindState: 2,102,77,476,224
+ValueState: 1,136,146,416,303,1,MIDM
+ReformVal: [Time,Niveles_presupuesto_]
+
+Variable Precio_Competidor
+Title: Precio Competidor
+Units: $/unid
+Description: Este es el precio medio que la competencia está cobrando.
+Definition: 1.5K
+NodeLocation: 424,80,1
+NodeSize: 56,24
+WindState: 2,175,355,400,600
+ValueState: 1,296,306,416,303,0,MIDM
+Aliases: FormNode Competition_s_price
+
+Alias Price_strategy
+Title: Price Strategy
+Definition: 1
+NodeLocation: 120,96,1
+NodeSize: 48,28
+Original: Precio
+
+Variable Nuestro_precio
+Title: Nuestro precio
+Units: $
+Description: Nuestro Precio es determinado por el producto de nuestro Precio Relativo y el precio de la Competencia.
+Definition: Precio*Precio_Competidor
+NodeLocation: 600,136,1
+NodeSize: 48,32
+WindState: 2,102,77,476,224
+ValueState: 1,110,144,242,190,0,MIDM
+
+Alias Marketing_budget1
+Title: Marketing budget
+Definition: 1
+NodeLocation: 240,328,1
+NodeSize: 64,24
+NodeColor: 1,65535,49152
+Original: Presupuesto_Marketin
+
+Variable Presupuesto_base_mar
+Title: Presupuesto base marketing
+Units: $/Año
+Description: Presupuesto nominal de marketing proyectado para ganar cuota de mercado nominal.
+Definition: 40M
+NodeLocation: 344,400,1
+NodeSize: 80,32
+NodeInfo: 1,1,1,1,1,1,0,0,0,0
+WindState: 2,102,77,476,224
+ValueState: 1,280,290,416,303,0,MIDM
+
+Close Ingreso_Ventas
+
+Module Tamano_Mercado
+Title: Tamaño Mercado
+Author: henrion
+Date: Wed, Jun 02, 1999 5:32 PM
+DefaultSize: 48,24
+NodeLocation: 296,88,1
+NodeSize: 48,32
+DiagState: 2,589,43,517,155,17
+FontStyle: Helvetica, 15
+
+Variable Ano_inicio
+Title: Año inicio
+Units: Año
+Description: Año de inicio, durante el cual se lanza el producto.
+Definition: 2010
+NodeLocation: 352,40,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+ValueState: 1,200,210,416,303,0,MIDM
+
+Variable Fase_Crecim_
+Title: Fase Crecim.
+Units: años
+Description: El número de años que dura la fase de crecimiento.
+Definition: 3
+NodeLocation: 72,88,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+Aliases: FormNode Growth_years
+
+Variable Fase_Madura
+Title: Fase Madura 
+Units: años
+Description: Es el número de años que dura la fase de madurez (tamaño máximo del mercado).
+Definition: 3
+NodeLocation: 64,152,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+Aliases: FormNode Mature_years
+
+Variable Fase_Declive
+Title: Fase Declive
+Units: años
+Description: El número de años que dura la fase de Declive.
+Definition: 3
+NodeLocation: 64,208,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+Aliases: FormNode Decline_years
+
+Variable Vida_del_Producto
+Title: Vida del Producto
+Units: años
+Description: La vida útil total del ciclo de vida del producto es la suma de los valores de los años de crecimiento, años de madurez y años de declive.~
+~
+El tiempo de vida útil se utiliza para fijar el valor de la variable Time del sistema, que determina el número de años en que se ejecuta la simulación.
+Definition: ((Fase_Crecim_+Fase_Madura)+Fase_Declive)
+NodeLocation: 232,72,1
+NodeSize: 48,24
+WindState: 2,323,170,400,600
+ValueState: 1,88,98,416,303,0,MIDM
+
+Chance Tamano_mercado_madur
+Title: Tamaño mercado maduro
+Units: #/años
+Description: Este es el tamaño nominal del Mercado Maduro, cuando el Precio Promedio cobrado por el producto en el mercado es el mismo que el Precio de Referencia.
+Definition: Normal( 500K, 120K )
+NodeLocation: 528,120,1
+NodeSize: 56,32
+WindState: 2,75,325,400,600
+ValueState: 2,152,162,416,303,1,PDFP
+Aliases: FormNode Nominal_market_size
+GraphSetup: {!40400|Sys_PdfSmoothMethod:1}
+
+Variable Tamano_mercado_por_a
+Title: Tamaño mercado por año
+Units: Unid.
+Description: El tamaño nominal total del mercado en número de unidades por año.~
+~
+El tamaño del mercado varía a lo largo del ciclo de vida del producto:~
+Durante la fase de crecimiento, las ventas aumentan linealmente de cero al valor de ventas máximas.~
+Durante la fase de madurez, las ventas permanecen fijas en el tamaño del mercado maduro.~
+Durante la fase de Disminución, las ventas disminuyen linealmente de Ventas Máximas a cero.
+Definition: Tamano_mercado_madur*~
+(IF Ano_desde_inicio < Fase_Crecim_  ~
+        THEN Ano_desde_inicio/Fase_Crecim_~
+ELSE IF Ano_desde_inicio > (Vida_del_Producto - Fase_Declive)  ~
+        THEN (Vida_del_Producto-Ano_desde_inicio)/Fase_Declive~
+ELSE 1)
+NodeLocation: 384,128,1
+NodeSize: 48,32
+WindState: 2,323,213,400,600
+ValueState: 2,283,92,416,303,1,MIDM
+ReformVal: [Time,Niveles_presupuesto_]
+
+Variable Ano_desde_inicio
+Title: Año desde inicio
+Units: Años
+Description: Número de años desde el año de inicio.
+Definition: Time - Ano_inicio
+NodeLocation: 504,40,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+
+Close Tamano_Mercado
+
+Module Costos
+Title: Costos
+Description: Este módulo contiene y calcula los factores que contribuyen al coste.~
+El costo es dinámico, un arreglo o array (Table) indexado por año.
+Author: George Ferguson
+Date: Tue, Aug 22, 1995 9:13 PM
+DefaultSize: 48,24
+NodeLocation: 296,248,1
+NodeSize: 48,32
+DiagState: 2,327,125,382,97,17
+
+Variable Costo_Unit_
+Title: Costo Unit.
+Units: $/unid.
+Description: Este es el costo de producir una unidad de nuestro producto.
+Definition: 300
+NodeLocation: 224,112,0
+NodeSize: 56,24
+WindState: 2,211,259,400,600
+ValueState: 1,56,66,416,303,0,MIDM
+Aliases: FormNode Unit_cost
+BalloonHelp: miaouw
+
+Alias Advertising_spending
+Title: Advertising Spending
+Definition: 1
+NodeLocation: 224,280,1
+NodeSize: 64,24
+Original: Presupuesto_Marketin
+
+Alias Sales2
+Title: Sales
+Definition: 1
+NodeLocation: 224,56,0
+NodeSize: 56,20
+Original: Unidades_vendidas
+
+Variable Costo_Variable
+Title: Costo Variable
+Units: $/Año
+Description: El costo variable es el coste de producción, que es el coste unitario por volumen de negocios.~
+Esta cantidad es dinámica, un arregloo array (Table)  indexado por año.
+Definition: (Costo_Unit_*Unidades_vendidas)
+NodeLocation: 360,88,0
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+ReformVal: [Time,Time]
+
+Variable Costo_total_por_ano
+Title: Costo total por año
+Units: $/Año
+Description: El costo varía según el año, y se modela como la suma del Costo Variable, el Costo Fijo, y (durante los años de la Fase de Crecimiento) el gasto debido a la Estrategia de Publicidad.~
+Esta cantidad es dinámica, un arreglo o array (Table) indexado por año.
+Definition: Costo_Fijo + Costo_Variable + Presupuesto_Marketin
+NodeLocation: 488,192,1
+NodeSize: 56,24
+WindState: 2,102,77,476,224
+ValueState: 1,104,114,416,303,1,MIDM
+ReformVal: [Time,Time]
+
+Variable Costo_Fijo
+Title: Costo Fijo
+Units: $/Año
+Description: La función Dynamic se utiliza para modelizar este valor, que es igual al costo inicial más el ante-publicitario en el primer año, y al costo fijo anual más el ante- publicitario en todos los años subsiguientes.
+Definition: IF Ano_desde_inicio=0 THEN Costo_inicial ELSE  Costo_Fijo_Anual
+NodeLocation: 360,200,1
+NodeSize: 48,24
+WindState: 2,514,374,400,600
+ValueState: 1,56,66,530,545,0,MIDM
+
+Variable Costo_inicial
+Title: Costo inicial
+Units: $
+Description: Es el importe de los costos fijos del primer año, que incluye categorías como I+D, utillaje o herramientas e insumos y construcción, etc.
+Definition: 20M
+NodeLocation: 224,168,0
+NodeSize: 56,24
+WindState: 2,102,77,476,224
+Aliases: FormNode Startup_cost1
+
+Variable Costo_Fijo_Anual
+Title: Costo Fijo Anual
+Units: $/año
+Description: Este es el costo fijo en los años posteriores al primero, que se modeliza como constante.  Esto incluye categorías como alquiler, calefacción, salarios, etc.
+Definition: 5M
+NodeLocation: 224,224,1
+NodeSize: 56,24
+WindState: 2,102,77,476,224
+Aliases: FormNode Yearly_fixed_cost1
+BalloonHelp: That part of the annual cost of production that does not depend on the number of units manufactured.
+
+Close Costos
+
+Objective Valor__Presente_Neto
+Title: Valor  Presente Neto
+Units: $
+Description: Este es el Valor Presente de los flujos de efectivo calculados por este modelo.~
+Los flujos de efectivo futuros son descontados por la tasa de descuento para calcular un valor actual equivalente para estos flujos.
+Definition: npv(Tasa_de_descuento,Ingreso_Neto,Time)
+NodeLocation: 520,184,1
+NodeSize: 48,40
+WindState: 2,152,162,400,600
+ValueState: 2,117,57,451,362,0,MIDM
+Aliases: FormNode Net_present_value1
+NodeColor: -1,19661,-26763
+GraphSetup: Graphtool:0~
+Distresol:12~
+Diststeps:0~
+Cdfresol:4~
+Cdfsteps:1~
+Symbolsize:6~
+Baroverlap:0~
+Linestyle:10~
+Frame:1~
+Grid:1~
+Ticks:1~
+Mesh:1~
+Scales:1~
+Rotation:45~
+Tilt:0~
+Depth:70~
+Frameauto:1~
+Showkey:1~
+Xminimum:0~
+Xmaximum:125M~
+Yminimum:-200M~
+Ymaximum:200M~
+Zminimum:0.6~
+Zmaximum:1.6~
+Xintervals:0~
+Yintervals:0~
+Includexzero:1~
+Includeyzero:1~
+Includezzero:0~
+Statsselect:[1,1,1,1,1,0,0,0]~
+Probindex:[0.05,0.25,0.5,0.75,0.95]~
+
+FontStyle: Arial, 6
+ReformVal: [Precios_Relativos,Fase_Madura]
+NumberFormat: 1,D,4,2,0,1
+
+Variable Tasa_de_descuento
+Title: Tasa de descuento
+Units: %/año
+Description: Es el importe por el que se descuentan los flujos de caja futuros.  Este factor es establecido por quien tiene la autoría del modelo de acuerdo a sus creencias sobre el costo de los fondos, y qué retorno podría obtener de inversiones alternativas disponibles.
+Definition: 0.15
+NodeLocation: 520,88,1
+NodeSize: 56,24
+WindState: 2,269,326,400,600
+ValueState: 1,136,146,416,303,0,MIDM
+Aliases: FormNode Discount_rate
+NumberFormat: 1,%,4,0,0,0
+
+Variable Flujo_de_Caja
+Title: Flujo de Caja
+Units: $
+Description: Esto resume el flujo de caja a lo largo del tiempo para los distintos escenarios.
+Definition: Table(Categoria_Cash_Flow)(~
+Ingresos_por_ventas,Costo_total_por_ano,Ingreso_Neto)
+NodeLocation: 408,168,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+DefnState: 1,462,87,416,303,0,MIDM
+ValueState: 2,499,33,764,374,1,MEAN
+Aliases: FormNode Cash_flow_over_time1
+GraphSetup: Graphtool:0~
+Distresol:4~
+Diststeps:1~
+Cdfresol:4~
+Cdfsteps:1~
+Symbolsize:6~
+Baroverlap:0~
+Linestyle:10~
+Frame:1~
+Grid:1~
+Ticks:1~
+Mesh:1~
+Scales:1~
+Rotation:0~
+Tilt:0~
+Depth:70~
+Frameauto:0~
+Showkey:1~
+Xminimum:2000~
+Xmaximum:2009~
+Yminimum:-100M~
+Ymaximum:300M~
+Zminimum:1~
+Zmaximum:3~
+Xintervals:10~
+Yintervals:0~
+Includexzero:0~
+Includeyzero:0~
+Includezzero:0~
+Statsselect:[1, 1, 1, 1, 1, 0, 0, 0]~
+Probindex:[5%, 25%, 50%, 75%, 95%]~
+
+FontStyle: Arial, 2
+ReformDef: [Self,Categoria_Cash_Flow]
+ReformVal: [Time,Categoria_Cash_Flow]
+
+Variable Ingreso_Neto
+Title: Ingreso Neto
+Units: $
+Description: Ingreso Neto anual  del ejercicio a lo largo del ciclo de vida del producto.
+Definition: Ingresos_por_ventas - Costo_total_por_ano
+NodeLocation: 408,248,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+ValueState: 1,81,322,648,287,1,MEAN
+ReformVal: [Time,Precios_Relativos]
+
+Variable Importancia_en_VPN
+Title: Importancia en VPN
+Description: En este nodo se hace una comparación de los ítem que contribuyen al VPN.~
+Puede verse en modo gráfico o en contribución nominal.
+Definition: Abs( RankCorrel( Inputs_Valor_Present, Valor__Presente_Neto ) )
+NodeLocation: 520,296,1
+NodeSize: 56,24
+WindState: 2,102,77,476,224
+ValueState: 2,478,84,668,389,0,MIDM
+Aliases: FormNode Net_present_value_i1
+NodeColor: 65535,39321,56799
+GraphSetup: Graphtool:0~
+Distresol:10~
+Diststeps:1~
+Cdfresol:5~
+Cdfsteps:1~
+Symbolsize:6~
+Linestyle:1~
+Frame:1~
+Grid:1~
+Ticks:1~
+Mesh:1~
+Scales:1~
+Rotation:45~
+Tilt:0~
+Depth:70~
+Frameauto:1~
+Showkey:1~
+Xminimum:1~
+Xmaximum:6~
+Yminimum:0~
+Ymaximum:1~
+Zminimum:1~
+Zmaximum:1~
+Xintervals:0~
+Yintervals:0~
+Includexzero:0~
+Includeyzero:0~
+Includezzero:0~
+Statsselect:[1, 1, 1, 1, 1, 0, 0, 0]~
+Probindex:[5%, 25%, 50%, 75%, 95%]~
+
+ReformVal: [Inputs_Valor_Present,Undefined]
+
+Module Indices
+Title: Indices
+Description: Módulo en donde están varios índices a usar.
+Author: Administrador
+Date: Wed, Oct 14, 1998 5:00 PM
+DefaultSize: 48,24
+NodeLocation: 296,320,1
+NodeSize: 48,24
+NodeInfo: 1,0,0,1,1,1,0,,0,
+DiagState: 2,76,44,581,0,17
+WindState: 2,102,77,476,224
+NodeColor: 19661,48336,65535
+
+Index Categoria_Cash_Flow
+Att_PrevIndexValue: ['Ingresos','Costos','Neto']
+Title: Categoría Cash Flow 
+Units: $
+Description: Ítems para las líneas de flujo de caja.
+Definition: ['Ingresos','Costos','Neto']
+NodeLocation: 104,64,1
+NodeSize: 56,24
+WindState: 2,102,77,476,224
+
+Variable Inputs_Valor_Present
+Title: Inputs Valor Presente Neto
+Definition: [Elasticidad_precio,Efectividad_en_Marke,Particip__nominal_de,Tamano_mercado_madur]
+IndexVals: ['Price elasticity','Marketing effectiveness','Nominal market share','Mature market size']
+NodeLocation: 104,136,1
+NodeSize: 56,40
+WindState: 2,102,77,476,224
+DefnState: 2,431,25,416,303,0,MIDM
+ValueState: 1,285,258,416,303,1,MIDM
+
+Close Indices
+
+Close Detalles_Modelo
+
+FormNode Discount_rate
+Title: Discount Rate
+Definition: 0
+NodeLocation: 448,220,1
+NodeSize: 128,20
+Original: Tasa_de_descuento
+
+FormNode Growth_years
+Title: Growth Years
+Definition: 0
+NodeLocation: 164,188,0
+NodeSize: 132,20
+Original: Fase_Crecim_
+
+FormNode Mature_years
+Title: Mature Years
+Definition: 0
+NodeLocation: 164,212,0
+NodeSize: 132,20
+Original: Fase_Madura
+
+FormNode Decline_years
+Title: Decline Years
+Definition: 0
+NodeLocation: 164,236,0
+NodeSize: 132,20
+Original: Fase_Declive
+
+FormNode Nominal_market_size
+Title: Nominal Market Size
+Definition: 0
+NodeLocation: 164,260,1
+NodeSize: 132,20
+NodeInfo: 1,0,0,1,0,0,0,,0
+Original: Tamano_mercado_madur
+
+FormNode Market_share_at_same
+Title: Market Share At Same Price
+Definition: 0
+NodeLocation: 164,284,1
+NodeSize: 132,20
+Original: Particip__nominal_de
+
+FormNode Unit_cost
+Title: Unit Cost
+Definition: 0
+NodeLocation: 448,196,0
+NodeSize: 128,20
+NodeInfo: 1,0,0,1,0,0,0,,1
+Original: Costo_Unit_
+
+FormNode Startup_cost1
+Title: Startup Cost
+Definition: 0
+NodeLocation: 448,172,0
+NodeSize: 128,20
+Original: Costo_inicial
+
+FormNode Yearly_fixed_cost1
+Title: Yearly Fixed Cost
+Definition: 0
+NodeLocation: 448,148,0
+NodeSize: 128,20
+Original: Costo_Fijo_Anual
+
+FormNode Net_present_value1
+Title: Net Present Value
+Definition: 1
+NodeLocation: 440,304,1
+NodeSize: 120,12
+NodeColor: -1,26214,-26215
+Original: Valor__Presente_Neto
+
+Text Picprodcost
+NodeLocation: 446,175,-2
+NodeSize: 130,67
+NodeInfo: 1,0,0,0,1,1,0,,1
+NodeColor: -1,-1,-1
+
+FormNode Cash_flow_over_time1
+Title: Cash Flow over Time
+Definition: 1
+NodeLocation: 440,280,4
+NodeSize: 120,12
+NodeColor: -1,26214,-26215
+Original: Flujo_de_Caja
+
+Text Textprodcost
+Description: Costos Producto 
+NodeLocation: 400,136,0
+NodeSize: 80,24
+NodeInfo: 1,0,0,1,0,0,1,,0,
+NodeFont: Helvetica, 18
+
+Text Textresults
+Description: Resultados
+NodeLocation: 380,264,3
+NodeSize: 60,16
+NodeInfo: 1,0,0,1,0,0,1,,0,
+NodeFont: Helvetica, 18
+
+FormNode Relative_price
+Title: Relative Price
+Definition: 0
+NodeLocation: 448,60,1
+NodeSize: 128,12
+Original: Precio
+
+FormNode Additional_advertisi
+Title: Additional Advertising
+Definition: 0
+NodeLocation: 448,88,1
+NodeSize: 128,8
+Original: Presupuesto_Marketin
+
+Module Opciones
+Title: Opciones
+Author: Henrion
+Date: Mon, Nov 11, 1996 2:43 PM
+DefaultSize: 48,24
+NodeLocation: 500,36,1
+NodeSize: 44,12
+NodeInfo: 1,0,0,1,1,1,0,,0,
+DiagState: 2,692,185,321,280,17
+NodeColor: 19661,-31887,-1
+
+FormNode Competition_s_price
+Title: Competition's Price
+Definition: 0
+NodeLocation: 148,48,1
+NodeSize: 132,12
+Original: Precio_Competidor
+
+FormNode Min_additional_adver
+Title: Min Additional Advertising
+Definition: 0
+NodeLocation: 156,196,1
+NodeSize: 140,12
+Original: Publicidad_Min__adic
+
+FormNode Max_additional_adver
+Title: Max Additional Advertising
+Definition: 0
+NodeLocation: 156,220,1
+NodeSize: 140,12
+Original: Publicidad_Max__adic
+
+FormNode Num__of_adv__cases_m
+Title: Num. of Adv. Cases Modeled
+Definition: 0
+NodeLocation: 156,244,0
+NodeSize: 140,12
+Original: Numero_de_casos_publ
+
+FormNode Max_relative_price
+Title: Max Relative Price
+Definition: 0
+NodeLocation: 148,76,1
+NodeSize: 132,12
+Original: Precio_Max__Relativo
+
+FormNode Min_relative_price
+Title: Min Relative Price
+Definition: 0
+NodeLocation: 148,100,1
+NodeSize: 132,12
+Original: Precio_Min__Relativo
+
+FormNode Relative_price_incre
+Title: Relative Price Increment
+Definition: 0
+NodeLocation: 148,124,1
+NodeSize: 132,12
+Original: Numero_de_casos_en_p
+
+Text pict_bg
+NodeLocation: 152,76,-2
+NodeSize: 144,68
+NodeInfo: 1,0,0,0,1,1,0,,1
+NodeColor: -1,-1,-1
+
+Text Picadvertising
+NodeLocation: 152,208,-2
+NodeSize: 144,56
+NodeInfo: 1,0,0,0,1,1,0,,1
+WindState: 1,50,219
+NodeColor: -1,-1,-1
+
+Text Textproductprice
+Description: Precio producto
+NodeLocation: 76,28,-1
+NodeSize: 68,12
+NodeInfo: 1,0,0,1,0,0,1,,0,
+NodeFont: Arial Black, 14
+
+Text Textadoptions
+Description: Opciones presupuesto publicidad 
+NodeLocation: 128,172,-1
+NodeSize: 120,12
+NodeInfo: 1,0,0,1,0,0,1,,0,
+NodeFont: Arial Black, 14
+
+Module Input_variables
+Title: Input variables
+Author: Henrion
+Date: Feb 3, 1997 6:15 PM
+DefaultSize: 48,24
+NodeLocation: 368,128,0
+NodeSize: 44,20
+DiagState: 2,563,34,390,401,17
+
+Variable Precio_Max__Relativo
+Title: Precio Máx. Relativo
+Description: The maximum value to be explored, for Relative Price.
+Definition: 1.6
+NodeLocation: 48,24,1
+NodeSize: 48,24
+Aliases: FormNode Max_relative_price
+
+Variable Precio_Min__Relativo
+Title: Precio Mín. Relativo
+Description: The minimum value to be explored, for Relative Price.
+Definition: 0.6
+NodeLocation: 48,80,1
+NodeSize: 48,24
+Aliases: FormNode Min_relative_price
+
+Variable Numero_de_casos_en_p
+Title: Número de casos en precio
+Description: The number of values of Relative Price to be explored.
+Definition: 5
+NodeLocation: 48,142,1
+NodeSize: 48,24
+WindState: 2,184,313,400,600
+Aliases: FormNode Relative_price_incre
+
+Variable Publicidad_Min__adic
+Title: Publicidad Min. adicional
+Units: $
+Description: The Minimum Additional Advertising amount.
+Definition: 0
+NodeLocation: 48,200,1
+NodeSize: 48,24
+Aliases: FormNode Min_additional_adver
+
+Variable Publicidad_Max__adic
+Title: Publicidad Máx. adicional
+Units: $
+Description: The Maximum Additional Advertising amount.
+Definition: 100M
+NodeLocation: 48,264,1
+NodeSize: 48,32
+Aliases: FormNode Max_additional_adver
+
+Variable Numero_de_casos_publ
+Title: Número de casos publicidad
+Description: The number of Additional Advertising amounts to be explored.
+Definition: 5
+NodeLocation: 48,336,1
+NodeSize: 48,32
+Aliases: FormNode Num__of_adv__cases_m
+
+Decision Precios_Relativos
+Title: Precios Relativos
+Description: Relative Price is modeled as a decision to price our product relative to the average Competitions' Price for similar products.~
+A sequence of values is used, where each value represents Our Price/Competitions' Price.
+Definition: Sequence( Precio_Min__Relativo, Precio_Max__Relativo, (Precio_Max__Relativo-Precio_Min__Relativo)/(Numero_de_casos_en_p-1) )
+NodeLocation: 184,56,1
+NodeSize: 48,24
+DefnState: 1,-434,82,416,303,0,MIDM
+ValueState: 2,169,132,283,190,0,MIDM
+NumberFormat: 2,F,4,2,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+{!50000|Att_ColumnWidths: [34]}
+Att_PrevIndexValue: [0.6,0.85,1.1,1.35,1.6]
+
+Decision Niveles_presupuesto_
+Title: Niveles presupuesto Marketing
+Units: $
+Description: Levels of marketing budget for analysis.
+Definition: Sequence(Publicidad_Min__adic, Publicidad_Max__adic, (Publicidad_Max__adic-Publicidad_Min__adic)/(Numero_de_casos_publ-1))
+NodeLocation: 184,232,1
+NodeSize: 48,32
+DefnState: 1,70,84,416,303,0,MIDM
+ValueState: 2,104,114,338,283,0,MIDM
+NumberFormat: 2,D,4,4,0,1,4,0,$,0,"ABBREV",0,,,0,0,15
+{!50000|Att_ColumnWidths: [43]}
+Att_PrevIndexValue: [0,25M,50M,75M,100M]
+
+Close Input_variables
+
+Close Opciones
+
+Text Picprodcost1
+NodeLocation: 450,57,-2
+NodeSize: 130,49
+NodeInfo: 1,0,0,0,1,1,0,,1
+NodeColor: -1,-1,-1
+
+Text Textprodcost1
+Description: Decisiones
+NodeLocation: 384,36,-1
+NodeSize: 64,20
+NodeInfo: 1,0,0,1,0,0,1,,0,
+NodeFont: Helvetica, 18
+
+Text Picprodcost2
+NodeLocation: 446,298,-4
+NodeSize: 130,53
+NodeInfo: 1,0,0,0,1,1,0,,1
+NodeColor: -1,-1,-1
+
+FormNode Net_present_value_i1
+Title: Net Present Value Importance
+Definition: 1
+NodeLocation: 440,328,1
+NodeSize: 120,16
+ValueState: 1,118,243,416,303,1,MIDM
+NodeColor: -13109,1,-30580
+Original: Importancia_en_VPN
+
+Text Te1
+NodeLocation: 164,156,-5
+NodeSize: 148,148
+NodeInfo: 1,0,0,0,1,1,0,,1,,0
+
+Picture Pi1447539602
+NodeLocation: 164,108,-2
+NodeSize: 140,76
+NodeInfo: 1,,,,,,0,0,,,
+Pict: (000000000000008E01150004FD0E000089504E470D0A1A0A0000000D49484452000001150000008E0802000000905A0B81000000017352474200AECE1CE90000000467414D410000B18F0BFC6105000000097048597300000EC300000EC301C76FA86400000E8249444154785EED9D4B72E3BA0E86333AD5ABB9F3D4E9F5B8B29B742FE6261BB933D7999C51263DEA518F7201E227044A9423D17A9034BE4AC57C802F00BF643B4EF2F4E9384E29AE1FC72967A17EDE2E4F9737941DC701AE1FC72927EA8704121095C45AAC1BFD68D7F3EBD5D6E7E4455D28394E7720B9DF2E90C3F57AFDBCBE3E430D5492F6A89F4147B04A06E6A84F3FE60CA7A30E5E444D3B770231B92990E13622D18C3522D18F6967B82F1D3822F430A85700ED77510E929DFA227BB64D5832B9B5710555469AD921546F43BC3474316E7ABB19319307504F45FA599C804B32FB7E96AC92D850C5055411C86C4A2B8183433142EDF97291700D69A7960435250353D01141EBB9E839CC193937438EBE0E6789DDD419BAC2777246D239BEE90E36D44157A1C162E4346B19E70826524EE68F95B8949EC0A9811DD33A847D00ADA7C279CB79181FB5296429F2525BC46430B07563198A8CDAD8823520A4656C40A2503B33468DB53337A573220FA91F7AC0A684E439EB386BA7558C12749849ED6C01F6F1A6326AD77B8AB564D2BD99299D1AD82BAD11FD14F49D07928F73347D1264B352CADA32ADCE3D811A0D190AE6F6222DD68067C3030C6EEC6D5C734EE6B1F4135F3D4CF2D566A594B565549D8E0D456634642898D72C22A5AC256C86128A6A13307339E7B34B4E432E3960711A9A7E5410426EDA1C45590C62FA26499C8E55D46652A0478C20A8656A091BA98CE68F3B8195CBA7221E4D3F8D272049C9E5531387EA07DD27D36E0EBA7AAA63F79CAE46368EB33DAE1FC729C7F5E338E5B87E1CA71CD78FE394E3FA719C725C3F8E538EEBC771CA71FD384E39AE1FC729C7F5E338E5B87E1CA79C34B9AF3FFEFDF6D7BF3FE503F581F7977FBEFDFDEBFAF9E7E7DF1FEF68237EFFFCF107C52F70FD381D33D1CFF7978FEF2FBF51FFFCFDF2F7BFDFA7FA79FFF8EEFA719C8C7E7EFC56A95C7F7CFC7CFF65F443DFFF7979FFFDF2D73FDFFEA24230FA02D78FD33119FDFCA1EF411B7F7EBEFCBA5E07FDFC44BBDF7F1C47C8E9E79334434FE1AEBF5EA40CFD987B8EEBC77198AC7E70B7F9E03712CCFDE79D5F0E5179957E58750D7E3D3DFDAF8F2F84C1D987BC7EB810DE761BE9271ABC7F509249E12B213577FF0969472459D8E6174E8183393BB07B72530C516A01CD3CD45B46F5E312DA0FD7CF80665B7FFAA12FB43A9BE2FA0136D5BAD14FF83E9C4BDA9D0D71FD30A324EB493FA1909CCED910D74F26BD3AD30F313DA3B309E344C1CF79C257FCC0CEFBC7B7E1133D6BA93C17B389D59F7E88EC499D3B491345DFBF0E1579E7FA4E6ACEC5B994EA523FC4DC799D6226FAC18F7D2CB8FFD85B937C461B1F841B7D643BA5DA5CBC914CBDEA87B8716AA780A98BC3CF46E54B3FAD639FBFE93DEAFD453F428A9FAEE6A833176FA751C7FA216E9FDD59C5AD44A1DB4BB8B118FD982778F676445F73B7A00A73F1CB04EA5B3FC4971E701692BA986E29E6F338A49F705789FA495E1DB1F18DA76D4A6DB9B82475BAD70FB1C40FCE978C5D3C7D9113F573FDF57DB8DBC833377DFD435F4D3C7F5B98348FA01F62A1379C1BEC9E28F5E4E2F2747910FD10CB7DE2647914FDAC4A94C7D10FB1CA33CE8887D0CFDA147928FD106BFDE328FDEBA720391E4D3F4481971CA273FD94A5C503EA8728F3D583D3B37E8A13E231F543147BEC61E9563FF7A4C2C3EA87B8C76F0F489FFAB933091E593FC49DDE7B283AD4CFFDE17F70FD10F7FBF041E84D3F9B04DEF5436CE2C9EEE94A3F5B85DCF5236CE5CF8EE9473F1B06DBF5A36CE8D52EE9443FDB86D9F563D9D6B79DD1837E360FB0EB67C4E61EEE86E6F5B347685D3F53F6F07307B4AD9F9D82EAFAC9B293B79BA661FDEC174ED7CF1CFBF9BC515AD5CFAE8174FDDC6057CF374793FAD93B84AE9FDBECEDFF86684F3F0704CFF5F3250744A1091AD3CF316173FD2CE19858544E4BFA392C60AE9F851C16916A69463F4786CAF5B39C23E352216DE8E7E02095EFF9FAFAFCF4F4FC6AFEACE4DB65D460797B9DEBD980C3AE020747A72A1AD0CFF1E1B94B3FCF97CBF3E50D7592CF3331A312EAEC413FC4F131AA84DAF5930B4CB8C84786545D09AEFD34D9640A9A16A5B5B07E5EDF74CAEBEB856B5009DF8A84D08D2A95CD1E44523CCD331D925B75D45AADD1109494C473CB5D475B105B2D64C845AA7FAAD64F2E249C02268614D1B26B78BCF69BDC55CAF7CC89FF7A8D73B27CB812561A168A2DB93DA87EA6196BAC1691394532C572D7DD928D2517AFCEA9573FF960CC8492537272C10E354D194D174ED1D7E4DA7FC188984E540C8FEBE17D48FE87A9493EB1493A659DB8D22DFD680F460430D132C81E25C52C44E82AEA319D7F58979BD4E9B1C023D9DDD1007D91FF8EA3D62F95EA4795330E434C391BE290AA990BB614A98B1B6820BD349102CF607217033829646E9A931F0A8873F0A2245214B969987D289A3DA08FB69C1A0FE75D4DE614346F740E23931B8FA17F585E8A74B5118B683A18C49299E4E9E93FF9D8F5488DFA51EF670260E22448C835A05205921FA109AF442E6F31214DEEC6019AABF7EB870BB832C7266E11F41D063A8C5CBFB58F6E85A8CBE06804D2A37F01D9A3A4D0BC660AA90DFB0AF0BAEA08A04E8F05338FFA18E3016E419908F64575FA51BFCFB89E2365A2CB554902341A819968D3AD274499F233DC1462DC33A940ACDD739D644E610E3BB867AC1671586C622B7A7E2BC366F5339DE4AB3876425DFA59E8740AA322711C451CC418536F4C15D55EB0A2CA341556EEB95A32A760470CC473E7FD893A3750BF34C742CE69D3491646B3692AD24F3DEE5EBEE79AA9E114F5C474276AD14F558E76FD6C485591DD9C2AF4539B8B5D3FDB525B7C37E47CFD54E8DCF2CC4B5F60E0C59679B57024B43E4A1550619437E164FDD4E9D6F2CC23A9C4372808D45C3F813A637D2767EAA7C4A1875CE0696294D632AB9FF1471C8677AB64E7B19ED6D4BC041A8E927288F76E5012F1BA394D3F85AE9C4DD06AF41332136882421771F7C386D1A2EF025FAFB90F041441EBA3A4C4F505D4EE59633D8571AF9573F453EEC4D90CD8F2024FED28AD25DD1E30093AE864105A688975AA982E26BBC325D0589494747BA8D1C3B1B7C7F2E8D7C709FAB9CB7DD9E4E246896C4C10CE094959B4ACBAC0D3C428AD25AE9F60D6906D18AB7480D474AFF7913905CD1FDC0664196EDCD27B4BB82B076AE268FDDCEBB818E20413C64D2EF0D488D25A166E6FD8013E0BA7577431D42A5196A0048D454959B83DBBC1F5DE5BC8BD99500787EA6703972DCB0063950E909AA6C90C76CFED9239C521DE5BCE06F97036C7E9671B672DCB006EA18599920B3C35A2D43299531CE2BD556C9315E771907EDA7293ECB9755A39C59DB9C1220EA07E2C47E8E74E071DCF59C1D896864E519C2121BB12D0711407E8A7D03527727C18F6A0AD5394E549904C1E58DC24FEFD307A425AF83CF438FDA0DE020BBD5F39CD9DA2205582526E01BB3C1BBC1352E2E2F8F271D1E262EA38CB10096D0C72310569CC379E78FFE1B752F0A3644A6E18C4348F699FE4FD7AFDD0343281161CE72490D1F3C02E8FDE7F8C7EF0448EC5A2252B31C2BC61B95E3F34D80852E7719C13804A72C0E21639FD20A38792F4B1B20C7AE328D14F148D293ACE19209D0DE858C40AFD0CB6297EFF71DA06BA59A71C8112586E250BF4036BA079BF7E559A4604A405C779540A54AB42DC463D32172A3B236B11A8AFE7CEE11B223B21502F65934996200B11A877C19987813B2368DD0D2C6340C732302682D693C0260CE858034646D0BA0F58C3808EC639E118F0DF0474EF0696C9018B1CB09880EE93C02672C0621ED84D40F73E608D1CB0689343770F87CD00A3DDC032F3C02E82D619607412D8C43CB04B41DF0C30DA07AC310FEC5AE3887DC343CEE134E77FD970431CBA6338690618ED069699077611B4CE00A393C026E6815D0AFA6680D13E608D7960D71A27EC1B0E9B80EEDDC032396091031613D07D12D8440E58CC03BB09E8DE07AC9103166D72E6EEE1BF085A7703CB18D0B10C8C89A0F524B009033AD6809111B4EE03D630A0A371CE3FC691DE94B508D4D773E7F00D919D10A897B2C9244B908508D4BBA0ABC338CEC1B87E1CA71CD78FE394E3FA719C725C3F8E538EEBC771CA71FD384E39AE9FC7E69AFC5EBFFE5AE557D85FCA5C3CA8475C3F8FCDF07BCAC4F2DF287E74D92815EA27B9241647097F5A32C98FA308274832917F65773635E35FC13C83D43F54935DF27E03BAE9212ADCA4FA89051EF90C8B38663A497FD4A61F0E93092885A0CCF9F1CFA5A4F971109C4CF28F0B00ED869839C8CC5F763986917F642FAA0EEDE7136193A1F89AD38F18C4D274921EA94C3FC6E9168E095FDDB88F4C00D73434D42C01E414A0F0C280FBC7FF9C7077420ABD69D25C5F2F5CC3F2E9FE63155B9501E10CF27F7826A7DEF8106651426AF41D8B0578C5B1C6693B322C16729BC7F8C0C6DBAE86EAF4131D3DF81F114DE3A545048E06D2355F0A3C439C681849A5A382284B616754BB844A583D369AFD98ADA20B4DD4303DB5B1DA8264BAB84CDCD1806E96602BBA24A53B9B6C3E33498FD47EFF91B868F846E1E6C6D0844BFCE52D462D3E4EE37A00D8AEAC1DE4139BA413170673C3CC6E55C798210C26DA84746AF52DC541914663480D1AA779FDE426E98F1A5FFF98FCE02AB99E1E86980C71D2D0D1AD87BA29538968A7A93789EBEEC4EDF2E2F45C12456E8A3DC6C86E157D74B2D4F8B8AD3BEBA84D3FCCF4BA65D2CEF4466150AF9491774CB0A20AF59DA79FB0332D8502B708FA0E43DCEAD0475701D465703402F140CEF9D4A81FC76905D78FE394E3FA719C725C3F0E635E3A32A3AA3387EBC711CCBB15A41E7F8F621995EAA78FCB6163A7808212F55045D09D6B8B58F120F99044EC7828E9557BFFE9E372D8DA29580346E366CF74122EE2411AD8921EC4467F3C70BDEAF8FEA9F8F91B0294E41DC737A041D616B1E241555D0E1B3B45F24332D686417A4C2337E07CA6C34CD03F75BFFEE1EC31E1304948C1E2221EA401E1149B8A2E872D9D22FD21735A23B03F53342D8171BD732A7FFFA08FCB6143A7182B26DEFF18481D357C7E42B7AA96B8143C062DE967125C9367B1685A02E3FA29F4710A274353FAE13A2E72443B97C33E4EE164A85C3F8E5335AE1FC729C7F5E338E5B87E1CA794CFCFFF0370EF02BDB571441E0000000049454E44AE426082)
+
+Text Textprodco1447539635
+Description: Ciclo Vida del Producto
+NodeLocation: 148,28,0
+NodeSize: 132,20
+NodeInfo: 1,0,0,1,0,0,1,,0,
+NodeFont: Helvetica, 18
+
+Picture Pi1534260370
+NodeLocation: 164,92,-1
+NodeSize: 140,76
+NodeInfo: 1,,,,,,0,0,,,,,,0
+Pict: (000000000000009B011700046613000089504E470D0A1A0A0000000D49484452000001170000009B0802000000C7B44894000000017352474200AECE1CE90000000467414D410000B18F0BFC6105000000097048597300000EC300000EC301C76FA864000012EB49444154785EED9D4F881CC715C6FB9083084E9071024A4EF2C528C4980DC2419943900F31BA04447C5120873D0D86E044E083ED9313020981188DB141712E4BC0C61793253ACC627CD8BD1813454438B16CCC18AF822D1C848D8C89100A099BAFFBAB7DFBB66ABAA77B6AA6FFCDFB3148D5D5D5D555EFBDAFAABBA77A36D9330C230E539161C4622A328C584C4586118BA9C8306269858AEE64B80DC3E81AAD50D1850CB761185DA3791561163A9661D391D1519A571166A124C3A623A3A334AC224E4454914D4746476958453211119B8E8C2ED2A48AF44444D6D6D6DC3EC3E80E4DAAC89B88C8E6E6A6DBBDC28CE19864384CE01D248DB6E3AB28198E11CA7BE321378763B833190F2B8B8D713040559391CB3A0C26A273E7CE9DCEC08C74E2C409A6CF9F3FEF4A34071BAF3B3E184DB059D09DC5525E4513941C8CD0368DB82F64A65F8C39F0E5E1C9C61355792A796B7D7D7D6363C36DB4005111DBEF6DBA42CB84672CAFA2F20DABE417A324BE8AB4FF3C5F7213C14426A3812E3F18B91111F9DE00094D7A39DA8B1CE6853914BB70D8293432190CD078B470C08DFD664F358504F430330552C8F34A169B623441E1F44C442CAFF3757990A7A2927E29D991C90489E90D3080AF2220F38F9E97686E4686380365C40D7080780EC5999E6A71C6048BF1143F782069E15C84160EC7A929C01856D8EF4E9E29BC184D836F0F87170DFCDA143A1D5A324CB306EFA44097C466815F989ED9118C1E289FD70003C01C3E221E7D39C74C8F991ED2013475A0D5D5EAC2CD229D4A6580C17C80311B13A6EB4E9E29187CBA1762496E0A05A6D06356980FBC6BECF0A4A48C5F4A76A4B8010670A6D188A13108D10DC8A429396EB11829E32D14E3E1BA98D49C85D4D7B197C08B59C54DE2B5507274F085A628A9A23C53F0CAB67E15CDEC4871030CE04CE3414B69DBD1FADA7C2893B938CD0FBD55E0097DE992D5E49E2E308CDAAF22A643538401AD8F620EC83305D38C69DD80BC346BABAA225D9EF9333B1256A51B600098630AF4B4B62FA071994FB03734B1585F1E1B30624499BC53E721DEA305116DB384B1E2756DAA29A606340F74850A4D817CCF1A924F8131D3AB3F6C0928EF97921D2968800152A7364EDB9E741B46254C4586118BA9C83062311519462CA622C388C5546418B1988A0C2316539161C4622A328C58EA53D1CDBDBD9D64783D5BE1722DFD6E3DFD569E988A8C4E93AA88F1BD9324FAC37067A185707934D91B0FF12F2ABF7978A58FA9C8E83487A21972BA960CF52C510FA622A3D314A9E836E6A8C1486627CC24526667E8E6AEDBA3C1CE702CE9F247A52740E618D3E0A192AD62F7C6DDA75EF8383979A5979FD3C3F7B7AF7CE1BA6A4450762EBA3EC12E84FE186570F9C78847E60E32F7D32C901577E41DC54C242E233119BD78EC3B7F4AEE7F23F9CA2BC97DAF24F7B7EDF3AD07FEE8C55F3F3EF7DE7F16FF424BB7BEF82FFD65CCC70C15E9B9E21AA68B4C0F52262F5D7C1426ABCB8311C48362BC413A7BF6ECE6E626E6B4F64C4757DFBF7DF4F4D534DAC0E1E0EBCF67BF6BC77FF88FF776ED5769E7A7484588726A40EFCA538EA4671E15AAE8F4E9D3DBDBDBED51D1D69B9F1FF9DEDF24D4FA7AD9A307080C199BDBB7DC0EA3223354240FD3441B5395A3D3338F1215C9151D54B4F3F236D33CB041362E7D2A123AF6E8DB8834B7A377A06BAFBEFED9C17871F2CAB32FDD70FB8C2A1C0A114F45409E1C5C1BE2DA2CDD355345338F1215210D21E1CE8A85DB30115D78E55F1252B8CED9BD71B7DF2AC2BFB876454FA5D7679FFCC06E93AAD28A10E1159DDB688EA7D5E3B8B51FBFCB60EABD8A007A7A7AF8BEF4FDC463EF60F8E02EA30CA622C7FA2FAE4B189D796222E3F12AA8889C7FEE23B1006E93EC2178794C457B77EEFE0FB291003AF7CC87C871FB56494540DF13E283EB5BB7C328A4B110D1774A0DAA0873CEA9F5F7246E1EFFF53FDD8E7D564A45E0ADBFFF3B7DA6B26F106F4C31A6E2EC8898DE49867A79DBCE702C0FAC97411B5484AB7FDCFF48C44C7D42B56A2A029F7CFA1F3DB2C044C871FB8C691CA8E87232BC3C70CF9AD367D08341B816618134AEA2F776EFE86753175F438BA6B0822A02987F302D8B71303B618E72FB8C80031521A6AF8DC79C8E2E8F2637C7438972FD3C5A16CB5D1E8CAE8DD2F5729CB2BC322810AEA603D782650DC8FCFD438F48663DCFBB0F96269CBC823B81575FFFCCED08584D15118C2C222458296FA0319C1DA9A29B7BB88A4BFFBD3EC0BF13AA484F1AF2550F452257802883A98CF318D2378787940081C96A3A5D8CD562EF6BC957B75FFE2933A5C0F2D04B13A0256CBA1DD358651581ED2B5FC870830F2628BB4D0A39A422C43466215CCB6132911C3D7BC874A1BF39057ABD82104E3BBA98AEFF67DF48E48A6ED9EB80F46328C4072625B72387155711F0EE1E6DF56A881FD36162AA4266AA083972C136B5AA4654142E4D703BF2311501CC3FE79EF9509B6EE6E8B352F831CD4DA0E5242F3500BEB2EAA9287D1AB1BF0A0EE57145A705238A924B3B2F53AEE8743D0BE7D9976E481C947FEE642A12F418547C33B96A383B16A8086904B73C3960E87B2A02BA0C9F4084ABE990C937C6BDCC5F9D7A6427F936F3973411E9A50995AE494C459ACDED5BFA36E9FC731FB91DAB4D2B4264A94FBA713572F6C90FC4F1679E9854BA3F361579BCB77BE7C463EF687BDA6D52CF550407EB75969891DC8ED2988A4260553D3041542BFE925F9F55843B1FFD70E9E9173E763BAA602ACA43DF67E2326F955FF2EBAD8A766FDCD54B13E65E58692A2AC05EF223FD5491B73461E3D2A76E47754C45C5782FF9ADE6EAD51EAA68EBCDCFB5848A9726CCC4543413EFE61357D1ABF6925FDF54A4AF31CA2C4D9889A9A824ABFC925F2B42646D6DEDEAD5AB6E2302BD7A1297190B7970642A2ACFCABEE4D78A10397EFCF8EEEEAEDB98176F69C2A22E2A4C4595F05EF25BFFC5F555B84DEA898AF4D204486881DF039A8AAAE2BDE48774EF5FF2EBBC8A229726CCC454340770C14ABDE4D76D15854B13167EFD602A9A9BD579C9AFC32AF296262C6965A4A92806EF25BFBEAE5EEDAA8ABCA509BFD9F8C4ED5834A6A248E0293DD8F5F225BF4EAA482F4DC0276669C24C4C45F1E032BBDF2FF9754F458B5D9A301353D1A2E8F14B7E1D5391B734A186273FA6A205A247407C7AB37AB54B2AD2CF7C8E3DFA763D5705A6A2C5E2BDE457F24F540C4613B4D663321A8CD35E0C07E8C8727E65A0249D51915E9A800BEBDAD63BC25B2E550B0C8B617AD2F45DFAA5B28CAE95096BC866BE97FCEA344E25BAA1A2994B13BCB16A813FDE90D6561ABA19878CF77FB9850D2B3F58D61928BA6BD2720123BDDB5705D6C3FEEAB4DBAD98E325BFD038DE29B8E93AB0DF05396A301A49BE040C3D25F52483F41F20DD1F4DB0CB65E6F5E5C08E0D52A0A270694228A16438D6DD8681E68B80A9A066972A817891E6F6365DA142C4E55972B9E8AE79E76590C958501ED653B2BF504EA5D5ABA171F4E9981E0DB07732417A906A06E329F39146548824900E8F659AC7EA7C9E51A77976A1B29996419E8A2018BD3461EA1B60B40B6DE7B232C416C36C0462011A029B44C4E6E5EBF1C965A9C205F090D44B83012A81D3B2A12DFD47DC935596C24C1EA8073C10BA4D6AD66E96AE4DF62679351780922EB5DF729E0B9B3A92642F2B070576D3ED0CD328AA2704D470E9FDDBC9BD4F31077C2D49EEBC7B81958748256CA4E4F014908BAB45216AE1513AADFBE8D52CE332EB94D184F9E1958EDBDD2C5355E42D4D08FF260AF1FA2978219B851A4C903B5649C41066A63686355561B73B0771C6709C9A1B8CD1B2A07240D9D06D3AADDD19A6594FD8B5ACBB0E5D9BCBCA01C7BA545654CEC51C8924EEAA64376686695DA19CEB60AC7CF04A923C745F92ECDEF8336BF3F00E941C9E8291E05903E8A3749A7DD1CD939A452DDD5691B734A1E09168B18AB48F59D2231C6F485E61B73B077146AA588CBA038CCDB8343A083586B8AB0E3B32B7E906E4B99C69D613760D4CADD9EDCB01C55CEAF07999232AAA6437DDCE301DF60587782D07471F7971EA4B7EBA129DA34F81C325CAD10551BB3E35D3792A0AEB0C8F65FD02B29AC75351A5A509F4018CE18D40792A0A4B4E8D06299C7AA534A1A199C366B0CED025FA2644E78769D693D7B5F028EECD4377CD3B4A9FA292DD743BC374D817DDF2A75EFF2C491EC36672F2F9A9AB5775253A474CC166A735EC534945EE980C91A216B99CC803D5358F5691B734A1CC37DC326A72934F17C250134B4D1DAB3C0369B332878599CE433B49E7B072460CC38EBE61493D10E81AF4B13A1D762DAF66EECD43BA06F479B1190A3B2D5CDA6E619B990EFB15B4FCBB5FC6F6C9E71900B5FD890ADD3C975585B4F58D232AF29626945FDD432109F071186A60EA58857C1AD165ED3B35AF7001A1339823CD9076F2A9839464D40A79F9AC676AD7F26A2E00E55C6ABF9D59050E7DF95ADE6ECC61DBC2345BA5F35189D7F29F24C9A9F53F3006F099F992DF279F2C6021B26E9ECBAAC2811D1B842AD24B1320A1962C5884635DAA77B4B66B987FCABFE487E0595F5FF7EEAB6BA62D2AFAF96FAF89D5EA5C9A30135351536054950B93826B7B040F3A021AD4522BEC78CF83BF1309ADB5EC6FF1B63CD462687FD7F44B7E79DFC98A8AC8B973E716F27B529568DE8EB872FBD2C39769A916BEC205C7B8D4F2C150BA5D23E8DAC58B179FAD973367CE9CAEC2A9EFFFE89E872F7DF3D40B6E3BE0C89123997C0EF1F8E38FDFB953DF0FF0B76234DA7AF37348E8EC931FFCE5AF579DB1A7E1CC56176B6B6BCE277571ECD83177EE5AC0E9106DCEB875B1B5B5E5445C9AD7DF483F79A017CE7C19D8BC70E1429D12026D99D3F92D1BE66267EC69CCE18018DE7AEB2DB6CD6833724577F4E8D1FAF543DA7E656C18C54045D00F06D95BB71AFBD32FA622A3DBE0D6AE41FD10539161C4622A32AA51C37732CD7E853A07DD5051273CD766DF2FA46D1B1B1BB809C11D88DB5E1A38054E84D3B9EDD6D3761575C273B535726ED6D7D7D7D6D6363737DD7645D8413E0AABC7173C5757B4D45E1575C2733537726EA02236B2AA967407499DBE20EDD7521B55D409CF35D2C8B9111591325AC245A0D7C16641635A7BCDDC2E1575C2736D6BE4DC9C3A75AAF8B502F4D4931FA87F44030DAE342D43EBE6A24E78AEA946CE8DD7DA23478E9C3F7FBEE49B395E676BF6458117DA434BEF8B3AE1B9FA1B3937D2CE4AFAD148676BF345492FB481F63E5D009DF05C9D8D9C1BB4706EFD68D0D9ED05FD35F802708AAEE887B45A45A4139EABA79173B3B5B5B59037AB4BC297C0F7C6C3C168C2D7EFFB4DDF7AD80FFF75A217FCAD02B4D3FBB902A406C9706F32925EB81DFDA59371D60FFF75BD17FCF91EB20A5229A0932AEA87FFBADE0B8A9CC884C9A101E382F74BC2803FF1C54CF90120E0FDCE51274DE1FEEF14FDF05FA77B21ED1C67BFDB2CED613E9A81664B1964E7A5F5EFD17597EEB5BE1FFEEB7A2F285D9E97C301D51EB6935DF3DA2917AB7A42D64343B7A8DBFAF1F4C37F9DEE45F8238FA0F8B75DF3DA8FB49E6301EDD02D5CAFBA423FFCD7F55EF08C6C2436753BF3DA1FE6CBE102471653D1D2E987FFBADE0B3D7912995AF3DA8F325AED92C903051926BA45C71ADD0FFF5914F60C33BA61C4622A328C584C45461D7857A73DC354D43AF4AD91CB6A0E36C6DD7565CCF7F442ABA87F8A6AB58ABC5B673ED88DA106FF49D8C98D3E7B51FEA4ACA1552A92C6C85310EE2D0FEBB1B9A86EBC0759F0DF7CA360CD305C4436DEA62B548817B8CDE235C6FB337ED23B220EF2F2E5D9A3B609D39E97F5D7627995B79096AA884F75F945A4CBCA102F0EB36566FA9B4ADA1A54F22576EB156B32FBCD31DC1239453218A01254C83FB4C8937ADFB7329307EA07D9000D4365D24849EB7A90163B4CF6267935F340B7A362D77403982371CF5D7481F40BD70BBA9D3C04E84C9DD68E964E4999B072575DCBA860D03AF1BEAA17BC28CCA2074E9DDF97288C80900896E0F00E2C0F0F47BDC3711A6D608C6E4CAB90276580EAB4D43035CD7A423B64B67184B5C577274BA6888AE8230FC9F77CA79BE1358915C2656C36FB9257396B6B1B87BADA1E8A55A46322D29761B086A7A8845495CA1BD3DC001320E6B783A061ACB09D8027D5ADCD6B18D3AC676A2367D63C07BA01D8D4E765CDD8D00206252D2F8D97F2BC10E0849357793B99D3B8CB460F4B2E2B238C9E485F86C11A9EA212BA2A9DC30AD9AAF0A40CA01815E5D53CD50EE5D15561336C273619F700B34A76C234DF33A0CEF40AB02FA807881FF32A67BA6DCC69DC1A902B076EC27F4887D113E94BC6874ECB29C6B8F7550154125D95CEE149D12C349551C8918225F5A8A16BD0C7EA749E8AC29AF5512CA9EB674E012C8C9A057D59A50540E805EF28B44A3743A7590FC509CA54DE4252A3B7160A498011C3E80131BED4A1C6B49C62192AC2A6748A4F1DA4A44412C9CB673D53ED9057331BC05DE09769B272BF8C02604AC330A2301519462CA622C388C5546418B1988A0C2316539161C4622A328C584C4586118BA9C83062311519462CA622C388C5546418B1988A0C2316539161C4622A328C584C4586118BA9C83062311519462CA622C388C5546418B1988A0C2316539161C4622A328C584C4586118BA9C83062311519462CA622C388C5546418B1988A0C2316539161C4622A328C584C4586118BA9C83062311519462CA622C388C5546418B1988A0C238EBDBDFF0355F973ACF40BDEAE0000000049454E44AE426082)
+
+Close Marketmodel1
+

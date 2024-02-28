@@ -1,0 +1,621 @@
+{ Analytica Model VPNE1, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 10K
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+{!40600|Att_PrevIndexValue AllProbabilityBands: [0,0.01,0.025,0.05,0.1,0.25,0.3333333333333333,0.5,0.6666666666666666,0.75,0.9,0.95,0.0975,0.99,1]}
+{!50016|PlusOnTextReturnsNaN := 0}
+
+
+
+
+Model VPNE1
+Description: En esta variante del modelo anterior podemos usar tanto la distribución de Poisson() como la distribución Pert(), o ambas a la vez eligiendo "All" en Escenario.  Hemos tenido que incluir la librería (File --> Add Library) Distribution Variations puesto que la distribución Pert() no es estándar y hay que incorporarla por estar ya en casi desuso -más intuitiva es la distribución Triangular()- , pero esta librería o bilioteca, nos permite usar esta última distribución de probabilidad o DdP.~
+Adicionalmente, hemos puesto [Object --> Make User Input Node o Ctrl + Alt  + I ] en dos nodos (Escenario y ¿Exito?) y hemos puesto Choice y DetermTable en otros (Escenario y Tiempo de Desarrollo) lo cual está explicado en cada nodo al detalle.
+Author: Jorge
+Date: dom, jul 16, 2017 4:07 p.m.
+DiagState: 2,1,0,880,378,17
+FontStyle: Arial,15
+FileInfo: 0,Model VPNE1,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 10-3 VPNE con Poisson y Pert.ana
+
+Chance Tiempo_de_Desarrollo
+Title: Tiempo de Desarrollo
+Units: Mes
+Description: Tiempo estimado de desarrollo sujeto a variaciones que modelizamos con la distrtibución de Poisson. Pero en el nodo Escenario, además se ha puesto como elecciones Poisson, Pert (se puede elegir ambas en "All"). Con Choice hay que usar DetermTable. Si se usa una tabla Table, entonces se puede usar un Index pero no se podrá elegir qué distribución se desea ejecutar; Poisson, Pert, o ambas (All) en este caso concreto.
+Definition: DetermTable(Escenario)(Poisson(9),Pert( 2.5, 8.3, 18 ))
+NodeLocation: 232,112,1
+NodeSize: 48,24
+WindState: 2,274,50,476,224
+DefnState: 2,77,586,416,303,0,DFNM
+ValueState: 2,558,53,677,443,1,CDFP
+GraphSetup: Att_GraphValueRange Tiempo_de_Desarrollo:|1:1,,0,,,,,0,25,0
+ReformVal: [Escenario,Null,Undefined,2,1]
+Att_ResultSliceState: [Scenario,2,Sys_LocalIndex('Step'),1]
+Att_XRole: -1
+Att_ColorRole: Escenario
+{!40200|Att_GraphSetupSlices: [3,1,DensityIndex,1]}
+
+Chance Costo_Desarrollo_Men
+Title: Costo Desarrollo Mensual
+Units: $
+Description: Costo de desarrollo mensual, lo que se refleja en el flujo de caja como inversión. De allí que podamos calcular el VPN en forma directa. ~
+Su variabilidad mensual -e independiente mes a mes- está descrita con la distribución LogNormal con Over: Mes, variante que está definida en el nodo del mismo nombre.~
+Si no ponemos Over: Mes estamos suponiendo que el costo es igual cada Mes. Es una elección que hay que tomar. En este caso, suponemos que el costo de cada Mes no es fijo sino varía cada Mes tomando la variabilidad que implica  la DdP LogNormal
+Definition: Lognormal( mean:10K, stddev:3K, over:Mes )
+NodeLocation: 232,176,1
+NodeSize: 48,32
+WindState: 2,102,77,476,224
+
+Chance A_Exito_
+Title: ¿Exito?
+Description: Variable aleatoria crítica pues no hay seguridad de que un emprendimiento (cualquiera) tenga éxito.~
+Se supone en un 60% que tenga éxito.~
+Dado que hay dicotomía (éxito o fracaso solamente), la distribución binomial sería la más apropiada, pero en este caso tan simple la distribución de Bernoulli es simple y directa.
+Definition: Bernoulli(60%)
+NodeLocation: 232,240,1
+NodeSize: 48,24
+Aliases: FormNode Fo1554582685
+NodeColor: 65535,65533,52427
+
+Chance Vida_del_Producto
+Title: Vida del Producto
+Units: Mes
+Description: Estimada en 24 meses pero con incertidumbre. Esta última la describimos o modelizamos con la DdP de Poisson con un valor de 24.
+Definition: Poisson(24)
+NodeLocation: 232,296,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+
+Chance Ulilidad_Post_Lanzam
+Title: Ulilidad Post Lanzamiento
+Units: $
+Description: Las utilidades DESPUÉS del lanzamiento, son descritas por una DdP Nortmal con un estimado de 10K y una desviación de 8K (muy alta) y con independencia del mes (puesta como Over:Mes) ya que así son los emprendimientos: cada mes es independiente de otro. Es lo mismo que hemos supuesto en Costo de Desarrollo.~
+Tener en cuenta que no hay Utilidades ANTES de que termine la etapa de Desarrollo (Poisson (9). Por tanto debemos esperar a que este termine para recién ingresarlas.~
+La  desviación estándar alta (8K) establece nuestra incertidumbre (alta) de cómo serán las Utilidades posteriores al lanzamiento del producto (Ulil_Pos_Lanza)
+Definition: Normal( 10K, 8000, over:Mes )
+NodeLocation: 232,352,1
+NodeSize: 56,24
+WindState: 2,102,77,476,224
+
+Variable Flujo_Caja
+Title: Flujo Caja
+Description: Condicionales anidados (este es el nombre que se le da) porque hay IF THEN ELSE dentro de otro/s IF THEN ELSE.~
+Esto es estricta lógica o sirve para desarrollarla.
+Definition: if Mes <= Tiempo_de_Desarrollo then -Costo_Desarrollo_Men~
+else if not A_Exito_ then 0~
+else if Mes <= Tiempo_de_Desarrollo+Vida_del_Producto then Ulilidad_Post_Lanzam~
+else 0
+NodeLocation: 368,168,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+ValueState: 2,104,37,802,477,1,CONF
+Att_ResultSliceState: [Scenario,2,Sys_LocalIndex('Probability'),1,Mes,1]
+
+Objective VPNE
+Title: VPNE
+Description: El promedio arroja positivo o sea se debería implementar el proyecto. Pero, viendo la densidad de la DdP (Result --> Probability Density) se observa que hay dos picos o Modas (bimodal), c/u con gran probabilidad tanto en el lado positivo como en el negativo. Esto  conforma una toma de deciciones que, si no se toma en cuenta, constituye un riesgo enorme. Miller: Mathematics & Statistics for Financial Risk Management: lectura escaneada.
+Definition: NPV(1%, Flujo_Caja, Mes)
+NodeLocation: 504,168,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+ValueState: 2,137,-5,868,466,1,PDFP
+GraphSetup: {!40400|Sys_PdfSmoothMethod:1}
+NumberFormat: 2,D,4,2,1,1,4,1,$,0,"ABBREV",0,,,0,0
+
+Index Mes
+Title: Mes
+Units: Mes
+Description: 50 meses es un estimado para no quedarse ni muy  corto ni excederse dado que el tiempo de Utilidades o Ingresos es 24 meses, pero previamente hay una etapa de desarrollo (9 meses) sin la cual no habría producto. Este número de meses se puede modificar para arriba o abajo según vayamos viendo si encaja con los los resultados y eso lo estimamos con la vista Probability Bands del menú Results.
+Definition: 1..50
+NodeLocation: 88,40,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+ValueState: 2,88,91,416,303,0,MIDM
+
+{!40404|FreePassObjectCount gYjCmvR1Yx52CF1pUGt3QYSZPSsU2Wz8WTWCqd9ewT66F$3phLgH8MMNJCwMtXtLbWjEufM5$7LTJTJH1S9HNen$mWK3qj$Lcu$hYSGhzGXXeoXID0BessztviExhO_SciXHHMBOt79IEI7hQCoOaixpkmPGV0IMXVbS2pdxQce_vwoYRR1ESUWXYE1i6jAVTanMDrFm4Wjfmw11voW6nDYF18C33avz86JqQBfGiF84IDxdBgNMWcXTOEyWsHsep0sphFl3b$JNDAFlDm5iZnyqlmQsP47SYQPB5mAlQ_Qt9JYYRiFZfss_tVIBzdzFGCOfhcyKgp9GHRYYQJ1dIkC0TXJf1QpDf5Y0V_V1Z7hGsT5kN2kQ7sbL6ugUJ8_skdXROKIHGHIKNRWciqy6GSer3IXo4Nf_Jf0OnBc1UxPuOvR_Y7iIvYBrWCvdM5rdPC0rhYPIB50yvtsstux_17DKSblv5HUjyCTl2Lg0Mk6VvKmDhAfAhDmKvV6jM$gL1kSBxiUG4ujZQIB50xurqppqsvz17DLTcmx7KXl_EWn4Oj3Pm9YyNpHlEjEmIsQ0cDrU7oUAucL5seRF3vldVOIE96432346AEJPWdmv4FRes5LcuAUp8UrDc0RsJmEiDjFoLvV5jL_eJ$iQ9udPB$peUKB4zupljhggghknrw06}
+Library Distribution_variati
+Title: Distribution Variations
+Description: Esta biblioteca contiene varias funciones para definir distribuciones estándar utilizando diferentes conjuntos de parámetros.~
+Tenemos que incluir esta librería pues la DdP PERT no está disponible sin este agregado.
+Author: Lonnie Chrisman and Fred Brunton~
+Lumina Decision Systems
+Date: Wed, Oct 20, 2004 12:18 AM
+DefaultSize: 48,24
+NodeLocation: 864,104,0
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,0,0,0,0,
+DiagState: 2,16,25,599,546,17
+WindState: 2,393,94,476,224
+FontStyle: Arial, 15
+Att_PreLoadScript: {!40404|FreePassObjectCount gYjCmvR1Yx52CF1pUGt3QYSZPSsU2Wz8WTWCqd9ewT66F$3phLgH8MMNJCwMtXtLbWjEufM5$7LTJTJH1S9HNen$mWK3qj$Lcu$hYSGhzGXXeoXID0BessztviExhO_SciXHHMBOt79IEI7hQCoOaixpkmPGV0IMXVbS2pdxQce_vwoYRR1ESUWXYE1i6jAVTanMDrFm4Wjfmw11voW6nDYF18C33avz86JqQBfGiF84IDxdBgNMWcXTOEyWsHsep0sphFl3b$JNDAFlDm5iZnyqlmQsP47SYQPB5mAlQ_Qt9JYYRiFZfss_tVIBzdzFGCOfhcyKgp9GHRYYQJ1dIkC0TXJf1QpDf5Y0V_V1Z7hGsT5kN2kQ7sbL6ugUJ8_skdXROKIHGHIKNRWciqy6GSer3IXo4Nf_Jf0OnBc1UxPuOvR_Y7iIvYBrWCvdM5rdPC0rhYPIB50yvtsstux_17DKSblv5HUjyCTl2Lg0Mk6VvKmDhAfAhDmKvV6jM$gL1kSBxiUG4ujZQIB50xurqppqsvz17DLTcmx7KXl_EWn4Oj3Pm9YyNpHlEjEmIsQ0cDrU7oUAucL5seRF3vldVOIE96432346AEJPWdmv4FRes5LcuAUp8UrDc0RsJmEiDjFoLvV5jL_eJ$iQ9udPB$peUKB4zupljhggghknrw06}
+{!40400|Att_clearTypeFonts: -1}
+
+Function Smooth_fractile(fract : ascending[F] ; ~
+ F : positive ascending IndexType; ~
+ over : ... optional atomic;~
+singleSampleMethod: optional atomic numeric hidden)
+Title: Smooth Fractile
+Description: Given a set of fractiles, this returns a smooth distribution with tails having the indicated fractiles.  The fractiles to use must be specified in F, each value being between 0 and 1, and the fractile values must be in fract.  ~
+~
+For example, to specify a distribution having a P10, P50 and P90 of 7, 13, and 15, set:~
+F := [0.1, 0.5, 0.9]~
+fract := Table(F) ( 7, 13, 15 )~
+and call Smooth_Fractile(fract,F)
+Definition: {The "seed" distribution has the dimensions of fract except for F.}~
+var u:=if IsNotSpecified(singleSampleMethod) ~
+           Then normal(0,1,over:slice(fract,F,1))~
+           Else random(normal(0,1,over:slice(fract,F,1)), ~
+                                method:singleSampleMethod);~
+index pwr := 0..size(F)-1;~
+var N := cumnormalinv(f,0,1)^pwr;~
+var a := sum(Transpose(Invert(N,F,pwr),F,pwr)* fract,F);~
+sum(a*u^pwr,pwr)
+NodeLocation: 80,184,1
+NodeSize: 48,24
+WindState: 2,365,39,514,582
+
+Function Beta_m_sd(m : numeric, sd : positive ; lower,upper:optional numeric; over : ... optional atomic; singleSampleMethod  : optional atomic numeric hidden )
+Title: beta_m_sd(m,sd)
+Description: A beta distribution parameterized by the theoretical mean and std.dev. for the resulting distribution.~
+~
+Based on Method of Moments.~
+Reference:~
+Morgan, M.G., and Henrion, M., "Uncertainty", 1990, p. 97
+Definition: if IsNotSpecified(lower) then lower:=0;~
+if IsNotSpecified(upper) then upper:=1;~
+var u := (m-lower) / (upper-lower);~
+var v := (sd / (upper-lower))^2;~
+var a := (u^2 - u^3 - v * u) / v;~
+var b := (u * (1-u)^2 - v * (1-u)) / v;~
+if IsNotSpecified(singleSampleMethod) then~
+    beta(a,b,lower,upper)~
+else~
+    beta(a,b,lower,upper, singleSampleMethod:singleSampleMethod)
+NodeLocation: 320,120,1
+NodeSize: 96,20
+WindState: 2,57,102,524,409
+
+Function Lognormal_m_sd(mean, stddev; over: ... optional atomic; singleSampleMethod  : optional atomic numeric hidden )
+Title: LogNormal_m_sd(m,sd)
+Description: This function is no longer need since the built-in log normal function has been enhanced.  The definition has been updated accordingly.  It is included here only for backwards compatibility.~
+~
+This function works well when the ratio of mean/stddev >= 1.  Otherwise the sample stddev may vary considerably from the desired.~
+~
+
+Definition: if (isNotSpecified(singleSampleMethod)) then~
+    lognormal(Mean:mean,Stddev:stddev)~
+else ~
+    lognormal(Mean:mean,Stddev:stddev, singleSampleMethod:singleSampleMethod)~
+
+NodeLocation: 120,56,1
+NodeSize: 92,20
+WindState: 2,125,102,784,377
+
+Function Pert(min,mode,max; over : ... optional atomic; singleSampleMethod  : optional atomic numeric hidden )
+Title: Pert(min,mode,max)
+Description: A Pert-distribution, which is a beta distribution defined by a given min, mode, and max.
+Definition: var mean := (min + 4*mode  + max ) / 6;~
+var a :=6* (mean - min) / (max-min);~
+var b := 6*(max - mean) / (max-min);~
+if (isNotSpecified(singleSampleMethod)) then~
+    beta(a,b,min,max)~
+else ~
+   beta(a,b,min,max, singleSampleMethod:singleSampleMethod)
+NodeLocation: 320,56,1
+NodeSize: 96,20
+WindState: 2,23,9,784,377
+
+Function Gamma_m_sd(m,sd : positive; over : ... optional atomic; singleSampleMethod  : optional atomic numeric hidden  )
+Title: Gamma_m_sd(m,sd)
+Description: The gamma distribution, parameterized by the theoretical mean and std.dev. of the target distribution.~
+~
+Uses Method of Moments.  Reference:~
+Morgan, M.G., and Henrion, M., "Uncertainty", 1990, p. 93.
+Definition: var a := (m/sd)^2;~
+var b := sd^2/m;~
+if (isNotSpecified(singleSampleMethod)) then~
+    gamma(a,b)~
+else ~
+    gamma(a,b, singleSampleMethod:singleSampleMethod)
+NodeLocation: 120,120,1
+NodeSize: 92,20
+WindState: 2,93,30,784,377
+
+Function Warp_dist(dist : Samp ; ~
+ fracts : ascending[F] ; ~
+ F : positive ascending IndexType;~
+over : ... optional atomic,~
+singleSampleMethod : hidden optional atomic numeric )
+Title: Warp Dist
+Description: Applies a smooth warping funtion to a given sample so as to obtain the listed fractiles, while maintaining the approximate shape of the distribution.  For example, if you have p10, p50 and p90 percentiles and you want a "Normal-like" distribution, you could use:~
+~
+index F:=[10%,50%,90%];~
+var pctiles := Array(F,[5,10,20]);~
+Warp_dist(Normal(0,1),pctiles,F)~
+~
+The resulting distribution will not be a Normal (you can't necessarily obtain a normal with any three fractiles, since Normal has only 2 free parameters), but it will be basically bell-shaped -- skewed a bit to the left to obtain the given fractiles.~
+~
+Note that if you were to provide only two fractiles, Normality would be preserved in this example.
+Definition: var p := if IsNotSpecified(singleSampleMethod) ~
+             Then if IsSampleEvalMode then dist else getfract(dist,0.5)~
+              Else getfract(dist,Random(method:singleSampleMethod));~
+var z:=getfract(dist,F);~
+Cubicinterpextrap(z,fracts,p,F)
+NodeLocation: 192,184,1
+NodeSize: 48,24
+WindState: 2,10,13,498,590
+
+Module Dist_var__helper_fn1
+Title: Dist Var. Helper Fns
+Author: Lonnie
+Date: Thu, Mar 16, 2006 1:54 PM
+DefaultSize: 48,24
+NodeLocation: 312,184,1
+NodeSize: 56,24
+DiagState: 2,74,407,518,268,17
+
+Function Triangular_10_mode_9(p10,mode,p90 : scalar; over:...atomic optional ; singleSampleMethod : hidden optional scalar )
+Title: Triangular 10_Mode_90
+Description: A triangular distribution defined by its  p10 and p90 fractiles (p10<=p90) and mode.~
+~
+This is here for legacy models.  You should now use: Triangular10_mode_90 (without the first underscore).
+Definition: if IsNotSpecified(singleSampleMethod) then~
+   Triangular10_Mode_90( p10,mode,p90,over:over)~
+else~
+   Triangular10_mode_90( p10,mode,p90,over:over, singleSampleMethod:singleSampleMethod )
+NodeLocation: 128,216,1
+NodeSize: 92,20
+WindState: 2,418,134,680,280
+
+Function Triangular_u_given_h(d,h)
+Title: Triangular u given h
+Description: This is a helper function for Triangular_10_mode_90.  Gives base of a triangle given the dist from right corner to 10th percentile and the height.  The distance is not necessarily correct, it is used in a search.~
+Only valid for d>0.
+Definition: var a:=h/2;~
+var b:=-(h*abs(d)+0.1);~
+var c := h*abs(d)^2/2;~
+(-b + sqrt(b^2-4*a*c)) / (2*a)
+NodeLocation: 392,56,1
+NodeSize: 48,24
+
+Function Triangular_area_from(d1,d2,h)
+Title: Triangular Area from h
+Description: This is a helper function for Triangular_10_mode_90.~
+Gives the area of a triangle dist given the height and d1=pmode-p10, d2=pmode-p20.
+Definition: 1/2 * (Triangular_u_given_h(d1,h) + Triangular_u_given_h(d2,h)) * h
+NodeLocation: 272,56,1
+NodeSize: 56,24
+WindState: 2,584,482,476,224
+
+Function Cubicinterpextrap(D,R:numeric[I];X:atomic numeric;I:IndexType)
+Title: CubicInterpExtrap
+Description: Linear extrapolation, same as linearinterp, with the extended functionality that when X < min(D,I), the first line segment in D,R is used to extrapolate to the left, and for X>max(D,I) the last line segment is extrapolated.
+Definition: var n=size(I);~
+if n=1 then r else begin~
+  if X<slice(D,I,1) then~
+      (x-slice(D,I,1) ) * (slice(R,I,2)-slice(R,I,1)) / (Slice(D,i,2)-slice(D,i,1)) + slice(R,I,1)~
+  else if X>slice(D,I,n) then~
+      (x-slice(d,I,n)) * (slice(R,I,n)-slice(R,I,n-1)) / ~
+      (slice(d,I,n)-slice(d,I,n-1)) + Slice(R,I,n)~
+  else      ~
+      cubicinterp(d,r,x,I)~
+end
+NodeLocation: 120,56,1
+NodeSize: 80,24
+WindState: 2,143,90,650,421
+
+Function Triangular_10_50_90(p10,p50,p90 ; noErr : optional boolean ; over:... optional atomic; ~
+singleSampleMethod : optional hidden scalar )
+Title: Triangular_10_50_90
+Description: This defines a trianglar distribution given percentiles p10 <= p50 <= p90.~
+~
+This is a legacy name. You should now use Triangular10_50_90 instead (without the first underscore)
+Definition: if IsNotSpecified(singleSampleMethod) then~
+   Triangular10_50_90( p10,p50,p90,over:over)~
+else~
+   Triangular10_50_90( p10,p50,p90,over:over, singleSampleMethod:singleSampleMethod )
+NodeLocation: 328,216,1
+NodeSize: 92,20
+WindState: 2,360,32,765,465
+
+Text Te36
+Description: These are legacy names
+NodeLocation: 232,168,-1
+NodeSize: 200,16
+
+Close Dist_var__helper_fn1
+
+Function Erlang(m,n; over : ... optional atomic; singleSampleMethod : optional atomic numeric hidden  )
+Title: Erlang(m,n)
+Description: The Erlang distribution is really just a variant of the Gamma distribution with another name, although it generally refers to the special case when parameter n is an integer, while the corresponding parameter A in a gamma distribution is often non-integer.  ~
+~
+The time of arrival of the nth event in a Poisson process with mean arrival of m follows an Erlang distribution.
+Definition: if (isNotSpecified(singleSampleMethod)) then~
+    gamma(n,m)~
+else ~
+    gamma(n, m, singleSampleMethod:singleSampleMethod)
+NodeLocation: 80,264,1
+NodeSize: 52,24
+WindState: 2,104,36,476,378
+
+Function Pareto(a,b; over : ... optional atomic; singleSampleMethod : optional atomic numeric hidden  )
+Title: Pareto(a,b)
+Description: The Pareto distribution.   ~
+The "classic" use of the Pareto distribution is to model the distribution of wealth in a society, under an assumption that a smaller percentage of the people own a larger percentage of the wealth (e.g., 20% of the population control 80% of the wealth).~
+~
+The Pareto distribution is appropriate for a variety of "population" models.  Examples: The size of objects in a population (e.g., grains of sand),  value of assets in a collection of assets, file sizes, word frequencies, number of acquaintances of a given person, etc.
+Definition: if (isNotSpecified(singleSampleMethod)) then~
+    b * (1-uniform(0,1,over:a,b)) ^ (-1/a)~
+else~
+    b*(1-uniform(0,1,singleSampleMethod:singleSampleMethod,~
+                               over:a,b)) ^ (-1/a)
+NodeLocation: 200,264,1
+NodeSize: 48,24
+WindState: 2,613,82,476,448
+
+Function Rayleigh(mode; over : ... optional atomic; singleSampleMethod  : optional atomic numeric hidden  )
+Title: Rayleigh(mode)
+Description: The Rayleigh distribution results when you have two orthogonal components that are each normally distributed, such as might be the case with Wind Speed.  The length of the vector itself will then have a Rayleigh distribution.~
+~
+The Rayleigh is a special case of the Weibull distribution -- Weibull(2,sqrt(2)*mode).  It also coincides with Chi-Squared, conditional exponential, and the Rice distributions.
+Definition: if (isNotSpecified(singleSampleMethod)) then~
+    Sqrt((-2*mode^2*Ln(Uniform(0,1,over:mode))))~
+else~
+    Sqrt((-2*mode^2*Ln(Uniform(0,1,~
+    singleSampleMethod:singleSampleMethod,over:mode))))
+NodeLocation: 336,264,1
+NodeSize: 64,24
+WindState: 2,14,25,596,399
+
+Function Negbinomial(r,p; over : ... optional atomic; singleSampleMethod  : optional atomic numeric hidden  )
+Title: NegBinomial(r,p)
+Description: The number of events that occur in a binomial process with probability p of success until the r'th success occurs.
+Definition: if (isNotSpecified(singleSampleMethod)) then~
+    Poisson(Gamma(r,(1-p)/p))~
+else~
+   Poisson(Gamma(r,(1-p)/p,singleSampleMethod:singleSampleMethod),~
+   singleSampleMethod:singleSampleMethod)
+NodeLocation: 96,344,1
+NodeSize: 68,24
+WindState: 2,341,91,498,284
+
+Function Inversegaussian(A,B : positive ; over : ... optional atomic; singleSampleMethod  : optional atomic numeric hidden  )
+Title: InverseGaussian(A,B)
+Description: The inverse gaussian distribution with location parameter A and scale parameter B.  Used in reliability studies.  Gives the first passage time in a standard Brownian motion with postive drift.~
+~
+Some books refer to this as the Wald Distribution.  Others define the Wald distribution as the special case where A=1.~
+~
+This algorithm due to:~
+* Michael, Schucany, and Haas (1976)
+Definition: if (isNotSpecified(singleSampleMethod)) then~
+(~
+  var y:=Normal(0,1,over:A,B)^2;~
+  var x := a + (a^2*y - a * sqrt( 4*A*B*y + (A*y)^2 ) ) / (2*B);~
+  if uniform(0,1) * (A+x) <= A~
+  then x~
+  else a^2/x~
+)~
+else~
+(~
+  var y:=Normal(0,1,singleSampleMethod:singleSampleMethod,over:A,B)^2;~
+  var x := a + (a^2*y - a * sqrt( 4*A*B*y + (A*y)^2 ) ) / (2*B);~
+  if uniform(0,1,singleSampleMethod:singleSampleMethod,over:A,B) * (A+x) <= A~
+  then x~
+  else a^2/x~
+)
+NodeLocation: 240,344,1
+NodeSize: 68,24
+WindState: 2,399,161,583,428
+
+Function Wald(k : positive; over : ... optional atomic; singleSampleMethod  : optional atomic numeric hidden  )
+Title: Wald(k)
+Description: The Wald distribution.~
+See also InverseGaussian -- some texts call that distribution the Wald distribution.
+Definition: if (isNotSpecified(singleSampleMethod)) then~
+    Inversegaussian(1,k)~
+else~
+    Inversegaussian(1,k, singleSampleMethod: singleSampleMethod)
+NodeLocation: 368,344,1
+NodeSize: 48,24
+WindState: 2,225,16,558,314
+
+Function Lorenzian(mode,scale; over : ... optional atomic; singleSampleMethod  : optional atomic numeric hidden  )
+Title: Lorenzian (mode,scale)
+Description: The Lorenzian distribution (also known as Cauchy, Cauchy-Lorenz, Lorenz, and Breit-Wigner) is a continuous bell-shaped distribution having the indicated mode, and with the second parameter specifying the half-width at the half-maximum density.  ~
+~
+It has uses in physics, especially in the study of resonance and spectroscopy where it describes the shape of spectral lines that are broadened through various resonances.~
+~
+The standard form, in which mode=0 and shape=1, is known as the standard Cauchy distribution.~
+~
+The Lorenz distribution has some unusual mathematical properties that are uncommon among the standard distributions.  Its mean, variance and higher moments are all undefined.  As a result, the law of large numbers does not apply to samples generated from a Lorenz distribution.~
+~
+One other property of interest:  The ratio of two standard normal random variables follows a standard Cauchy distribution.
+Definition: if (isNotSpecified(singleSampleMethod)) then~
+    mode + scale*tan( uniform(-90,90,over:mode,scale) )~
+else~
+    mode + scale*tan( uniform(-90,90,~
+    singleSampleMethod:singleSampleMethod,over:mode,scale))
+NodeLocation: 480,264,1
+NodeSize: 64,24
+WindState: 2,123,22,717,448
+
+Function Triangular10_50_90(p10,p50,p90 ; noErr : optional boolean = 0; over:... optional atomic; ~
+singleSampleMethod : optional hidden scalar )
+Title: Triangular10_50_90
+Description: This defines a trianglar distribution given percentiles p10 <= p50 <= p90.~
+~
+There are a couple downsides of defining a triangular distribution using percentiles, rather than using Min-Mode-Max as is done with the built-in Triangular distribution function.  First, the percentiles do not uniquely specify the triangular distribution.  When p10 and p90 are on opposite sides of the mode, there are often two possible triangular distributions with the indicated fractiles, and when p10 and p90 are on the same side of the mode, there is a fully unconstrained degree of freedom, leading to an infinite number of triangular distributions matching the fractiles.  In these cases, this function will select one of the possible consistent distributions.~
+~
+In addition to non-uniqueness, there are some combinations of p10<=p50<=p90 that have no triangular distribution with the indicated percentiles.  This may occur when p50-p10 << p90-p50 or p50-p10 >> p90-p50   (where << means **much** less than).  In this case, an error results.  You can suppress this error by setting the noErr parameter to false, in which case a triangular distribution not precisely matching the indicated p10, p50 and p90 percentiles is returned.  In many cases, the non-precise distribution will be close to the percentiles, but in some cases it may be substantially different.
+Definition: if (p10=p50 and p50=p90) then Triangular(p10,p50,p90)~
+else begin~
+~
+  var flip := p50-p10<p90-p50;~
+  var tmp := p10;~
+  p10 := if flip then -p90 else p10;~
+  p50 := if flip then -p50 else p50;~
+  p90 := if flip then -tmp else p90;~
+~
+  var a:=(p50-sqrt(5)*p10) / (1-sqrt(5));~
+~
+  var k:=10*(p10-a)^2;~
+  var qa :=-9;~
+  var qb := (-2*a + 20*p90);~
+  var qc := (a^2 - 10*p90^2 - k);~
+  var qterm := qb^2 - 4*qa*qc;~
+~
+  if ( not noErr and (qTerm<0 or (p90-a)/(p10-a) < 3)) then error( "In Function "&(identifier of self)&", there is no triangular distribution with the requested pecentiles p10="&p10&", p50="&p50&", p90="&p90);~
+~
+  qTerm := max([qTerm,0]);~
+~
+  var c1 := (-qb - sqrt(qTerm)) / (2*qa);~
+  var b1 := k/(c1-a)+a;~
+  var c2 := (-qb + sqrt(qTerm)) / (2*qa);~
+  var b2 := k/(c2+a)+a;~
+  var err1 := IgnoreWarnings(abs(c1-sqrt((c1-b1)*(c1-a)/10) - p90));~
+  var err2 := IgnoreWarnings(abs(c2-sqrt((c2-b2)*(c2-a)/10) - p90));~
+  err1 := if IsNaN(err1) or c1<b1 then INF else err1;~
+  err2 := if IsNaN(err2) or c2<b2 then INF else err2;~
+~
+  var c := if err1<=err2 then c1 else c2;~
+  var b := if err1<=err2 then b1 else b2;~
+~
+  tmp := a;~
+  a := if flip then -c else a;~
+  b := if flip then -b else b;~
+  c := if flip then -tmp else c;~
+~
+  if IsNotSpecified(singleSampleMethod) then ~
+    IgnoreWarnings(Triangular(a,b,c))~
+  else~
+    IgnoreWarnings(Triangular(a,b,c,singleSampleMethod:singleSampleMethod))~
+~
+end
+NodeLocation: 336,424,1
+NodeSize: 96,24
+WindState: 2,535,7,727,723
+
+Function Triangular10_mode_90(p10,mode,p90 : scalar; over:...atomic optional ; singleSampleMethod : hidden optional scalar )
+Title: Triangular10_Mode_90
+Description: A triangular distribution defined by its  p10 and p90 fractiles (p10<=p90) and mode.
+Definition: var d1 := mode-p10;~
+var d2 := p90-mode;~
+~
+var h := 0;~
+var u1:=0;~
+var u2:=0;~
+~
+if d1<0 then (~
+  u2 := (3*d2+d1)/2; ~
+  var Area2 := (u2/ (u2-d2))^2 * 0.1;~
+  h  := 2 * Area2 / u2;~
+  u1 := 2 * (1-Area2) / h;~
+) else if d2<0 then (~
+  u1 := (3*d1+d2)/2; ~
+  var Area1 := (u1/ (u1-d1))^2 * 0.1;~
+  h := 2*Area1 / u1;~
+  u2 := 2*(1-Area1)/h;~
+) else if (d1+d2=0) then (~
+  triangular(p10,mode,p90)~
+) else (~
+  var ub := 2 / (d1+d2);~
+  var lb := 0.8*ub;~
+  while (Triangular_area_from(d1,d2,lb)>1) ( lb := lb  * 0.8 );~
+  { Now we have an upper and lower bound.  ~
+     Do a binary search for the real h that makes Area=1 }~
+  h := (lb+ub)/2;~
+  while ( ub-lb > 1e-4 ) (     ~
+      if (Triangular_area_from(d1,d2, h:=(lb+ub)/2 ) > 1.0 ) then ub:=h else lb:=h;~
+  );~
+  u1:=Triangular_u_given_h(d1,h);~
+  u2:=Triangular_u_given_h(d2,h)~
+);~
+~
+if IsNotSpecified(singleSampleMethod) then~
+   Triangular( mode-u1, mode, mode+u2 )~
+else~
+   Triangular( mode-u1, mode, mode+u2, singleSampleMethod:singleSampleMethod )
+NodeLocation: 128,424,1
+NodeSize: 96,24
+WindState: 2,695,2,607,712
+
+Function Weibull_10_50_90(x10,x50,x90 : atom ; ~
+over : ... optional atom ; ~
+singleSampleMethod : optional atom hidden number)
+Title: Weibull 10 50 90
+Description: Defines a translated Weibull distribution having the indicated 10-50-90 percentiles, if possible.  A translated Weibull distribution has an underlying form Weibull(a,b)+c~
+~
+Not all combinations of fractiles can be fit exactly.  It can be shown that no Weibull distribution has fractiles satisfying (x50-x10) / (x90-x50) > 1.569.  Thus, if your fractiles have skew exceeding this limit, the resulting distribution will not fit the fractiles exactly.  In that case, a distribution in the general vicinity is returned (i.e., it'll do the best it can)
+Definition: if not (x10<x50<x90) then error("The parameters to Weibull_10_50_90 must be ascending");~
+~
+var c := x10 - (x90-x10)/10;~
+var a := 1;~
+var b := 1;~
+var y10 := ln(-ln(1-10%));~
+var y90 := ln(-ln(1-90%));~
+var prevy50 := null;~
+var err := 1;~
+var iter := 1;~
+while (err>1e-6 and iter<100) (~
+  a := (y90-y10) / (ln(x90-c) - ln(x10-c) );~
+  var da := (y90-y10) * (x10-x90) / ( (c-x10)*(c-x90)*(ln(x10-c)-ln(x90-c))^2 );~
+  b := exp( -(y10 - a*ln(x10-c))/a );~
+  var db := exp(-y10/a) * (y10*(x10-c)*da/a^2 -1);~
+  var y50 := ((x50-c)/b)^a ;~
+  var u50 := (x50-c)/b;~
+  var dy50 := u50^a * (da * ln(u50) + (a*(x50-c)*db + b) / (b * (c-x50)));~
+  var cnext := Min([x10,c-(y50-ln(2))/dy50]);~
+  cNext := if cNext>=x10 then 0.9*cNext+0.1*c else cNext;~
+  c := cNext;~
+  if prevy50<>null then err := abs(prevy50-y50);~
+  prevy50 := y50;~
+  iter := iter+1~
+);~
+~
+if IsNotSpecified(singleSampleMethod) then ::Weibull(a,b)+c~
+else ::Weibull(a,b,singleSampleMethod:singleSampleMethod)+c
+NodeLocation: 80,496,1
+NodeSize: 48,24
+WindState: 2,179,45,1073,754
+
+Close Distribution_variati
+
+Variable Escenario
+Title: Escenario
+Description: Nodo definido como Choice. En los nodos Choice hay que entrar a Domain para ingresar las opciones a elegir y una vez hecho a Definition para ingresar otras cosas si fuera el caso. Este nodo sirve de Index a otro donde se definen las opciones a elegir dentro de una DetermTable puesta en otro nodo. Tiempo_Desarr en este caso.~
+Para crear el menú de elección (Escenario Basada en Poisson; Pert; All) que se ve al costado del nodo, se selecciona el nodo (Escenario en este caso), y luego Object --> Make User Input Node.
+Definition: Choice(Self,0)
+NodeLocation: 80,112,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+Aliases: FormNode Fo1500402071
+NodeColor: 65531,39321,65535
+Domain: ['Basada en Poisson','Basada en Pert']
+{!40300|DomainExpr: Discrete('Basada en Poisson','Basada en Pert',type:'text')}
+{!40200|Att_ChoiceIndexes: Keyword Self}
+
+FormNode Fo1500402071
+Title: Scenario
+Definition: 0
+NodeLocation: 596,104,1
+NodeSize: 140,16
+NodeInfo: 1,,,,,1,0,182,,0,,,,0
+Original: Escenario
+
+FormNode Fo1554582685
+Title: ¿Exito?
+Definition: 0
+NodeLocation: 600,232,1
+NodeSize: 144,16
+NodeInfo: 1,0,0,1,0,1,0,,0,,0,,,
+Original: A_Exito_
+
+Close VPNE1
+

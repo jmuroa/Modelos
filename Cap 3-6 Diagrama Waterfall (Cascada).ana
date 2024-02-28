@@ -1,0 +1,223 @@
+{ Analytica Model Waterfall_chart_exam, encoding="UTF-8" }
+SoftwareVersion 5.3.3
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+Att_ForceCategorical Graph_Primary_Valdim: 1
+Att_ContLineStyle Graph_Primary_Valdim: 1
+Att_StackedBar Graph_Primary_Valdim: 0
+Graph_ColorSeq := [9509,56.026K,45.489K,0,0,65.535K,32.896K,32.896K,65.535K,65.535K,32.896K,49.344K,0,65.535K,32.896K,29.298K,53.713K,56.54K,56.54K,29.298K,55.769K,53.456K,44.975K,25.186K,65.535K,0,0,0,0,65.535K,61.166K,33.41K,61.166K,0,65.535K,65.535K,0,32.896K,0,65.535K,42.405K,0,0,0,35.723K,42.405K,10.794K,10.794K,65.535K,49.344K,52.171K,65.535K,65.535K,0,0,65.535K,0,32.896K,0,0,28.784K,32.896K,37.008K,0,32.896K,32.896K,32.896K,0,32.896K,0,0,0,37.008K,61.166K,37.008K]
+{!40300|Sys_DomainSelfIndex := 1}
+{!40400|Sys_WindowsMaximized := 1}
+{!40400|Sys_AllNullTreatment := 1}
+{!50016|PlusOnTextReturnsNaN := 0}
+
+{!-50299|DiagramColor Model: 65535,65535,65535}
+{!-50299|DiagramColor Module: 65535,65535,65535}
+{!-50299|DiagramColor LinkModule: 65535,65535,65535}
+{!-50299|DiagramColor Library: 65535,65535,65535}
+{!-50299|DiagramColor LinkLibrary: 65535,65535,65535}
+{!-50299|DiagramColor Form: 65535,65535,65535}
+NodeColor Text: 65535,65535,65535
+
+
+
+Model Waterfall_chart_exam
+Title: Waterfall Chart Example
+Units: $
+Description: Este modelo ilustra un gráfico de Cascada y cómo generarlo. ~
+~
+El modelo es una contabilidad simplista del flujo de ganancias de un activo, obtenido a partir de un gasto de capital inicial y que produce un flujo de ingresos a lo largo de su vida útil.~
+~
+Ver el gráfico de resultados de "P&G Waterfall" para ver el resultado principal.~
+~
+Para crear un gráfico de cascada por nuestra cuenta, vamos a Graph Setup... y seleccionamos Bar chart style, luego marcamos Stacked (Apilado) y Waterfall (Cascada). Es posible que tengamos que girar para asegurarnos que la Color Key (o clave de pila) está configurada en el índice de acumulación (cumulation index) deseado.~
+~
+Todas las unidades en $ se consideran en unidades en $ para el año en que aparecen, a menos que se indique lo contrario.
+Author: Max Henrion & Lonnie Chrisman~
+Lumina Decision Systems
+Date: Thu, Feb 18, 2010 12:22 PM
+DefaultSize: 48,24
+DiagState: 2,14,23,685,518,17
+WindState: 2,780,32,539,345
+DiagramColor: 52428,52428,52428
+FontStyle: Arial, 15
+FileInfo: 0,Model Waterfall_chart_exam,2,2,0,0,D:\DATA JORGE\Documents\00 Libro Estadística\Modelos Libro\Cap 3-6 Diagrama Waterfall (Cascada).ana
+{!40400|Att_clearTypeFonts: 0}
+
+Index Items_P_y_G
+Att_PrevIndexValue: [Ingresos,'Depreciación',Costo_O_y_G,Impuestos,Ganancia_despues_imp]
+Title: Items P y G
+Description: Items individuales de pérdidas y ganancias.
+Definition: [Ingresos,'Depreciación',Costo_O_y_G,Impuestos,Ganancia_despues_imp]
+NodeLocation: 80,248,1
+NodeSize: 56,16
+NodeInfo: 1,,,,,,1
+NodeFont: Arial Rounded MT Bold,16
+MetaOnly: 1
+{!40600|Att_ColorSequence: [0xff25dab1,0xff0000ff,0xff8080ff,0xffff80c0,0xff00ff80,0xff90ee90]}
+
+Index Ano
+Title: Año
+Description: Indexa o indiza los años en que el activo está en servicio.
+Definition: 2019 .. 2019 + Vida_util
+NodeLocation: 80,200,1
+NodeSize: 48,24
+NodeInfo: 1,,,,,,1
+WindState: 2,166,82,720,350
+NodeFont: Arial Rounded MT Bold,16
+Att_GraphIndexRange: 1,,,,,,10
+
+Variable Costo_de_capital
+Title: Costo de capital
+Units: $
+Description: Costo de capital total del activo que se está considerando.
+Definition: 100M
+NodeLocation: 80,368,1
+NodeSize: 48,24
+NodeInfo: 1,,,,,,1
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Ingresos
+Title: Ingresos (EBITDA)
+Units: $
+Description: Ingresos anuales esperados (fondos que se reciben) por año como resultado de la propiedad del activo.~
+Este modelo supone que los ingresos crecen geométricamente durante la vida útil del activo.
+Definition: 20M * Cumproduct(1 + Crecim__Ingresos, Ano)
+NodeLocation: 240,216,1
+NodeSize: 48,24
+NodeInfo: 1,,,,,,1
+ValueState: 2,764,70,416,303,1,MIDM
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Crecim__Ingresos
+Title: Crecim. Ingresos
+Units: %/año
+Description: Crecimiento porcentual de los ingresos esperados, no ajustado por la inflación.
+Definition: 20%
+NodeLocation: 80,304,1
+NodeSize: 48,24
+NodeInfo: 1,,,,,,1,,,0
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,%,4,2,0,0,4,0,$,0,"ABBREV",0,,,0,0
+
+Variable Costo_O_y_G
+Title: Costo O y G
+Units: $
+Description: Costos anuales de operación y mantenimiento o 'Gerencia' o Costo O&G.~
+~
+En un modelo más sofisticado, esto probablemente variaría según el año. Aquí, para simplificar, utilizamos el mismo costo de operación y mantenimiento (Gerencia) para cada año.  Tengamos en cuenta que ya que cada cantidad de $ está en $ para el año en que aparece, con la inflación teniendo una constante aquí en realidad equivale a un costo real de O&G decreciente.
+Definition: 20M
+NodeLocation: 240,360,1
+NodeSize: 56,24
+NodeInfo: 1,,,,,,1
+WindState: 2,669,137,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Depreciacion
+Title: Depreciación
+Units: %/año
+Description: La depreciación contabiliza el costo inicial de capital distribuyendo el costo a lo largo de la vida útil del activo.
+Definition: Costo_de_capital/Vida_util
+NodeLocation: 240,296,1
+NodeSize: 64,24
+NodeInfo: 1,,,,,,1
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Vida_util
+Title: Vida útil
+Units: años
+Description: Número de años que el activo estará en servicio.
+Definition: 10
+NodeLocation: 80,432,1
+NodeSize: 48,24
+NodeInfo: 1,,,,,,1,,,0
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Tasa__Impuestos
+Title: Tasa  Impuestos
+Units: %
+Description: Tasa de impuesto anual sobre las ganancias.~
+Este modelo  sencillo supone que se aplica un tipo impositivo único a cualquier nivel de beneficios.
+Definition: 40%
+NodeLocation: 240,448,1
+NodeSize: 56,32
+NodeInfo: 1,,,,,,1
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,%,4,2,0,0,4,0,$,0,"ABBREV",0,,,0,0
+
+Variable Impuestos
+Title: Impuestos
+Units: $
+Description: Impuestos pagados sobre las utilidades.~
+Supone que se aplica un tipo impositivo único a todo el nivel de beneficios y que no hay ninguna ventaja de pérdida (por ejemplo, no hay arrastre de pérdidas).
+Definition: Max([0, Ganancia_antes_Impue  * Tasa__Impuestos])
+NodeLocation: 408,360,1
+NodeSize: 56,24
+NodeInfo: 1,,,,,,1
+WindState: 2,0,0,720,350
+ValueState: 2,756,339,416,303,1,MIDM
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Ganancia_antes_Impue
+Title: Ganancia antes Impuestos
+Units: $
+Description: Las ganancias (Utilidades) antes de impuestos se eliminan.
+Definition: Ingresos - Depreciacion - Costo_O_y_G
+NodeLocation: 408,248,1
+NodeSize: 64,32
+NodeInfo: 1,,,,,,1
+NodeFont: Arial Rounded MT Bold,16
+
+Objective P_y_G_Waterfall
+Title: P y G Waterfall
+Units: $
+Description: Un gráfico en cascada de las partidas de Ganancias y Pérdidas.~
+~
+Esto se logró ajustando Bar + Stacked + Waterfall en Graph Setup.~
+El pivote previsto es Horiz=Año, Color=Artículos P&L.~
+~
+Echemos un vistazo a la tabla de edición y tomemos nota del signo especificado para cada elemento. Para establecer una cascada, es necesario mantener los flujos de entrada positivos, pero  los gastos en negativo.
+Definition: Table(Items_P_y_G)(Ingresos,-Depreciacion,-Costo_O_y_G,-Impuestos,-Ganancia_despues_imp)
+NodeLocation: 640,320,1
+NodeSize: 56,32
+NodeInfo: 1,,,,,,1
+WindState: 2,537,32,599,648
+DefnState: 2,290,175,416,303,0,DFNM
+ValueState: 2,324,42,838,454,1,MIDM
+NodeColor: 39321,1,1
+GraphSetup: {!40600|Att_WaterfallBar Graph_Primary_Valdim:1}~
+{!40000|Att_GraphValueRange P_y_G_Waterfall:1,,,,,,10}~
+{!40000|Att_ForceCategorical Graph_Primary_Valdim:1}~
+{!40000|Att_StackedBar Graph_Primary_Valdim:1}~
+{!40000|Flip:0}~
+BarOverlap:0
+NodeFont: Arial Rounded MT Bold,16
+ReformVal: [Ano,Items_P_y_G]
+NodeFontColor: 65535,65535,65535
+Att_ResultSliceState: [Ano,4,Items_P_G,1]
+Att_XRole: Ano
+Att_YRole: Self
+Att_ColorRole: Items_P_y_G
+{!40600|Att_StackingIndex: Items_P_y_G}
+
+Variable Ganancia_despues_imp
+Title: Ganancia después impuestos
+Units: $
+Description: Ganancias netas después de impuestos, montos en moneda corriente del año indicado.
+Definition: Ganancia_antes_Impue - Impuestos
+NodeLocation: 624,448,1
+NodeSize: 72,32
+NodeInfo: 1,,,,,,1
+NodeFont: Arial Rounded MT Bold,16
+
+Close Waterfall_chart_exam
+

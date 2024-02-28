@@ -1,0 +1,108 @@
+{ Analytica Model Aja_Regresion, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+Time := copyindex(todas_fechas)
+SampleSize := 10K
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+{!40600|Att_PrevIndexValue AllProbabilityBands: [0,0.01,0.025,0.05,0.1,0.25,0.3333333333333333,0.5,0.6666666666666666,0.75,0.9,0.95,0.0975,0.99,1]}
+{!50016|PlusOnTextReturnsNaN := 0}
+
+
+
+
+Model Aja_Regresion
+Description: El primero es la regresión simple que es la primera del Capítulo 11 (Regresiones).~
+En cada nodo explicamos lo que hace cada uno y la función que cumple.
+Author: Jorge
+Date: mié, abr 1, 2015 1:25 p.m.
+DiagState: 2,1,0,749,290,17
+FontStyle: Arial,15
+FileInfo: 0,Model Aja_Regresion,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 11-1 Regresión (Primer Modelo).ana
+
+Index Fecha
+Att_PrevIndexValue: [20-Sep-2018,21-Sep-2018,22-Sep-2018,23-Sep-2018,24-Sep-2018,25-Sep-2018,26-Sep-2018,27-Sep-2018,28-Sep-2018,29-Sep-2018,30-Sep-2018,1-Oct-2018,2-Oct-2018,3-Oct-2018,4-Oct-2018,5-Oct-2018,6-Oct-2018,7-Oct-2018,8-Oct-2018,9-Oct-2018,10-Oct-2018]
+Title: Fecha
+Units: Días
+Description: Desde 20-sep-2018 a 10-oct-2018 con un Step (lapso o intervalo en este caso) de un día entre fechas.
+Definition: Sequence( 20-sep-2018, 10-oct-2018, 1 )
+NodeLocation: 96,88,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,804,29,416,303,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,D,4,2,0,0,4,0,$,0,"ABBREV",0,,,0,1
+
+Variable Ventas
+Title: Ventas
+Units: $
+Description: La variable dependiente 'Ventas' que depende de  'Fecha'.
+Definition: Table(Fecha)(80,82,75,85,89,90,85,92,95,96,98,70,96,100,110,90,80,100,110,120,90)
+NodeLocation: 344,88,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+DefnState: 2,237,77,416,303,0,DFNM
+ValueState: 2,199,81,723,361,1,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Base_RL1
+Att_PrevIndexValue: ['a','b']
+Title: Base RL
+Description: Nuestra Base para la Regresión en donde le indicamos que es lineal con:~
+a = 1~
+b = Fecha; que es la variable base para hacer la regresión. O sea, a través de la cual transcurren Ventas.
+Definition: Table(Self)(1,Fecha)
+IndexVals: ['a','b']
+NodeLocation: 216,88,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+DefnState: 2,40,50,400,300,0,DFNM
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Coeficientes_de_Regr
+Title: Coeficientes de Regresión
+Description: Instrucción que indica hacer la Regresión de 'Ventas' y 'Fecha', teniendo cada una el índice de nuestra base -antes especificado en a y b- para que Analytica halle los coeficientes de la Regresión, siendo en una regresión Lineal el parámetro 'b' o la pendiente el que nos interesa. 
+Definition: Regression(Ventas, Base_RL1, Fecha, Base_RL1)
+NodeLocation: 216,184,1
+NodeSize: 64,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,15
+{!50000|Att_ColumnWidths: [48]}
+
+Variable Linea_RL
+Title: Linea RL
+Description: Multiplicamos el coeficiente 'b' encontrado (regresion) por nuestra base, con índice la base previamente construida ('a' = 1 y 'b' = Fecha).~
+Luego, para construir la recta, sumamos a través de nuestro índice que en este caso es la base antes construida.
+Definition: sum(Base_RL1*Coeficientes_de_Regr, Base_RL1)
+NodeLocation: 344,184,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,43,651,405,1,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Comparar1
+Title: Comparar
+Description: Nodo donde comparamos los datos reales de 'Ventas' y la línea encontrada.
+Definition: [Ventas,Linea_RL]
+NodeLocation: 472,136,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,1,MIDM
+NodeColor: 39321,1,1
+NodeFont: Arial Rounded MT Bold,15
+ReformVal: [Fecha,Self]
+NodeFontColor: 65535,65535,65535
+
+Close Aja_Regresion
+

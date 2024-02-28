@@ -1,0 +1,64 @@
+{ Analytica Model Cap_11_3_calculos_de, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Cap_11_3_calculos_de
+Description: Con el solo hecho de demostrar que si tenemos Covarianza(x, y), y calculamos la Covarianza(x, x) esta será igual a la Varianza(x).
+Author: Jorge
+Date: dom, jun 30, 2019 10:50 a.m.
+DiagState: 2,0,0,624,305,17
+FontStyle: Arial,15
+FileInfo: 0,Model Cap_11_3_calculos_de,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 11-3 Cálculos de Varianza y Covarianza.ana
+
+Variable x
+Title: x
+Definition: Table(indice)(14,12,15,13,16,18,12,14,15,16)
+IndexVals: ['item 1','item 2','item 3','item 4','item 5','item 6','item 7','item 8','item 9','item 10']
+NodeLocation: 248,32,1
+NodeSize: 48,24
+DefnState: 2,503,204,416,303,0,DFNM
+ValueState: 2,212,213,416,303,,MIDM
+ReformDef: [Undefined,Self]
+{!50000|Att_ColumnWidths: [28]}
+
+Variable Covarianza
+Title: Covarianza
+Definition: Covariance(x, x, indice)
+NodeLocation: 248,152,1
+NodeSize: 56,24
+ValueState: 2,164,165,416,303,,MIDM
+
+Variable Varianza
+Title: Varianza
+Definition: variance(x, indice)
+NodeLocation: 384,152,1
+NodeSize: 48,24
+ValueState: 2,196,197,416,303,,MIDM
+
+Index indice
+Title: indice
+Definition: Sequence( 1, 10 )
+NodeLocation: 72,40,1
+NodeSize: 48,24
+Att_PrevIndexValue: [1,2,3,4,5,6,7,8,9,10]
+
+Variable Comparar
+Title: Comparar
+Definition: [Covarianza,Varianza]
+NodeLocation: 400,32,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,0,0,0,0,,0,1,0
+
+Close Cap_11_3_calculos_de
+

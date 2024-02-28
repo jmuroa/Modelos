@@ -1,0 +1,140 @@
+{ Analytica Model Common_parametric_di, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+Att_ContLineStyle Run: 0
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+DistResol := 50
+StatsSelect := [0,1,1,0,1,0,0,0]
+Att_CatLineStyle Graph_Primary_Valdim: 9
+Att_ContLineStyle Graph_Pdf_Valdim: 1
+{!40300|Sys_DomainSelfIndex := 1}
+{!40400|Sys_WindowsMaximized := 1}
+{!40400|Sys_AllNullTreatment := 1}
+{!50016|PlusOnTextReturnsNaN := 0}
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,1,,0,0
+
+Attribute Reference
+
+
+
+Model Common_parametric_di
+Description: Modelo en donde vemos el uso de algunas Distribuciones paramétricas comunes.~
+Los nodos están a la vista pero además, hemos creado un nodo Módulo en donde los hemos puesto dentro a manera de ver cómo podríamos ir ordenano nuestro trabajo cuando nuestros modelos tengan diferentes etapas en las que podríamos ir ordenando nuestro trabajo a medida que avancemos y distribuirlos por etapas.~
+Podemos poner un duplicado de algún/os nodos que queramos mediante Object --> Make alias o Ctrl+M y luego cortarlo (cut) y pegarlo (Paste) donde sea conveniente o tenerlo a la mano.
+Author: Lonnie
+Date: Thu, Jun 10, 2010 10:13 AM
+DefaultSize: 48,24
+DiagState: 2,29,11,606,328,17
+FontStyle: Arial, 15
+FileInfo: 0,Model Common_parametric_di,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 5-3 Re-muestreo.ana
+{!40400|Att_clearTypeFonts: 0}
+
+Module Re_muestreo1
+Title: Re-muestreo
+Description: Tenemos 143 valores medidos de una cantidad.  Definimos una variable incierta con la misma distribución implícita (aunque el tamaño de la muestra no coincida).
+Author: Jorge
+Date: mié, ago 1, 2018 9:53 a.m.
+DefaultSize: 48,24
+NodeLocation: 200,112,1
+NodeSize: 88,40
+NodeInfo: 1,1,1,1,1,1,1,,0,
+DiagState: 2,15,29,534,600,2
+NodeFont: Arial, 13
+
+Index Data_i
+Title: Data_I
+Definition: 1..143
+NodeLocation: 72,144,1
+NodeSize: 48,24
+WindState: 2,102,83,476,224
+Aliases: Alias Clipboard_Al15622589, Alias Al1562258910
+
+Variable Data
+Title: Data
+Description: Se trata de datos "sintéticos", es decir, que sustituyen a las mediciones reales.  Con medidas reales, tendríamos una tabla real aquí.
+Definition: arccos(random(over:data_i))
+NodeLocation: 208,64,1
+NodeSize: 48,24
+ValueState: 2,322,65,416,303,1,MIDM
+Aliases: Alias Clipboard_1562258915, Alias Al1562258911
+
+Variable Data_Ordenada
+Title: Data Ordenada
+Description: Ordena la matriz "a" en orden ascendente según el índice "i". El resultado tiene los mismos índices que el array original, pero los elementos se reordenan.
+Definition: Sort(Data,Data_I)
+NodeLocation: 208,144,1
+NodeSize: 48,24
+WindState: 2,0,0,720,350
+ValueState: 2,40,50,400,300,1,MIDM
+Aliases: Alias Clipboard_1562258916, Alias Al1562258912
+
+Variable Prob_de_Data
+Title: Prob de Data
+Description: "Size" devuelve el número total de elementos de la matriz "A".
+Definition: (@Data_I-1) / (size(data_i)-1)
+NodeLocation: 208,224,1
+NodeSize: 48,24
+WindState: 2,0,0,720,350
+ValueState: 2,228,235,416,303,1,MIDM
+Aliases: Alias Clipboard_1562258917, Alias Al1562258913
+
+Chance Re_Muestreo
+Title: Re-Muestreo
+Definition: CumDist(Prob_de_Data,Data_Ordenada,Data_i)
+NodeLocation: 344,64,1
+NodeSize: 56,24
+WindState: 2,0,0,720,350
+ValueState: 2,137,75,603,371,1,PDFP
+Aliases: Alias Clipboard_1562258918, Alias Al1562258914
+GraphSetup: Att_CatLineStyle Graph_Pdf_Valdim:9~
+Att_ContLineStyle Graph_Pdf_Valdim:4~
+DistResol:100~
+Att_GraphValueRange Re_Muestreo:|1:1,0
+{!40200|Att_GraphSetupSlices: [3,1,DensityIndex,1]}
+
+Close Re_muestreo1
+
+Alias Al1562258911
+Title: Data
+Definition: 1
+NodeLocation: 496,72,1
+NodeSize: 48,24
+Original: Data
+
+Alias Al1562258912
+Title: Data Ordenada
+Definition: 1
+NodeLocation: 496,152,1
+NodeSize: 48,24
+Original: Data_Ordenada
+
+Alias Al1562258913
+Title: Prob de Data
+Definition: 1
+NodeLocation: 496,232,1
+NodeSize: 48,24
+Original: Prob_de_Data
+
+Alias Al1562258914
+Title: Re-Muestreo
+Definition: 1
+NodeLocation: 632,72,1
+NodeSize: 56,24
+Original: Re_Muestreo
+
+Alias Al1562258910
+Title: Data_I
+Definition: 1
+NodeLocation: 360,152,1
+NodeSize: 48,24
+Original: Data_i
+
+Close Common_parametric_di
+

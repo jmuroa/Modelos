@@ -1,0 +1,59 @@
+{ Analytica Model A6_10_Un_Juego_de_Ci, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model A6_10_Un_Juego_de_Ci
+Description: Esta es una solución simple y directa.~
+Un modelo más elaborado lo podemos encontrar en el enlace~
+http://lumina.com/blog/an-optimal-valentines-date
+Author: Jorge
+Date: dom, mar 31, 2019 2:28 p.m.
+DiagState: 2,1,0,624,305,17
+FontStyle: Arial,15
+FileInfo: 0,Model A6_10_Un_Juego_de_Ci,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 6-7 Un Juego de Citas (modelo del libro).ana
+
+Decision Nro__de_Candidatos
+Title: Nro. de Candidatos
+Description: El número de candidatos/as el cual al final no importará puesto que el resultado siempre se dividirá entre el número «e» o constante de Euler.
+Definition: 100
+NodeLocation: 176,48,1
+NodeSize: 56,24
+
+Variable Prob__de_c_u
+Title: Prob. de c/u
+Description: La probabilidad que tiene candidato. En este caso 1/100 puesto que el número de los mismos es 100.
+Definition: 1/100
+NodeLocation: 176,168,1
+NodeSize: 48,24
+
+Variable l
+Title: λ
+Description: El valor esperado λ es el Nro. de Candidatos multiplicado por la probabilidad de cada uno
+Definition: Nro__de_Candidatos*Prob__de_c_u
+NodeLocation: 336,168,1
+NodeSize: 48,24
+
+Chance Prob__Poisson
+Title: Prob. Poisson
+Description: Probabilidad de Poisson calculada en forma directa.
+Definition: Probability(Poisson(l) = l)
+NodeLocation: 480,168,1
+NodeSize: 48,24
+ValueState: 2,216,213,416,303,,MIDM
+NumberFormat: 2,%,4,0,0,0,4,0,$,0,"ABBREV",0,,,0,0,15
+
+Close A6_10_Un_Juego_de_Ci
+
+
+{!-40499|MsgBox("This Analytica model file contains text characters encoded in UTF-8 (Unicode) format, not ASCII. It was saved from Analytica release 5.2. You need to upgrade to Analytica 5.2  to read the model correctly. If you use it with this release, the Unicode characters may look strange and parts of the model may not work.",16,"Analytica 5.2 required")}

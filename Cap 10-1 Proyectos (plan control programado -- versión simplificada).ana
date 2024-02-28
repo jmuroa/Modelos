@@ -1,0 +1,621 @@
+{ Analytica Model Plan_sched_control, encoding="UTF-8" }
+SoftwareVersion 5.4.6
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+GraphWindows := 20
+SaveOptions := 2
+SaveValues := 0
+AllWarnings := 0
+{!40300|Sys_DomainSelfIndex := 1}
+{!40400|Sys_WindowsMaximized := 1}
+{!40400|Sys_AllNullTreatment := 1}
+{!50016|PlusOnTextReturnsNaN := 0}
+{!50400|Sys_UseLegacyColors := 1}
+
+{!-50299|DiagramColor Model: 65535,65535,65535}
+{!-50299|DiagramColor Module: 65535,65535,65535}
+{!-50299|DiagramColor LinkModule: 65535,65535,65535}
+{!-50299|DiagramColor Library: 65535,65535,65535}
+{!-50299|DiagramColor LinkLibrary: 65535,65535,65535}
+{!-50299|DiagramColor Form: 65535,65535,65535}
+{!40300|ProactivelyEvaluate Index: 1}
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,1,,0,0
+NodeColor Text: 65535,65535,65535
+
+
+
+Model Plan_sched_control
+Title: Project Planning, Scheduling, and Control
+Description: Este modelo toma los datos de entrada para las rutas de actividad necesarias para completar un proyecto y calcula varios resultados describiendo el tiempo y los costos para la finalización del proyecto.~
+~
+Modelo creado por el Dr. Robert D. Brown, III, Director de Business Systems Modeling, Integrated Product Development.
+Author: Robert D. Brown, III~
+Director of Business Systems Modeling~
+Integrated Product Development~
+11450 Technology Circle~
+Duluth, GA 30097-1504~
+678.473.8515~
+678.473.2100 fax~
+rob.brown@antec.com
+Date: Mon, Jan 11, 1999 3:00 PM
+DefaultSize: 48,24
+DiagState: 2,19,33,1119,28,17
+DiagramColor: 52428,52428,52428
+FontStyle: Arial, 15
+FileInfo: 0,Model Plan_sched_control,2,2,0,0,D:\DATA JORGE\Documents\00 Libro Estadística\Modelos Libro\Cap 10-1 Proyectos (plan control programado -- versión simplificada).ana
+PageSetup: (0003000000480048000000000280035EFFECFFF7029403670345052803FC00020000004800480000000002D8022800010000005A000000010003030300000001270F000100010000000000000000000000006008001901900000000000200000000000000000000100000000000000000000000000000000)
+{!40400|Att_clearTypeFonts: -1}
+
+FormNode Project_paths1
+Title: Project Paths
+Definition: 0
+NodeLocation: 232,144,1
+NodeSize: 208,16
+Original: Rutas_Proyecto
+
+FormNode Number_of_project_ac
+Title: Number of Project Activities
+Definition: 0
+NodeLocation: 232,48,1
+NodeSize: 208,16
+Original: A__Actividades_del_P
+
+FormNode Critical_path_durati
+Title: Critical Path Duration
+Definition: 1
+NodeLocation: 232,240,1
+NodeSize: 208,16
+Original: Duracion_Ruta_Critic
+
+FormNode Critical_path1
+Title: Critical Path
+Definition: 1
+NodeLocation: 232,192,1
+NodeSize: 208,16
+Original: Ruta_Critica
+
+FormNode Activity_durations_i
+Title: Activity Durations Input Table
+Definition: 0
+NodeLocation: 232,96,1
+NodeSize: 208,16
+NodeInfo: 1,0,0,1,0,0,0,78,0,,,,
+Original: Tabla_Input__Duracio
+
+Module Detalles_Proyecto
+Title:  Detalles Proyecto
+Author: rbrown
+Date: Tue, Feb 9, 1999 9:00 AM
+DefaultSize: 48,24
+NodeLocation: 248,304,1
+NodeSize: 48,24
+DiagState: 2,74,60,375,289,17
+
+Module Modulo_Duracion_Acti
+Title:  Módulo Duración Actividad
+Description: Este módulo genera los resultados del calendario del proyecto a partir de los ingresos de las actividades.
+Author: rbrown
+Date: Tue, Jan 12, 1999 1:56 PM
+DefaultSize: 48,24
+NodeLocation: 104,144,1
+NodeSize: 56,32
+DiagState: 2,79,46,602,371,17
+
+Index Parametros_de_Duraci
+Title: Parámetros de Duración 
+Units: Sem.
+Description: Índice de parámetros de duración.
+Definition: ['Duración Optimista','Duración Probable','Duración Pesimista']
+NodeLocation: 392,56,1
+NodeSize: 64,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,217,155,400,600
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,16
+Att_PrevIndexValue: ['Duración Optimista','Duración Probable','Duración Pesimista']
+
+Decision Tabla_Input__Duracio
+Title:  Tabla Input  Duraciones Actividad
+Units: Sem.
+Description: Para cada una de las actividades del proyecto, ingresamos la duración de la actividad (en semanas) como una estimación pesimista, probable y optimista.
+Definition: Table(Actividades_del_Proy,Parametros_de_Duraci)(~
+2,10,20,~
+3,4,5,~
+6,7,8,~
+1,2,3,~
+2,4,6,~
+5,9,19,~
+1,2,3,~
+6,9,18,~
+8,12,22,~
+4,6,8,~
+6,8,16,~
+5,6,7,~
+5,6,7)
+NodeLocation: 112,136,1
+NodeSize: 64,40
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,78,56,400,600
+DefnState: 2,24,90,501,336,0,DFNM
+ValueState: 2,85,63,620,419,0,MIDM
+Aliases: FormNode Activity_durations_i
+NodeFont: Arial Rounded MT Bold,16
+ReformDef: [Parametros_de_Duraci,Actividades_del_Proy]
+ReformVal: [Parametros_de_Duraci,Actividades_del_Proy]
+{!50000|Att_ColumnWidths: [,Parametros_de_Duraci,\([123])]}
+
+Chance Duraciones_Esperadas
+Title: Duraciones Esperadas
+Units: Sem.
+Description: Para cada una de las actividades del proyecto, ingresamos la duración de la actividad (en semanas) como una estimación Pesimista, Más probable y Optimista.
+Definition: Triangular(Tabla_Input__Duracio[Parametros_de_Duraci='Duración Optimista'],~
+Tabla_Input__Duracio[Parametros_de_Duraci='Duración Probable'],~
+Tabla_Input__Duracio[Parametros_de_Duraci='Duración Pesimista'])
+NodeLocation: 112,232,1
+NodeSize: 64,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,65,56,400,600
+ValueState: 2,66,-9,767,379,1,PDFP
+GraphSetup: {!40400|Sys_PdfSmoothMethod:1}~
+GraphTool:0~
+DistResol:10~
+DistSteps:1~
+CdfResol:5~
+CdfSteps:1~
+SymbolSize:6~
+LineStyle:1~
+Frame:1~
+Grid:3~
+Ticks:1~
+Mesh:1~
+Scales:1~
+Rotation:45~
+Tilt:0~
+Depth:70~
+FrameAuto:1~
+ShowKey:1~
+Xintervals:0~
+Yintervals:10~
+IncludeXZero:0~
+IncludeYZero:0~
+IncludeZZero:0~
+StatsSelect:[1,1,1,1,1,0,0,0]~
+StatsLabels:['Min','Median','Mean','Max','Std. Dev.']~
+ProbIndex:[0.05,0.25,0.5,0.75,0.95]
+NodeFont: Arial Rounded MT Bold,16
+
+Index Rutas_Proyecto
+Att_PrevIndexValue: ['A','B','C','D','E']
+Title: Rutas Proyecto
+Description: Índice de las rutas de los proyectos
+Definition: ['A','B','C','D','E']
+NodeLocation: 504,56,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,168,178,416,303,0,MIDM
+Aliases: FormNode Project_paths1
+NodeFont: Arial Rounded MT Bold,16
+{!40300|Att_SlicerPopupSize: 237,105}
+{!50000|Att_ColumnWidths: [37]}
+
+Variable Duraciones_de_Ruta
+Title: Duraciones de Ruta
+Units: Sem.
+Description: Duración total de cada una de las rutas de actividad.
+Definition: Table(Rutas_Proyecto)(Ruta_A,Ruta_B,Ruta_C,Ruta_D,Ruta_E)
+NodeLocation: 376,256,1
+NodeSize: 64,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,134,105,400,600
+DefnState: 2,57,64,551,445,0,DFNM
+ValueState: 2,42,77,508,390,1,PDFP
+GraphSetup: {!40400|Sys_PdfSmoothMethod:1}
+NodeFont: Arial Rounded MT Bold,16
+ReformDef: [Rutas_Proyecto,Undefined]
+ReformVal: [Undefined,Rutas_Proyecto,Undefined,Undefined,1]
+Att__TotalsIndex: []
+Att_ResultSliceState: [Rutas_Proyecto,5,Sys_LocalIndex('Step'),1]
+Att_XRole: -1
+
+Variable Ruta_A
+Title: Ruta A
+Units: Sem.
+Description: Cada ruta es una secuencia de actividades necesarias para completar el proyecto.
+Definition: Duraciones_Esperadas[Actividades_del_Proy=7]+Duraciones_Esperadas[Actividades_del_Proy=8]+Duraciones_Esperadas[Actividades_del_Proy=10]+Duraciones_Esperadas[Actividades_del_Proy=13]
+NodeLocation: 232,144,1
+NodeSize: 40,16
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,63,72,400,600
+ValueState: 2,40,50,400,300,1,PDFP
+GraphSetup: {!40400|Sys_PdfSmoothMethod:1}
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Ruta_B
+Title: Ruta B
+Units: Sem.
+Description: Cada ruta es una secuencia de actividades necesarias para completar el proyecto.
+Definition: Duraciones_Esperadas[Actividades_del_Proy=9]+Duraciones_Esperadas[Actividades_del_Proy=10]+Duraciones_Esperadas[Actividades_del_Proy=13]
+NodeLocation: 232,188,1
+NodeSize: 40,16
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Ruta_C
+Title: Ruta C
+Units: Sem.
+Description: Cada ruta es una secuencia de actividades necesarias para completar el proyecto.
+Definition: Duraciones_Esperadas[Actividades_del_Proy=1]+Duraciones_Esperadas[Actividades_del_Proy=11]+Duraciones_Esperadas[Actividades_del_Proy=12]+Duraciones_Esperadas[Actividades_del_Proy=13]
+NodeLocation: 232,232,1
+NodeSize: 40,16
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Ruta_D
+Title: Ruta D
+Units: Sem.
+Description: Cada ruta es una secuencia de actividades necesarias para completar el proyecto.
+Definition: Duraciones_Esperadas[Actividades_del_Proy=1]+Duraciones_Esperadas[Actividades_del_Proy=2]+Duraciones_Esperadas[Actividades_del_Proy=3]+Duraciones_Esperadas[Actividades_del_Proy=12]+Duraciones_Esperadas[Actividades_del_Proy=13]
+NodeLocation: 232,276,1
+NodeSize: 40,16
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,67,108,400,600
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Ruta_E
+Title: Ruta E
+Units: Sem.
+Description: Cada ruta es una secuencia de actividades necesarias para completar el proyecto.
+Definition: Duraciones_Esperadas[Actividades_del_Proy=1]+Duraciones_Esperadas[Actividades_del_Proy=4]+Duraciones_Esperadas[Actividades_del_Proy=5]+Duraciones_Esperadas[Actividades_del_Proy=6]
+NodeLocation: 232,320,1
+NodeSize: 40,16
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,101,78,400,600
+NodeFont: Arial Rounded MT Bold,16
+
+Objective Duracion_Ruta_Critic
+Title: Duración Ruta Crítica
+Units: Sem.
+Description: Duración de la ruta  crítica probable (la de mayor duración).
+Definition: Max(Duraciones_de_Ruta,Rutas_Proyecto)
+NodeLocation: 376,152,1
+NodeSize: 48,40
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,119,130,400,600
+ValueState: 2,152,162,416,303,0,MEAN
+Aliases: FormNode Critical_path_durati
+GraphSetup: {!40400|Sys_PdfSmoothMethod:1}~
+StatsSelect:[1,0,1,1,1,0,0,0]~
+StatsLabels:['Min','Mean','Max','Std. Dev.']
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,D,3,4,0,0,3,0,$,0,"ABBREV",0,,,0,0,15
+{!40700|Att_CellFormat: CellSpan((Self.Statistics),CellNumberFormat('Suffix',2,0,0,dateFormat:'ABBREV',fullPrecision:0,numbersAsDates:0,datesAsNumbers:0),4,header:0)}
+
+Decision A__Actividades_del_P
+Title: # Actividades del Proyecto 
+Description: Introducimos el número de actividades del proyecto.
+Definition: 13
+NodeLocation: 112,56,1
+NodeSize: 72,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,211,357,400,600
+ValueState: 2,40,50,400,300,0,MIDM
+Aliases: FormNode Number_of_project_ac, Alias Number_of_project_a1
+NodeFont: Arial Rounded MT Bold,16
+
+Objective Ruta_Critica
+Title: Ruta Crítica
+Units: Sem.
+Description: La ruta crítica probable es la de mayor duración.
+Definition: Subindex(Duraciones_de_Ruta, Duracion_Ruta_Critic, Rutas_Proyecto)
+NodeLocation: 520,176,1
+NodeSize: 48,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,136,146,416,303,0,MIDM
+Aliases: FormNode Critical_path1
+NodeFont: Arial Rounded MT Bold,16
+
+Alias Al1535142106
+Title: Project Activities
+Definition: 1
+NodeLocation: 256,56,1
+NodeSize: 64,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,16
+Original: Actividades_del_Proy
+
+Close Modulo_Duracion_Acti
+
+Index Actividades_del_Proy
+Title: Actividades del Proyecto
+Description: Lista numerada de las actividades del proyecto en cuestión.
+Definition: Sequence( 1, A__Actividades_del_P, 1 )
+NodeLocation: 304,64,1
+NodeSize: 56,32
+WindState: 2,178,143,400,600
+ValueState: 2,40,50,400,300,0,MIDM
+Aliases: Alias Al1535142106
+Att_PrevIndexValue: [1,2,3,4,5,6,7,8,9,10,11,12,13]
+
+Module Modulo_Costo
+Title:  Módulo Costo
+Description: Este módulo calcula el coste o costos del proyecto a partir de los consumos de actividad.
+Author: rbrown
+Date: Tue, Jan 12, 1999 1:56 PM
+DefaultSize: 48,24
+NodeLocation: 336,144,1
+NodeSize: 56,24
+DiagState: 2,150,181,722,0,17
+
+Index Parametros_Costo
+Att_PrevIndexValue: ['Costo Optimista','Costo más probable','Costo Pesimista ']
+Title:  Parámetros Costo
+Units: $
+Description: Índice de las estimaciones de costes
+Definition: ['Costo Optimista','Costo más probable','Costo Pesimista ']
+NodeLocation: 72,32,1
+NodeSize: 56,24
+WindState: 2,102,77,476,224
+
+Decision Tabla_Ingreso_Costos
+Title: Tabla Ingreso Costos-Actividad 
+Units: $000/Sem.
+Description: Estimaciones de costos de insumos para cada actividad como pesimistas, probables y optimistas.
+Definition: Table(Actividades_del_Proy,Parametros_Costo)(~
+5,6,7,~
+3,4,6,~
+6,7,8,~
+1,2,3,~
+2,4,6,~
+5,9,19,~
+1,2,3,~
+6,9,18,~
+8,12,22,~
+4,6,8,~
+6,8,16,~
+5,6,7,~
+5,6,8)
+NodeLocation: 72,112,1
+NodeSize: 64,32
+WindState: 2,102,83,476,224
+DefnState: 2,69,105,477,360,0,DFNM
+ValueState: 2,85,63,620,419,0,MIDM
+Aliases: FormNode Activity_costs_input
+ReformDef: [Parametros_Costo,Actividades_del_Proy]
+NumberFormat: 1,D,4,2,1,1
+
+Chance Costos_Esperados
+Title:  Costos Esperados
+Units: $000/Sem.
+Description: Este nodo es un ejemplo de cómo utilizar la distribución triangular para traducir una estimación baja, media y alta en una distribución continua.  ~
+
+Definition: Triangular(Tabla_Ingreso_Costos[Parametros_Costo='Costo Optimista'], Tabla_Ingreso_Costos[Parametros_Costo='Costo más probable'], Tabla_Ingreso_Costos[Parametros_Costo='Costo Pesimista '])
+NodeLocation: 216,112,1
+NodeSize: 48,24
+WindState: 2,56,66,400,600
+ValueState: 1,8,44,814,570,1,PDFP
+GraphSetup: Graphtool:0~
+Distresol:10~
+Diststeps:1~
+Cdfresol:5~
+Cdfsteps:1~
+Symbolsize:6~
+Linestyle:1~
+Frame:1~
+Grid:3~
+Ticks:1~
+Mesh:1~
+Scales:1~
+Rotation:45~
+Tilt:0~
+Depth:70~
+Frameauto:1~
+Showkey:1~
+Xminimum:1~
+Xmaximum:14~
+Yminimum:0~
+Ymaximum:20~
+Zminimum:1~
+Zmaximum:1~
+Xintervals:0~
+Yintervals:10~
+Includexzero:0~
+Includeyzero:0~
+Includezzero:0~
+Statsselect:[1, 1, 1, 1, 1, 0, 0, 0]~
+Probindex:[5%, 25%, 50%, 75%, 95%]~
+
+
+Decision Costo_Deseado_del_Pr
+Title: Costo Deseado del Proyecto
+Units: $000
+Description: Costo deseado del proyecto.
+Definition: 700
+NodeLocation: 616,216,1
+NodeSize: 56,32
+WindState: 2,102,83,476,224
+Aliases: FormNode Desired_project_cos1
+
+Objective Rebasar_Presup__Proy
+Title: Rebasar Presup. Proyecto
+Units: $000
+Description: Monto del sobrecosto del proyecto.
+Definition: Costo_Total_Proyecto-Costo_Deseado_del_Pr
+NodeLocation: 456,216,1
+NodeSize: 56,32
+WindState: 2,102,83,476,224
+ValueState: 2,7,26,667,416,1,CDFP
+Aliases: FormNode Project_budget_overr
+GraphSetup: Graphtool:0~
+Distresol:10~
+Diststeps:1~
+Cdfresol:5~
+Cdfsteps:1~
+Symbolsize:6~
+Linestyle:1~
+Frame:1~
+Grid:3~
+Ticks:1~
+Mesh:1~
+Scales:1~
+Rotation:45~
+Tilt:0~
+Depth:70~
+Frameauto:1~
+Showkey:1~
+Xminimum:-12.5~
+Xmaximum:-2.5~
+Yminimum:0~
+Ymaximum:1~
+Zminimum:1~
+Zmaximum:1~
+Xintervals:0~
+Yintervals:10~
+Includexzero:1~
+Includeyzero:0~
+Includezzero:0~
+Statsselect:[1,1,1,1,1,0,0,0]~
+Probindex:[0.05,0.25,0.5,0.75,0.95]~
+
+NumberFormat: 1,D,4,1,0,0
+
+Objective Probabilidad_que_el_
+Title: Probabilidad que el Proyecto rebase el presupuesto.
+Units: %
+Description: Probabilidad que el proyecto esté por encima del presupuesto
+Definition: Probability(Costo_Total_Proyecto>Costo_Deseado_del_Pr)
+NodeLocation: 616,112,1
+NodeSize: 72,40
+WindState: 2,102,83,476,224
+ValueState: 1,124,101,416,303,0,MIDM
+Aliases: FormNode Probability_that_pro
+NumberFormat: 1,%,4,1,0,0
+
+Variable Costo_Total_Proyecto
+Title:  Costo Total Proyecto
+Units: $000
+Description: Suma de todos los costes de actividad.
+Definition: Sum(Costos_Actividad,Actividades_del_Proy)
+NodeLocation: 456,112,1
+NodeSize: 56,24
+WindState: 2,102,83,476,224
+ValueState: 1,140,91,416,303,0,MEAN
+
+Variable Costos_Actividad
+Title: Costos Actividad
+Units: $000
+Description: Costos totales de la actividad.
+Definition: Duraciones_Esperadas*Costos_Esperados
+NodeLocation: 328,112,1
+NodeSize: 48,24
+WindState: 2,102,83,476,224
+ValueState: 1,216,226,416,303,1,MIDM
+GraphSetup: Graphtool:0~
+Distresol:10~
+Diststeps:1~
+Cdfresol:5~
+Cdfsteps:1~
+Symbolsize:6~
+Linestyle:9~
+Frame:1~
+Grid:1~
+Ticks:1~
+Mesh:1~
+Scales:1~
+Rotation:45~
+Tilt:0~
+Depth:70~
+Frameauto:1~
+Showkey:1~
+Xminimum:0~
+Xmaximum:15~
+Yminimum:0~
+Ymaximum:200~
+Zminimum:1~
+Zmaximum:1~
+Xintervals:0~
+Yintervals:0~
+Includexzero:0~
+Includeyzero:0~
+Includezzero:0~
+Statsselect:[1, 1, 1, 1, 1, 0, 0, 0]~
+Probindex:[5%, 25%, 50%, 75%, 95%]~
+
+
+Close Modulo_Costo
+
+Alias Number_of_project_a1
+Title: Number of Project Activities
+Definition: 1
+NodeLocation: 104,72,1
+NodeSize: 72,24
+Original: A__Actividades_del_P
+
+Close Detalles_Proyecto
+
+FormNode Activity_costs_input
+Title: Activity Costs Input Table
+Definition: 0
+NodeLocation: 684,88,1
+NodeSize: 220,16
+NodeInfo: 1,0,0,1,0,0,0,86,0,
+Original: Tabla_Ingreso_Costos
+
+FormNode Desired_project_cos1
+Title: Desired Project Cost
+Definition: 0
+NodeLocation: 672,128,1
+NodeSize: 208,16
+Original: Costo_Deseado_del_Pr
+
+FormNode Probability_that_pro
+Title: Probability That Project Is Within Budget
+Definition: 1
+NodeLocation: 672,211,0
+NodeSize: 208,16
+Original: Probabilidad_que_el_
+
+FormNode Project_budget_overr
+Title: Project Budget Overrun
+Definition: 1
+NodeLocation: 672,168,1
+NodeSize: 208,16
+Original: Rebasar_Presup__Proy
+
+Text Te1
+Description: Duración Proyecto 
+NodeLocation: 188,24,-1
+NodeSize: 84,16
+NodeInfo: 1,0,0,1,0,0,1,,0,
+NodeFont: Arial, 16
+
+Text Te2
+Description:  Costo Proyecto
+NodeLocation: 552,24,-1
+NodeSize: 72,16
+NodeInfo: 1,0,0,1,0,0,1,,0,
+NodeFont: Arial, 16
+
+Text Te1535154293
+Title: Duración del Proyecto
+NodeLocation: 232,136,-1
+NodeSize: 216,128
+NodeInfo: 1,0,0,1,0,1,0,,0,,0,,,
+NodeColor: 52427,56425,65535
+
+Text Te1535155259
+Title: Costo del Proyecto
+NodeLocation: 680,136,-1
+NodeSize: 216,128
+NodeInfo: 1,0,0,1,1,1,0,,0,,0,,,
+NodeColor: 52427,56425,65535
+
+Close Plan_sched_control
+

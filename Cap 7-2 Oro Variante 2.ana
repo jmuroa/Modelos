@@ -1,0 +1,133 @@
+{ Analytica Model Precio_Oro, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_PdfSmoothMethod := 1}
+{!40400|Sys_WindowsMaximized := 1}
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Precio_Oro
+Title: Precio Oro
+Description: Modelo en el que se examinan resultados usando la distribución Normal y LogNormal.~
+Se han agregado dos nodos, "Prob LogNormal" y "Prob Normal" para calcular las probabilidades de pérdida que nos darán las distribuciones Normal y LogNormal respectivamente.~
+Con el fin de tener un diagrama de influencia más claro, se han anulado las flechas que Analytiva pone cuando hay dependencias. Lo hemos hecho seleccionando el nodo Ganancia y luego entramos a los menús Diagram --> Set Node Style --> quitamos el check en Output arrows.~
+Esto se puede deshacer poniendo de nuevo el check en esta última casilla.
+Author: Jorge
+Date: dom, jul 22, 2018 7:29 p.m.
+DiagState: 2,1,0,624,291,17
+WindState: 2,0,0,720,350
+FontStyle: Arial Rounded MT Bold,15
+FileInfo: 0,Model Precio_Oro,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 7-2 Oro V.2.ana
+
+Chance Precio_Oro2
+Title: Precio Oro (LogNormal)
+Description: Cuando queramos manejar distintas distribuciones en un mismo nodo (LogNormal y Normal en este caso), hay que introducir  una DetermTable.~
+Una tabla DetermTable proporciona una vista de entrada como la de una tabla de edición, permitiendonos especificar valores o expresiones en cada celda para todas las combinaciones de índices; sin embargo, a diferencia de una tabla (Table), la evaluación de una tabla DetermTable devuelve condicionalmente sólo los valores seleccionados de la tabla. Se llama DeterTable porque actúa como una función determinista de una o más variables de valor discreto. Puede conceptualizar una DetermTable como una generalización multidimensional de una sentencia select-case encontrada en muchos lenguajes de programación, o como un valor que varía con el camino hacia abajo de un árbol de decisión.
+Definition: DetermTable(Distribucion)(LogNormal(mean:1000,stddev:500),Normal(mean:1000,stddev:500))
+NodeLocation: 152,120,1
+NodeSize: 64,24
+WindState: 2,102,77,476,224
+DefnState: 2,40,50,400,300,0,DFNM
+ValueState: 2,214,43,416,303,0,SAMP
+GraphSetup: {!40400|Sys_PdfSmoothMethod:1}
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Constant Tamano_Lote
+Title: Tamaño Lote
+Units: m2
+Description: Tamaño del lote
+Definition: 1K
+NodeLocation: 144,48,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+
+Variable Costos
+Title: Costos
+Units: $
+Definition: $900K
+NodeLocation: 152,192,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,0,0,720,350
+NodeFont: Arial Rounded MT Bold,16
+
+Objective Ganancia
+Title: Ganancia
+Description: Se ha multiplicado las Ganancia por el nodo Extraer (que dará solo 0 y 1) por cuanto si no es rentable no se extraerá. Nadie invierte dinero si sabe que va a haber pérdida.
+Definition: Extraer*(Tamano_Lote*Precio_Oro2 - Costos)
+NodeLocation: 280,144,1
+NodeSize: 56,24
+NodeInfo: 1,1,0,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,168,99,383,305,1,CDFP
+GraphSetup: Att_GraphValueRange Ganancia:|1:1,,0,,,,,0,2M,0~
+Att_GraphValueRange Graph_Cdf_Valdim:1,,0,1,,,,0,1,0~
+CdfResol:10
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+{!40200|Att_GraphSetupSlices: [3,1,DensityIndex,1]}
+
+Decision Extraer
+Title: Extraer
+Description: Este es un nodo 'lógico', es decir nos dará 0 o 1 dependiendo si la condición lógica TamanoLote * Precio Oro > Costos. Es decir, si el Tamano Lote multiplicado por el PrecioOro es mayos a Costos nos dará 1. Si es menor, nos dará cero.~
+Esto configura contemplar solo los escenarios en que es rentable extraer el recurso (ahora llamado reservas puesto que sí es rentable extraerlas).
+Definition: Tamano_Lote*Precio_Oro2 > Costos
+NodeLocation: 280,48,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+
+Decision Distribucion
+Title: Distribución
+Description: En este caso hay que definir este nodo como Choice por cuanto vamos a poner una DetermTable para poder elegir qué distribución vamos a usar en el nodo al que asignamos esta elección. En este caso Precio Oro .
+Definition: Choice(Self,0)
+NodeLocation: 608,48,1
+NodeSize: 64,24
+NodeInfo: 1,1,1,1,1,1,0,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+Domain: ['LogNormal','Normal']
+{!40300|DomainExpr: Discrete('LogNormal','Normal',type:'Text')}
+{!40200|Att_ChoiceIndexes: Keyword Self}
+
+Chance Prob_LogNormal
+Title: Prob LogNormal
+Units: $
+Definition: Probability(Ganancia<= $231K)
+NodeLocation: 544,128,1
+NodeSize: 56,24
+WindState: 2,0,0,720,350
+ValueState: 2,40,50,400,300,0,MIDM
+NumberFormat: 2,%,4,4,0,0,4,0,$,0,"ABBREV",0,,,0,0,15
+
+Chance Prob_Normal
+Title: Prob Normal
+Units: $
+Definition: Probability(Ganancia <= $253K)
+NodeLocation: 544,192,1
+NodeSize: 56,24
+WindState: 2,102,83,476,224
+
+Variable Comparacion
+Att_PrevIndexValue: [Prob_LogNormal,Prob_Normal]
+Title: Comparación
+Definition: [Prob_LogNormal,Prob_Normal]
+NodeLocation: 696,160,1
+NodeSize: 64,24
+NodeInfo: 1,1,1,1,1,1,0,0,0,0,,0,1,0
+ValueState: 2,40,50,400,300,0,MIDM
+ReformVal: [Distribucion,Self]
+NumberFormat: 2,F,4,4,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+{!40700|Att_CellFormat: CellFormats(CellSpan(Comparacion,CellNumberFormat('Percentage',1,0,0,dateFormat:'ABBREV',fullPrecision:0,numbersAsDates:0,datesAsNumbers:0),1,header:0),CellSpan(Comparacion,CellNumberFormat('Fixed Point',2,1,0,dateFormat:'ABBREV',fullPrecision:0,numbersAsDates:0,datesAsNumbers:0),2,header:0))}
+
+Close Precio_Oro
+

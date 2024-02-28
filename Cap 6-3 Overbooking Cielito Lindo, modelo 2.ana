@@ -1,0 +1,192 @@
+{ Analytica Model Airline_overbooking, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+{!40600|Att_PrevIndexValue AllProbabilityBands: [0,0.01,0.025,0.05,0.1,0.25,0.3333333333333333,0.5,0.6666666666666666,0.75,0.9,0.95,0.0975,0.99,1]}
+{!50016|PlusOnTextReturnsNaN := 0}
+
+
+
+
+Model Airline_overbooking
+Title: Airline overbooking I
+Description: Ejemplo de prever Overbooking por Aerolíneas Cielito Lindo. Parte 2 -  modelo binomial no repetitivo.~
+En esta solución, el Número de Arribos o Num arribos (personas que se presentan al vuelo) está representado por Binomial( Tickets vendidos, 1 - Prob de cancelacion ), donde Binomial (n,p) siendo:~
+«n» = Tickets vendidos~
+«p» = 1 - Probabilidad de cancelación o 1 - Prob( no shows). Ponemos 1 - Prob(no shows) porque es el número que predice que arribarán o se presentarán al vuelo.~
+Este nodo actúa en cascada hacia todo el modelo y no hay necesidad de repetir cálculos como en la anterior solución (entendemos más didáctica o por lo menos esa es la intención).~
+Es así, más eficiente y rápido pues tiene 13 nodos versus 29 o 30 según cómo contemos pues está la librería Distribution Densities Library en el anterior debido a la necesidad de contar con la instrucción o comando Prob_Binomial(Nro Asientos, Pasajeros, Prob de presentarse), además de los nodos Ganancia 16... Ganancia 19.~
+
+Author: Lonnie
+Date: Mon, Jul 3, 2017 12:45 PM
+DiagState: 2,1,0,938,254,17
+WindState: 2,683,426,476,224
+FontStyle: Arial,15
+FileInfo: 0,Model Airline_overbooking,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 6-3 Overbooking Cielito Lindo, modelo 2.ana
+
+Constant Capacidad_de_asiento
+Title: Capacidad de asientos
+Units: Pasajeros
+Description: El máximo de capacidad de pasajeros por vuelo
+Definition: 16
+NodeLocation: 120,312,1
+NodeSize: 56,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Prob_de_cancelacion
+Title: Prob de cancelacion
+Description: Probabilidad de no-show de un pasajero para el vuelo. Se supone que cada  pasajero tiene la misma probabilidad  y es estadísticamente independiente de cada otro pajajero 
+Definition: 4%
+NodeLocation: 120,128,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Costo_de_ticket
+Title: Costo de ticket
+Units: $ / pasajero
+Description: Precio que paga el pasajero por un ticket. Se supone su cobro al momento de compra y sin devolución si el pasejero es un no-show.
+Definition: 225
+NodeLocation: 120,40,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Decision Tickets_vendidos
+Title: Tickets vendidos
+Description: Número de tickets a vender.
+Definition: Capacidad_de_asiento .. Capacidad_de_asiento+3
+NodeLocation: 120,200,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Chance Num_arribos
+Title: Num arribos
+Units: Pasajeros
+Description: Número de tenedores de ticket pagados que se presentan para el vuelo (que no son no-shows).
+Definition: Binomial( Tickets_vendidos, 1 - Prob_de_cancelacion )
+NodeLocation: 264,128,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,757,315,564,374,1,PDFP
+GraphSetup: {!40000|Att_ForceCategorical Graph_Prob_Valdim:1}
+NodeFont: Arial Rounded MT Bold,15
+ReformVal: [Undefined,Tickets_vendidos,Undefined,Undefined,1]
+Att_XRole: Sys_LocalIndex('Possible_Values')
+Att_ColorRole: Tickets_vendidos
+
+Variable Ingresos
+Title: Ingresos
+Units: $
+Description: Ingresos totales cobrados (de la venta de ticket ) para el vuelo.
+Definition: Costo_de_ticket * Tickets_vendidos
+NodeLocation: 272,40,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Numero_desplazado
+Title: Numero desplazado
+Units: Pasajeros
+Description: Cuando el número de tenedores de  ticket que se presentan excede la capacidad del avión, este el el número de pasajeros que necesitan ser "desplazados".
+Definition: Max([0, Num_arribos - Capacidad_de_asiento])
+NodeLocation: 376,184,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,184,187,416,303,0,PDFP
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Costo_por_vuelo
+Title: Costo por vuelo
+Units: $
+Description: El costo de volar el avión .
+Definition: Costo_fijo_por_vuelo + Costo_por_pasajero_e * Min([Capacidad_de_asiento, Num_arribos])
+NodeLocation: 368,248,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,859,380,416,303,1,CDFP
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Costo_fijo_por_vuelo
+Title: Costo fijo por vuelo 
+Units: $
+Description: Costos fijos de volar un avión -- costos que hay que pagar sin importar la carga de pasajeros. Debe incluir cosas como la depreciación del avión, costos de mantenimiento del avión, y salarios del piloto y tripulación.
+Definition: 900
+NodeLocation: 368,312,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Costo_por_pasajero_e
+Title: Costo por pasajero en vuelo
+Units: $ / Pasajeros
+Description: La variable costo de volar un pasajero. Este es el delta en costo al cambiar la actual carga de pasajeros pen uno (1). No incluye los costos fijos del vuelo 
+Definition: 100
+NodeLocation: 224,216,1
+NodeSize: 48,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Costo_por_desplazo
+Title: Costo por desplazo
+Units: $ / Pasajero
+Description: El costo para la aerolínea de rechazar un pasajero overbooked de un vuelo. Es necesario devolver el valor pagado por el ticket al pasajero más dar como plus un vuelo sin costo al  pasajero. El costo del vuelo gratis es el costo de la aerolínea, no el precio al menudeo para un  ticket.~
+~
+Aquí se utiliza el costo propuesto por algunos autores - el costo por pasajero. Pero su uso no es del todo correcto porque la aerolínea necesita aplicar una parte del costo fijo a este costo. ~
+Ahora bien, sI la aerolínea pudiera seleccionar el nuevo vuelo para el pasajero desplazado y pudiera colocarlo en un vuelo con sub capacidad (que no esté lleno), entonces su costo sería el que está aquí sin más dilació y este sería un modelo correcto, pero esto no es siempre posible: si el pasajero selecciona un nuevo vuelo y elige uno que esté en plena capacidad (lleno), entonces el costo de la aerolínea sería el Costo por pasajero en vuelo más una fracción del del precio fijo del vuelo.
+Definition: Costo_de_ticket + Costo_por_pasajero_e
+NodeLocation: 376,112,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Costos
+Title: Costos
+Units: $
+Description: Costos totales por el vuelo, incluyendo la/las compensación/nes a los pasajeros rechazados.
+Definition: Costo_por_vuelo + Numero_desplazado * Costo_por_desplazo
+NodeLocation: 376,40,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+NodeFont: Arial Rounded MT Bold,15
+
+Objective Ganancia
+Title: Ganancia
+Units: $
+Description: La ganancia neta por el vuelo.
+Definition: Ingresos - Costos
+NodeLocation: 480,104,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,832,153,438,386,0,MEAN
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0
+
+Close Airline_overbooking
+

@@ -1,0 +1,67 @@
+{ Analytica Model Cap_10_4_Ejemplo_IF_, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Cap_10_4_Ejemplo_IF_
+Description: Modelo simple que nos ilustra el funcionamiento de un:~
+«IF Then Else».~
+Dentro de esta instrucción (muy usada y estándar en todos los lenguajes de programación) hay, dentro de un «Else», otro «If Then Else».~
+El aprendizaje, práctica y uso de esta sentencia nos es útil dentro de los contextos de generar escenarios y los resultados que cada uno acarrea.
+Author: Jorge
+Date: mié, jul 3, 2019 12:44 p.m.
+DiagState: 2,0,0,673,305,17
+FontStyle: Arial,15
+FileInfo: 0,Model Cap_10_4_Ejemplo_IF_,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 10-4 Ejemplo IF THEN ELSE.ana
+
+Variable uno
+Title: Uno
+Definition: 3
+NodeLocation: 120,64,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,15
+
+Variable dos
+Title: Dos
+Definition: 1
+NodeLocation: 248,64,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,148,149,416,303,,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Lista
+Title: Lista
+Definition: ['A','B']
+NodeLocation: 376,64,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,15
+
+Variable If_Then_Else
+Title: If Then Else
+Definition: If uno=1 Then uno~
+Else if dos=2 Then Lista~
+Else 0
+NodeLocation: 120,128,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,212,213,416,303,,MIDM
+NodeColor: 52427,1,1
+NodeFont: Arial Rounded MT Bold,15
+NodeFontColor: 65535,65535,65535
+{!50000|Att_ColumnWidths: [26]}
+
+Close Cap_10_4_Ejemplo_IF_
+

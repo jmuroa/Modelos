@@ -1,0 +1,52 @@
+{ Analytica Model CAPM1, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model CAPM1
+Description: Nodo definido por el usuario (UDF o User-Defined Functions) en el que se introducen los parámetros y las fórmulas que queramos. ~
+Definition en este caso para el CAPM (o Capital Asset Pricing Model), según el modelo planteado por Fisher Black y ahora conocido como BS (Black - Scholes). Algunas literaturas lo denominan  BSM (Black - Scholes - Merton) debido a que Robert C. Merton publicó en 1973 "Theory of Rational Option Pricing" en donde hacía referencia a un modelo matemático desarrollado por Fisher Black y Myron Scholes. El Premio Nobel de Economía 1997 fue otrorgado a Scholes y Merton por este trabajo. Fisher Black no lo recibió por no haber Permios Nobel póstumos (nurió en 1995), pero fue mencionado explícitamente en la ceremonia de otorgación en Estocolmo, Suecia.~
+~
+Hecho esto, está listo para usarse en todo el modelo sin necesidad de repetir cálculos o recurrir a nuestra memoria una vez construido.
+Author: Jorge
+Date: mar, oct 2, 2018 12:15 p.m.
+DiagState: 2,1,0,848,305,17
+FontStyle: Arial,15
+FileInfo: 0,Model CAPM1,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 11-4 UDF o User-Defined Functions (CAPM).ana
+
+Function CAPM(Rf,  Rm, Beta)
+Title: CAPM
+Units: $
+Description: Se introducen los parámetros (sin tilde) y las fórmulas que se quieran en;~
+Hecho esto, está listo para usarse en todo el modelo sin necesidad de repetir cálculos o recurrir a la memoria una vez construido.~
+Previamente, el Parameters, hemos declarado el uso de las variables Rf, Rm, y Beta.~
+Los parámetros a pasar a la función deben estar entre paréntesis, separados por comas. Por ejemplo: (x, y, z)~
+La excepción a esta regla sería si usáramos un índice «I», el cual tendríamos que declararlo como I : Index, lo que sería  (x, y, z ; I: Index). Notemos que hay un « ; », es decir un punto y coma a dierencia de los demás que están separados por una coma « , ».~
+Mayor información en:~
+http://wiki.analytica.com/index.php?title=User-Defined_Functions
+Definition: Rf + Beta * (Rm - Rf)
+NodeLocation: 96,48,1
+NodeSize: 48,24
+WindState: 2,98,77,720,350
+
+Variable Retorno
+Title: Retorno
+Units: $
+Description: Nodo que hace uso de la fórmula CAPM construida en la User-Defined Functions (UDF o Funciones Defininas por el Usuario)
+Definition: CAPM(3%, 10%, 0.03)
+NodeLocation: 96,120,1
+NodeSize: 48,24
+NumberFormat: 2,%,4,2,0,0,4,0,$,0,"ABBREV",0,,,0,0,15
+
+Close CAPM1
+

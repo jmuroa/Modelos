@@ -1,0 +1,87 @@
+{ Analytica Model Aja_Regresion, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+Time := copyindex(todas_fechas)
+SampleSize := 10K
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+{!40600|Att_PrevIndexValue AllProbabilityBands: [0,0.01,0.025,0.05,0.1,0.25,0.3333333333333333,0.5,0.6666666666666666,0.75,0.9,0.95,0.0975,0.99,1]}
+{!50016|PlusOnTextReturnsNaN := 0}
+
+
+
+
+Model Aja_Regresion
+Description: Este modelo es similar al anterior modelo 11-1 con la variante que en este caso son los precios reales de las acciones de la compañía Apple Inc. para las fechas en el nodo 'Fechas'.~
+Lo puesto en 11-1 en el nodo Base RL o Base de la Regresión Lineal, es idéntico al anterior solo que ahora hemos puesto 'Fechas' (agregamos una 's' para claridad explicativa.~
+Hemos agregado el Coeficiente de Determinación R2, el cual es solo la elevación al cuadrado del Coeficiente de Correlación ρ.
+Author: Jorge
+Date: mié, abr 1, 2015 1:25 p.m.
+DiagState: 2,1,0,749,187,17
+FontStyle: Arial,15
+FileInfo: 0,Model Aja_Regresion,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 11-2 Segundo análisis -- Apple Inc.ana
+
+Index Fechas
+Att_PrevIndexValue: [6-Aug-2018,7-Aug-2018,8-Aug-2018,9-Aug-2018,10-Aug-2018,13-Aug-2018,14-Aug-2018,15-Aug-2018,16-Aug-2018,17-Aug-2018,20-Aug-2018,21-Aug-2018,22-Aug-2018,23-Aug-2018,24-Aug-2018,27-Aug-2018,28-Aug-2018,29-Aug-2018,30-Aug-2018,31-Aug-2018,4-Sep-2018,5-Sep-2018]
+Title: Fechas
+Units: Días
+Description: Como son fechas extraidas y reales no hay conflico con el precio de las acciones.~
+Si no fuera este el caso, habría que agregar  el indicador posicional '@' el cual pone a la fecha 1 el número 1;  a la fecha siguente  el número 2 y así sucesivamente a fin de asignar a las fechas un indicativo reconocible (un número en este caso). De esta manera evitaríamos contar feriados y días no laborables.  
+Definition: [6-Aug-2018,7-Aug-2018,8-Aug-2018,9-Aug-2018,10-Aug-2018,13-Aug-2018,14-Aug-2018,15-Aug-2018,16-Aug-2018,17-Aug-2018,20-Aug-2018,21-Aug-2018,22-Aug-2018,23-Aug-2018,24-Aug-2018,27-Aug-2018,28-Aug-2018,29-Aug-2018,30-Aug-2018,31-Aug-2018,4-Sep-2018,5-Sep-2018]
+NodeLocation: 104,72,1
+NodeSize: 48,24
+WindState: 2,102,83,476,224
+
+Variable Coeficientes_de_Regr
+Title: Coeficientes de Regresión
+Definition: Regression(Precios_AAPL,Base_RL,Fechas, Base_RL)
+NodeLocation: 216,168,1
+NodeSize: 56,32
+ValueState: 2,40,50,400,300,0,MIDM
+{!40700|Att_CellFormat: CellFormats(CellSpan(Base_RL,CellNumberFormat('Percentage',1,0,0,dateFormat:'ABBREV',fullPrecision:0,numbersAsDates:0,datesAsNumbers:0),2,header:0),CellSpan(Base_RL,CellNumberFormat('Fixed Point',3,0,0,dateFormat:'ABBREV',fullPrecision:0,numbersAsDates:0,datesAsNumbers:0),2,header:0),CellSpan(Base_RL,CellNumberFormat('Percentage',2,0,0,dateFormat:'ABBREV',fullPrecision:0,numbersAsDates:0,datesAsNumbers:0),2,header:0),CellSpan(Base_RL,CellNumberFormat('General',3,0,0,dateFormat:'ABBREV',fullPrecision:0,numbersAsDates:0,datesAsNumbers:0),2,header:0))}
+
+Variable Linea
+Title: Línea RL
+Definition: sum(Base_RL*Coeficientes_de_Regr, Base_RL)
+NodeLocation: 352,168,1
+NodeSize: 48,24
+ValueState: 2,40,50,567,291,1,MIDM
+GraphSetup: Att_ContLineStyle Graph_Primary_Valdim:0
+
+Variable Base_RL
+Title: Base RL
+Definition: Table(Self)(1,Fechas)
+IndexVals: ['Intercepto','Pendiende']
+NodeLocation: 216,72,1
+NodeSize: 48,24
+WindState: 2,102,83,476,224
+DefnState: 2,614,133,400,300,0,DFNM
+Att_PrevIndexValue: ['Intercepto','Pendiende']
+
+Variable Precios_AAPL
+Title: Precios AAPL
+Definition: Table(Fechas)(208,209,206,207,207,207,210,209,211,213,218,216,214,214,216,217,219,220,223,226,228,228)
+NodeLocation: 344,72,1
+NodeSize: 48,24
+DefnState: 2,40,50,400,300,0,DFNM
+
+Variable Comparar
+Title: Comparar
+Description: Cmparación de la línea obtenida por la Regresión Lineal y la línea de los datos originales (precios de acciones de Apple).
+Definition: [Linea,Precios_AAPL]
+NodeLocation: 464,120,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,0,0,0,0,,0,1,0
+WindState: 2,0,0,720,350
+ValueState: 2,40,50,400,300,1,MIDM
+GraphSetup: Att_ContLineStyle Graph_Primary_Valdim:1
+
+Close Aja_Regresion
+
+
+{!-40499|MsgBox("This Analytica model file contains text characters encoded in UTF-8 (Unicode) format, not ASCII. It was saved from Analytica release 5.2. You need to upgrade to Analytica 5.2  to read the model correctly. If you use it with this release, the Unicode characters may look strange and parts of the model may not work.",16,"Analytica 5.2 required")}

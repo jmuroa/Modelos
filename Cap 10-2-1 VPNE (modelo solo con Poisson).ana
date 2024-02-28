@@ -1,0 +1,137 @@
+{ Analytica Model VPNE1, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+{!40600|Att_PrevIndexValue AllProbabilityBands: [0,0.01,0.025,0.05,0.1,0.25,0.3333333333333333,0.5,0.6666666666666666,0.75,0.9,0.95,0.0975,0.99,1]}
+{!50016|PlusOnTextReturnsNaN := 0}
+
+
+
+
+Model VPNE1
+Description: El planteamiento de este modelo se encuentra en el libro en el Capítulo 10 en la parte en que tratamos Nuevo Producto (Proceso Desconocido).~
+Básicamente, aborda las etapas de desarrollo y lanzamiento de un producto o servicio, su vida útil o programada (pudiera ser una obsolecencia planificada), los costos del mismo, el flujo de caja y el Valor Presente Neto Esperado por cuanto las variables de ingreso o cálculo del mismo son definidas como variables aleatorias descritas por funciones de probabilidad.~
+Un detalle interesante se encuentra en el nodo ¿Exito? por cuanto allí hemos puesto Bernoulli(60%) cantidad que podemos actualizar según nuestras creencias del éxito de nuestro producto o servicio.~
+Este es un curioso y no común ejemplo de toma de decisiones puesto que la lógica normal de proyectos en Finanzas nos dice que sin VPN > 0 entonces el proyecto debe proceder a realizarse, lo cual se cumple aquí, pero hay otros considerandos como la f.d.p. bimodal, la cual pone un coto a esta regla simple (VPN > 0).
+Author: Jorge
+Date: dom, jul 16, 2017 4:07 p.m.
+DiagState: 2,1,0,880,357,17
+WindState: 2,102,83,476,224
+FontStyle: Arial,15
+FileInfo: 0,Model VPNE1,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 10-2-1 VPNE (modelo solo con Poisson).ana
+
+Chance Costo_Desarrollo_Men
+Title: Costo Desarrollo Mensual
+Units: $
+Description: Costo de desarrollo mensual, lo que se refleja en el flujo de caja como inversión. De allí que podamos calcular el VPN en forma directa (ya vimos el error de considerar esta inversión en el Flujo de Caja como el primer ingreso y, equivocadamente, aplicarle la tasa de descuento.. ~
+Su variabilidad mensual -e independiente mes a mes- está descrita con la distribución LogNormal con Over: Mes, variante que está definida en el nodo del mismo nombre.~
+Si no ponemos Over: Mes estamos suponiendo que el costo es igual cada Mes. Es una elección que hay que tomar. En este caso, suponemos que el costo de cada Mes no es fijo sino que varía cada Mes tomando la variabilidad que implica  la DdP LogNormal
+Definition: Lognormal( mean:10K, stddev:3K, over:Mes )
+NodeLocation: 168,192,1
+NodeSize: 56,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Chance A_Exito_
+Title: ¿Exito?
+Description: Variable aleatoria crítica pues no hay seguridad de que un producto (cualquiera) tenga éxito.~
+Se supone en un 60% que tenga éxito.~
+Dado que hay dicotomía (éxito o fracaso solamente), y solo dos resultados la distribución Bernoulli es la apropiada por ser rápida y directa. ~
+Una manera de interactuar con el modelo es poniendo una cantidad diferente (40%, 80%, 90%, etc.) a fin que nuestra creencia de éxito se refleje en el mismo con solo cambiar el porcentaje de la misma en Bernoulli(X%).
+Definition: Bernoulli(60%)
+NodeLocation: 168,256,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,%,4,0,0,0,4,0,$,0,"ABBREV",0,,,0,0,15
+
+Chance Vida_del_Producto
+Title: Vida del Producto
+Units: Mes
+Description: Estimada en 24 meses pero con incertidumbre. Esta última la describimos o modelizamos con la DdP de Poisson con un valor de 24.
+Definition: Poisson(24)
+NodeLocation: 168,312,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Chance Ultilidad_Post_Lanza
+Title: Ultilidad Post Lanzamiento
+Description: Las utilidades DESPUÉS del lanzamiento, son descritas por una DdP Normal con un estimado de 10K y una desviación de 8K (muy alta) y con independencia del mes (puesta como Over:Mes) ya que así son los emprendimientos: cada mes es independiente de otro. Es lo mismo que hemos supuesto en Costo de Desarrollo.~
+Tener en cuenta que no hay Utilidades ANTES que termine la etapa de Desarrollo (Poisson (9). Por tanto debemos esperar a que esta termine para recién ingresarlas.~
+La  desviación estándar alta (8K) establece nuestra incertidumbre (alta) de cómo serán las Utilidades posteriores al lanzamiento del producto (Ulil_Pos_Lanza)
+Definition: Normal( 10K, 8000, over:Mes )
+NodeLocation: 168,376,1
+NodeSize: 72,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Flujo_Caja
+Title: Flujo Caja
+Units: $
+Description: Condicionales anidados (este es el nombre que se le da) porque hay IF THEN ELSE dentro de otro/s IF THEN ELSE.~
+Esto es estricta lógica.  
+Definition: if Mes <= Tiempo_de_desarrollo then -Costo_Desarrollo_Men~
+else if not A_Exito_ then 0~
+else if Mes <= Tiempo_de_desarrollo+Vida_del_Producto then Ultilidad_Post_Lanza~
+else 0
+NodeLocation: 304,232,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,104,37,802,477,1,CONF
+NodeFont: Arial Rounded MT Bold,16
+Att_ResultSliceState: [Scenario,2,Sys_LocalIndex('Probability'),1,Mes,1]
+
+Objective VPNE
+Title: VPNE
+Units: $
+Description: El promedio arroja positivo o sea que, según las Finanzas tradicionales, se debería implementar el proyecto. Pero, viendo la densidad de la DdP (Result --> Probability Density) se observa que hay dos picos o Modas (llamado bimodal), cada uno  con gran probabilidad tanto en el lado positivo como en el negativo. Esto  conforma una toma de deciciones que, si no se toma en cuenta, constituye un riesgo enorme. Miller: Mathematics & Statistics for Financial Risk Management; pp. 84-85.
+Definition: NPV(1%, Flujo_Caja, Mes)
+NodeLocation: 416,232,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,137,-5,868,466,0,MEAN
+GraphSetup: {!40400|Sys_PdfSmoothMethod:1}
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Index Mes
+Title: Mes
+Units: Mes
+Description: 50 meses es un estimado para no quedarse ni muy  corto ni excederse dado que el tiempo de Utilidad Post Lanzamiento o Utilidades es 24 meses, pero previamente hay una etapa de desarrollo (9 meses) sin la cual no habría producto. Este número de meses se puede modificar para arriba o abajo según vayamos viendo si encaja con los los resultados y eso lo estimamos con la vista Probability Bands del menú Results.
+Definition: 1..50
+NodeLocation: 168,64,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,88,91,416,303,0,MIDM
+NodeColor: 39321,47314,65535
+NodeFont: Arial Rounded MT Bold,19
+
+Chance Tiempo_de_desarrollo
+Title: Tiempo de desarrollo
+Units: Mes
+Description: El tiempo que se espera para desarrollar el producto o servicio.
+Definition: Poisson(9)
+NodeLocation: 168,128,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,16
+
+Close VPNE1
+

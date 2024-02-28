@@ -1,0 +1,230 @@
+{ Analytica Model Measures_of_risk_and, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+Time := 0..100
+SampleSize := 1000
+SampleType := 1
+Att_ContLineStyle Run: 0
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40300|Sys_DomainSelfIndex := 1}
+{!40400|Sys_WindowsMaximized := 1}
+{!40400|Sys_AllNullTreatment := 1}
+{!50016|PlusOnTextReturnsNaN := 0}
+
+
+
+
+Model Measures_of_risk_and
+Title: Measures of Risk and Utility
+Description: Modelo creado para explorar conceptos y medidas cuantitativas de Riesgo y Utilidad, varias concepciones y tipos de riesgo, y explorar temas relevantes para la construcción de modelos que incluyen funciones de utilidad y pérdida, valor esperado, utilidad esperada, neutralidad de riesgo, aversión al riesgo, fractiles y Valor en Riesgo (VaR).~
+Medidas de Riesgo:~
+~
+¿Qué es el riesgo? Según quién responda tendrá muchas respuestas. El riesgo está en todo en realidad. Una breve lista (no exhaustiva por supuesto) podría ser:~
+	Dinero.~
+	Propiedad.~
+	Vidas (riesgo de muerte).~
+	Acortamiento de la vida.~
+	Bienestar físico (riesgo de lesiones, dolor).~
+	Bienestar emocional.~
+	Reputación.~
+	Poder o influencia.~
+	Bienestar del planeta (medio ambiente).~
+	Condición o valores de la sociedad.~
+	… (sigue).~
+Como podemos ver, con seguridad tenemos mucho en común en cuanto a percepción de riesgo. ~
+Este ejercicio consiste en que construyamos un modelo de una posible inversión inmobiliaria a 5 años. Para ello, compraremos un bien inmobiliario cuyo precio de compra es $250K mediante una hipoteca cuyo pago inicial es de $50K (supongamos que la hipoteca es $200K a 5.5% fijos a 30 años, aun cuando este dato no necesario para el modelo) donde el ingreso neto total durante 5 años está representado por la distribución Normal(-$25K, $10K) en donde están contemplados los pagos de mantenimiento, gerencia, impuestos, etc.~
+El bien inmobiliario se apreciará en 5 años modelizado con una distribución Normal(12%, 10%) y va a ser vendido después de 5 años con un saldo hipotecario en ese momento de $185K.~
+1.	Calculemos el beneficio y retorno de la inversión.~
+2.	Mostremos el perfil de riesgo con la f.d.a.~
+3.	Elaboremos algunas las medidas de riesgo.~
+~
+Y a continuación lo que tenemos dentro:~
+~
+Respuestas~
+1.	El beneficio está en el nodo Ganancia y el retorno de la inversión en el nodo ROI (Return on Investment también visto o usado como RSI o Retorno Sobre Inversión). ~
+2.	El perfil de riesgo.~
+3.	Algunas métricas de riesgo son:~
+ ~
++ Probabilidad de pérdida  → Es la más intuitiva y se explica por sí misma: Probability(Ganancia < 0).~
++ 5% VaR o  Valor en Riesgo (VaR es el acrónimo de Value at Risk) para medir el riesgo financiero de una inversión e indica la probabilidad (en este caso 5%) de sufrir una determinada pérdida durante un periodo de tiempo. Así, el VaR del 5% a cinco años es el percentil 5% para una pérdida a 5 años, o P (Ganancia ≤ 5%), lo que se puede expresar como GetFract (Ganancia, 5%), donde GetFract (x, p) obtiene P(x ≤ 5%). Esta instrucción fue explicada en detalle en el capítulo 3 en Tornados con Variaciones Porcentuales y en el capítulo 5 cuando se vio Distribuciones de Probabilidad Discretas.~
+~
+En otras palabras, se obtiene el percentil 5% que dé la cantidad a perder con chance 1 de cada 20 veces. Visualmente, la f.d.p. de Ganancia estaría en el mismo eje bajo la región coloreada de la distribución, es decir la probabilidad del 5% que sea menor que este número estimado por Analytica en $23.728 (con SampleSize = 1K o tamaño de muestra = 1000). El VaR se suele representar como una cantidad positiva, es decir se agrega el signo menos y queda como: –Getfract (Ganancia, 5%). ~
+ ~
++ Desv. Est.Ganancia, es la desviación estándar de la Ganancia esperada [SDeviation (Ganancia)]. En otras palabras, la “volatilidad” de la inversión.~
+~
+
+Author: Lonnie Chrisman~
+Lumina Decision Systems
+Date: Thu, May 20, 2010 9:54 AM
+DefaultSize: 48,24
+DiagState: 2,24,16,538,308,17
+FontStyle: Arial, 15
+FileInfo: 0,Model Measures_of_risk_and,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 9-2 Invertir y medidas de riesgo -- Continuación.ana
+{!40400|Att_clearTypeFonts: 0}
+
+Objective A5__Deficit_Previst1
+Title: 5% Déficit Previsto
+Description: Medida más 'ácida'. Es lo peor que puede pasar puesto que es un número promedio de los peores escenarios dentro del 5% del VaR.
+Definition: mean( -Ganancia1, w:-Ganancia1>=A5__var1)
+NodeLocation: 648,216,1
+NodeSize: 48,32
+NodeInfo: 1,1,1,1,1,1,0,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,68,161,416,303,0,MIDM
+NumberFormat: 2,F,4,2,1,1,4,0,$,0,"ABBREV",0
+
+Objective A5__var1
+Title: 5% VaR
+Description: El VaR (Value at Risk) es la medida ampliamente usada para la medición del riesgo no solo por mandato de la SEC estadounidense sino porque si queremos asegurar la inversión, las aseguradoras no aseguran el valor del VaR.
+Definition: -GetFract( Ganancia1, 5% )
+NodeLocation: 648,144,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,0,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Chance Apreciacion1
+Title: Apreciación
+Units: %
+Description: Supone que el bien o activo se va a revalorizar en un 12% con una variavilidad del 10% para arriba o para abajo puesto que está modelizado por la distribución Normal(12%,10%).
+Definition: Normal(12%,10%)
+NodeLocation: 96,280,1
+NodeSize: 64,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Balance_Hipoteca1
+Title: Balance Hipoteca
+Units: $
+Definition: $185K
+NodeLocation: 224,288,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Objective Desv_Est_Ganancia1
+Title: Desv Est Ganancia
+Description: Medida de la volatilidad de la Ganancia. Es decir qué tanto para arriba o para abajo de un cierto valor puede oscilar.
+Definition: SDeviation(Ganancia1)
+NodeLocation: 760,160,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,0,,0,,0,,,
+WindState: 2,102,77,476,224
+
+Objective Ganancia1
+Title: Ganancia
+Units: $
+Definition: Precio_de_Venta1 - Inversion1 - Balance_Hipoteca1 + Ingreso_Total_Neto1
+NodeLocation: 312,184,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,204,36,550,328,1,CDFP
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,D,1,1,0,1,1,0,$,0,"ABBREV",0,,,0,0,15
+
+Chance Ingreso_Total_Neto1
+Title: Ingreso Total Neto
+Units: $
+Description: Ingreso neto mientras poseemos la propiedad representado por los recibos de alquiler, menos mantenimiento, pagos por el préstamo, gastos de administración, etc.~
+De allí qu su media sea negativa y representada por la Normal(-25K,10K).
+Definition: Normal(-25K,10K)
+NodeLocation: 184,112,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Decision Inversion1
+Title: Inversión
+Units: $
+Definition: $50K
+NodeLocation: 320,80,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Precio_de_Venta1
+Title: Precio de Venta
+Units: $
+Description: Es el precio de compra presente multiplicado por la Apreciación que pueda tener, la cual es incierta.~
+
+Definition: Precio_de_Compra1 * (1+Apreciacion1)
+NodeLocation: 192,208,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,441,178,416,303,1,CDFP
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Precio_de_Compra1
+Title: Precio de Compra
+Units: $
+Description: Una inversión promedio en una propiedad.
+Definition: $250K
+NodeLocation: 80,192,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Objective Prob_de_Perdida1
+Title: Prob de Pérdida
+Description: La medida más intuitiva es la probabilidad de pérdida.
+Definition: Probability( Ganancia1<0 )
+NodeLocation: 648,88,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,0,,0,,0,,,
+WindState: 2,102,77,476,224
+
+Constant Riqueza1
+Title: Riqueza
+Description: Esta sería nuestra riqueza antes de hacer la inversión.
+Definition: $500K
+NodeLocation: 872,128,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,0,,0,,0,,,
+WindState: 2,102,77,476,224
+
+Objective Roi1
+Title: ROI
+Units: %
+Definition: Ganancia1 / Inversion1
+NodeLocation: 424,144,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,0,0,720,350
+ValueState: 2,93,-5,715,486,1,CDFP
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,%,4,2,0,0,4,0,$,0,"ABBREV",0
+
+Text Te1554573238
+Description: Varias Métricas del Riesgo
+NodeLocation: 732,144,-1
+NodeSize: 132,120
+NodeInfo: 1,1,1,1,1,1,0,,0,,0,,,
+
+Objective Utilidad_Bernoulli1
+Title: Utilidad Bernoulli
+Units: $
+Definition: mean(ln(Riqueza1+Ganancia1) - ln(Riqueza1))
+NodeLocation: 760,232,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,0,,0,,0,,,
+WindState: 2,0,0,720,350
+ValueState: 2,91,183,416,303,0,MIDM
+
+Close Measures_of_risk_and
+
+
+{!-40499|MsgBox("This Analytica model file contains text characters encoded in UTF-8 (Unicode) format, not ASCII. It was saved from Analytica release 5.2. You need to upgrade to Analytica 5.2  to read the model correctly. If you use it with this release, the Unicode characters may look strange and parts of the model may not work.",16,"Analytica 5.2 required")}

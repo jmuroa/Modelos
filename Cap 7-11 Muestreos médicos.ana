@@ -1,0 +1,91 @@
+{ Analytica Model Sangre, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Sangre
+Description: Un análisis de sangre de laboratorio es un 95% efectivo para detectar una determinada enfermedad cuando esta está presente.~
+Sin embargo, el test también arroja un resultado de “falsos positivos”  para el 1% de las personas evaluadas. Es decir, si una persona sana es analizada, entonces, con una probabilidad de 0.01, el resultado de la prueba implicará que tiene la enfermedad. Supongamos que el 0.5% de la población realmente tiene la enfermedad.
+Author: Jorge
+Date: mié, ago 22, 2018 11:23 a.m.
+DiagState: 2,1,0,806,440,17
+FontStyle: Arial,15
+FileInfo: 0,Model Sangre,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 7-11 Muestreos médicos.ana
+
+Constant Efectividad_de_Test
+Title: Efectividad de Test
+Units: %
+Description: La efectividad del test (95%)
+Definition: 95%
+NodeLocation: 144,56,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+Aliases: FormNode Fo1534956445
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Margen_Error
+Title: Margen Error
+Description: Todo test tiene un margen de error, en este caso es 1%.
+Definition: 1%
+NodeLocation: 144,120,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+Aliases: FormNode Fo1534956447
+NodeFont: Arial Rounded MT Bold,16
+
+Objective Resultado1
+Title: Resultado
+Description: Cálculo bayesiano
+Definition: (Efectividad_de_Test*Tasa_en_poblacion)/((Efectividad_de_Test*Tasa_en_poblacion)+(Margen_Error*(1-Tasa_en_poblacion)))
+NodeLocation: 272,128,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,104,107,416,303,,MIDM
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,F,4,3,0,0,4,0,$,0,"ABBREV",0,,,0,0,15
+
+Variable Tasa_en_poblacion
+Title: Tasa en población
+Units: %
+Description: La cantidad de la población que tiene la enfermedad (0.5%)
+Definition: 0.5%
+NodeLocation: 144,184,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+Aliases: FormNode Fo1534956515
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,F,4,4,0,0,4,0,$,0,"ABBREV",0,,,0,0,15
+
+FormNode Fo1534956445
+Title: Efectividad
+Definition: 0
+NodeLocation: 556,64,1
+NodeSize: 132,16
+Original: Efectividad_de_Test
+
+FormNode Fo1534956447
+Title: Margen Error
+Definition: 0
+NodeLocation: 520,192,1
+NodeSize: 96,16
+Original: Margen_Error
+
+FormNode Fo1534956515
+Title: Tasa en población
+Definition: 0
+NodeLocation: 556,264,1
+NodeSize: 132,16
+Original: Tasa_en_poblacion
+
+Close Sangre
+

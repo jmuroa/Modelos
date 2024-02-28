@@ -1,0 +1,98 @@
+{ Analytica Model Juguetes, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Juguetes
+Description: Modelo con incertidumbre en la demanda Normal(100K, 25K).~
+En el nodo Compra figura Sequence(70K, 130K, 1K), es decir desde 70K hasta 130K, con pasos (Step) de 1K, puesto que no tiene sentido poner de uno en uno. De mil en mil son escenarios adecuados para no recargar el modelo con cálculos que pueden hacerlo ralentizar o lentificar.~
+Para poner el modelo sin incertidumbre en la oferta (Compra), podemos reemplazar  Sequence(70K, 130K, 1K) con 100K, que es lo que se plantea como un primer modelo. De allí que hayamos puesto versiones 1 y 2.
+Author: Jorge
+Date: jue, jul 26, 2018 2:54 p.m.
+DiagState: 2,1,0,624,600,17
+FontStyle: Arial,15
+FileInfo: 0,Model Juguetes,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 7-6 Juguetes -- versiones 1 y 2.ana
+
+Constant Costo_Unit
+Title: Costo Unit
+Units: $
+Definition: $5
+NodeLocation: 392,72,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,0,0,720,350
+NodeFont: Arial Rounded MT Bold,16
+
+Constant Precio_Unit
+Title: Precio Unit
+Units: $
+Definition: $10
+NodeLocation: 288,72,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,0,0,720,350
+NodeFont: Arial Rounded MT Bold,16
+
+Chance Demanda
+Title: Demanda
+Description: Incertidumbre expresada en la distribución Normal.
+Definition: Normal(100K, 25K)
+NodeLocation: 176,72,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Vendidas
+Title: Vendidas
+Description: Ponemos corchetes [ ] dentro de la instruccón Min() por cuanto en su interior estamos poniendo arrays o matrices.
+Definition: Min([Compra,Demanda])
+NodeLocation: 176,160,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,0,0,720,350
+NodeFont: Arial Rounded MT Bold,16
+
+Variable No_Vendidas
+Title: No Vendidas
+Definition: Compra - Vendidas
+NodeLocation: 176,256,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,0,0,720,350
+NodeFont: Arial Rounded MT Bold,16
+
+Objective Ganancias
+Title: Ganancias
+Units: $
+Definition: Vendidas * Precio_Unit - No_Vendidas * Costo_Unit
+NodeLocation: 320,160,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,0,0,720,350
+ValueState: 2,40,50,400,300,1,MEAN
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,D,4,2,0,1,4,0,$,0,"ABBREV",0,,,0,0,15
+
+Decision Compra
+Title: Compra
+Definition: Sequence(70K, 130K, 1K)
+NodeLocation: 64,168,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Close Juguetes
+

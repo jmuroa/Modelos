@@ -1,0 +1,77 @@
+{ Analytica Model Oro_V__0, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Oro_V__0
+Title: Oro V. 0
+Description: En esta primera versión, los Costos de Extración son conocidos y el  Tamaño del Depósito de igual manera.~
+Solo hay incertidumbre en el precio del oro a un año, lo que modelizamos con la distribución ~
+LogNormal(mean: $1K, stddev:$500).~
+Es un modelo básico e iremos introduciento incertidumbres de la vida real en modelos siguientes.
+Author: Jorge
+Date: vie, ago 3, 2018 2:38 p.m.
+DiagState: 2,1,0,694,305,17
+FontStyle: Arial,15
+FileInfo: 0,Model Oro_V__0,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 6-13 Oro V. 1.1.ana
+
+Variable Costos_de_Extraccion
+Title: Costos de Extracción
+Units: $
+Description: Los costos de operar y extraer el mineral.
+Definition: 900k
+NodeLocation: 72,48,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Tamano_Deposito
+Title: Tamaño Depósito
+Units: ha
+Description: Tamaño del  Depósito conocido e igual a 1K o mil hectáreas.
+Definition: 1K
+NodeLocation: 72,104,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,15
+
+Chance Precio_Oro
+Title: Precio Oro~
+(próximo año)
+Units: $
+Description: El procio del mineral (oro en este caso) a un año. No lo sabemos naturalmente, pero creemos que estará en $1K y podemos equivocarnos en $500.~
+Pero, como el oro no puede tener precios negativos (?) ponemos la distribución LogNormal(mean: $1K, stddev:$500) para modelizar nuestras creencias.
+Definition: LogNormal(mean: $1K, stddev:$500)
+NodeLocation: 72,168,1
+NodeSize: 64,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeFont: Arial Rounded MT Bold,15
+
+Objective Ganancias
+Title: Ganancias
+Units: $
+Definition: Tamano_Deposito*Precio_Oro - Costos_de_Extraccion
+NodeLocation: 200,104,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,363,75,598,418,1,PDFP
+GraphSetup: Att_ContLineStyle Graph_Cdf_Valdim:0~
+{!40400|Sys_PdfSmoothMethod:1}~
+Att_GraphValueRange Ganancias:|1:1,,0,,,,,-1M,4M,0~
+Att_GraphValueRange Graph_Cdf_Valdim:1,,0,1,,,,0,1,0
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+{!40200|Att_GraphSetupSlices: [3,1,DensityIndex,1]}
+
+Close Oro_V__0
+

@@ -1,0 +1,79 @@
+{ Analytica Model A04_Numero_de_avella, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model A04_Numero_de_avella
+Description: Inserción de una variable incierta (Prob Binomial) a fin de ver la versatilidad en los gráficos para que nos ayuden en la toma de decisiones.~
+Fue Blaise Pascal (1623-1662) el primero que expuso la necesidad de las probabilidades en la toma de decisiones.~
+En su obra Pensées (Pensamientos) introduce lo que ahora conocemos como la «Apuesta de Pascal», según la cual la fe en Dios no solo es acertada sino también racional, porque: «Si ganan, lo ganan todo y si pierden, no pierden nada»~
+Su más conocida frase «El corazón tiene razones que la razón desconoce» es sin duda la más conocida. Un adelantado a su época pues está demostrado a la fecha que primero somos emocionales antes que racionales.~
+Citaremos al Dr. Daniel López Rosetti en su libro Emoción y sentimientos:~
+~
+     «Pese a que muchos así lo consideremos, no es lo mismo emoción que sentimientos. Las emociones son~
+       vivencias con rostro (miedo, ira, alegría, tristeza, asco, y sorpresa) y las podemos distinguir físicamente.~
+       No se aprenden, forma parte de nuestra herencia biológica y son reconocibles por cualquier persona en ~
+       cualquier parte del mundo. Un ciego de nacimiento nunca ha visto una expresión de miedo o alegría, ~
+       pero la expresará de una forma común a todos nosotros. Cuando esas emociones básicas se mezclan, ~
+       se tramitan en el cerebro, se convierten en sentimientos (amor, fe, orgullo, culpa…). Éstos son menos ~
+       intensos que las emociones, pero mucho más duraderos».~
+La razón, en cambio, solo la hemos incorporado mucho después en nuestra etapa evolutiva. Es 'muy reciente' digamos.~
+
+Author: Jorge
+Date: jue, jun 28, 2018 3:37 p.m.
+DiagState: 2,1,0,1200,213,17
+FontStyle: Arial,15
+FileInfo: 0,Model A04_Numero_de_avella,2,2,0,0,D:\DATA JORGE\Documents\00 Libro Estadística\Modelos Libro\Cap 4-1 Número de avellanas y Tabla de Probabilidad (Prob Table).ana
+
+Chance Prob_Binomial
+Title: Prob Binomial
+Description: La probabilidad binomial (10, 0.5) que el Nº de Avellanas sea igual a 7.
+Definition: Probability(Binomial(10, 0.5) = 7)
+NodeLocation: 96,64,1
+NodeSize: 48,24
+ValueState: 2,88,91,416,303,,MIDM
+NumberFormat: 2,%,2,1,0,0,2,0,$,0,"ABBREV",0,,,0,0,15
+
+Variable Numero_Avellanas
+Title: Número Avellanas
+Description: Definición desde el 0 al 5 de manera abreviada usando dos puntos seguidos (..)
+Definition: 0..5
+NodeLocation: 232,56,1
+NodeSize: 48,24
+Att_PrevIndexValue: [0,1,2,3,4,5]
+
+Variable Prob__Avellana
+Title: Prob. Avellana
+Description: Tabla de probabilidades (self-index) con el Nº de Avellanas y las probabilidades de cada número de avellanas. 
+Definition: Table(Numero_Avellanas)(0.03,0.04,0.25,0.3,0.26,0.12)
+NodeLocation: 232,152,1
+NodeSize: 48,24
+DefnState: 2,232,235,416,303,,DFNM
+ValueState: 2,280,185,416,303,1,MIDM
+GraphSetup: Att_ForceCategorical Graph_Primary_Valdim:1~
+Att_ContLineStyle Graph_Primary_Valdim:5~
+Att_GraphIndexRange Numero_Avellanas:1,,0,,,,,0,5,0
+NumberFormat: 2,%,4,0,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable Prob_Acumulada
+Title: Prob Acumulada
+Description: Es lo mismo solo que en el menú de resultados (Show Resull o Ctrl + R) se pone la vista Cumulative.
+Definition: Table(Numero_Avellanas)(0.03,0.07,0.32,0.62,0.88,1)
+NodeLocation: 352,160,1
+NodeSize: 56,24
+ValueState: 2,72,75,416,303,1,MIDM
+GraphSetup: Att_ForceCategorical Graph_Primary_Valdim:1
+NumberFormat: 2,%,4,0,1,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Close A04_Numero_de_avella
+

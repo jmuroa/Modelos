@@ -1,0 +1,141 @@
+{ Analytica Model Aja_Regresion, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+Time := copyindex(todas_fechas)
+SampleSize := 10K
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+{!40600|Att_PrevIndexValue AllProbabilityBands: [0,0.01,0.025,0.05,0.1,0.25,0.3333333333333333,0.5,0.6666666666666666,0.75,0.9,0.95,0.0975,0.99,1]}
+{!50016|PlusOnTextReturnsNaN := 0}
+
+
+
+
+Model Aja_Regresion
+Description: Modelo de Regresión Cúbica.
+Author: Jorge
+Date: mié, abr 1, 2015 1:25 p.m.
+DiagState: 2,1,0,749,139,17
+FontStyle: Arial,15
+FileInfo: 0,Model Aja_Regresion,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 11-5 Regresión Cúbica.ana
+
+Index K_RC
+Title: K RC 
+Description: Base para la Regresión Cúbica. Ponemos 'C' (por Coeficiente) y luego lo concatenamos (operador « & » ) con los números desde 0 a 3, lo que nos dará C0,...C3.~
+Es decir los coeficientes para el coeficiente intependiente, X, X2,  y X3.
+Definition: 'C' & 0..3
+NodeLocation: 168,200,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Base_RC
+Title: Base RC
+Description: El operador posicional '@' asignará numeros a las fechas a fin que haya un correlato entre estas y el 'Precio de la Acción'. De esta manera evitamos incluir diás no laborable y la correspondencia entre Fechas y Precios es independiante de qué día se han hecho la transacciones.~
+El operador '^' el elevar a la potencia que está a la derecha. En este caso 
+Definition: @Fechas^(@K_RC-1)
+NodeLocation: 432,120,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Coef__de_Regresion
+Title: Coef. de Regresión
+Description: Regresión  de 'Precio de la Acción' y 'Fechas' teniendo ambos como índice nuestra base cúbica (K_RC).
+Definition: Regression(Precio_accion1, Base_RC, Fechas, K_RC)
+NodeLocation: 296,208,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,2,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+{!50000|Att_ColumnWidths: [53]}
+
+Variable Linea_RC
+Title: Linea RC
+Description: Lo mismo que en las anteriores regresiones. Es construir la curva de regresión.
+Definition: sum(Coef__de_Regresion*Base_RC, K_RC)
+NodeLocation: 432,208,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,1,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Comparacion
+Title: Comparación
+Description: Comparación entre nuestros datos 'Precio de la Acción' y nuestra curva de regreción construida anteriormente.
+Definition: [Precio_accion1,Linea_RC]
+NodeLocation: 568,208,1
+NodeSize: 64,24
+NodeInfo: 1,1,1,1,1,1,1,0,0,0,0,0,,0
+WindState: 2,102,77,476,224
+ValueState: 2,136,139,416,303,1,MIDM
+NodeColor: 39321,1,1
+NodeFont: Arial Rounded MT Bold,15
+NodeFontColor: 65535,65535,65535
+
+Variable Precio_accion1
+Title: Precio acción
+Units: $
+Description: Precio tipeado (o copiado de una hoja electrónica, llámese Excel) hacia una Table que se ha indexado por Fechas.
+Definition: Table(Fechas)(70,75,75,82,85,90,70,86,90,88,86,92,90,93,95)~
+
+NodeLocation: 296,120,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+DefnState: 2,40,50,400,300,0,DFNM
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Variable correl
+Title: Correlación
+Description: Correlación entre 'Precio de la Acción' y 'Fechas' a través del índice 'Fechas'.
+Definition: Correlation(Precio_accion1, Fechas, Fechas)
+NodeLocation: 168,280,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeColor: 1,4,52427
+NodeFont: Arial Rounded MT Bold,15
+NodeFontColor: 65535,65535,65535
+
+Variable R_Cuadrado1
+Title: R Cuadrado
+Description: Coeficiente de Determinación o R2 resultante de elevar la correlación al cuadrado ( ^2).
+Definition: correl^2
+NodeLocation: 296,280,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeColor: 1,4,52427
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,%,4,2,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+NodeFontColor: 65535,65535,65535
+
+Index Fechas
+Att_PrevIndexValue: [20-Sep-2018,21-Sep-2018,24-Sep-2018,25-Sep-2018,26-Sep-2018,27-Sep-2018,28-Sep-2018,1-Oct-2018,2-Oct-2018,3-Oct-2018,4-Oct-2018,5-Oct-2018,8-Oct-2018,9-Oct-2018,10-Oct-2018]
+Title: Fechas
+Units: Días
+Description: Ponemos 'wd' para que nos dé el número de días de la semana desde la fecha de origen, incluido el día indicado.
+Definition: Sequence( 20-sep-2018, 10-oct-2018,  1, dateUnit: "wd")
+NodeLocation: 168,120,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,15
+
+Close Aja_Regresion
+

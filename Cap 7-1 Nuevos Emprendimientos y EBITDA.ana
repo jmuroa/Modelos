@@ -1,0 +1,105 @@
+{ Analytica Model EBITDA, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model EBITDA
+Description: Modelo donde usamos distintas distribuciones de probabilidad para modelizar en mejor manera nuestras incertidumbres en todo tipo en cuanto a las magnitudes (Mercado, Costos, etc.) en la introducción de un nuevo producto o servicio.~
+También hemos puesto el EBITDA cuya traducción -aun cuando es práctica habitual no traducirlo- es "Beneficios antes de intereses, impuestos, depreciación y amortización" del inglés "Earnings before Interest, Taxes, Depreciation and Amortization". La principal utilidad del EBITDA es que muestra los resultados de un proyecto sin considerar los aspectos financieros o fiscales.
+Author: Jorge
+Date: vie, jul 27, 2018 11:46 a.m.
+DiagState: 2,1,0,624,201,17
+FontStyle: Arial,15
+FileInfo: 0,Model EBITDA,2,2,0,0,D:\DATA JORGE\Documents\00 Libro Estadística\Modelos Libro\Cap 7-1 Nuevos Emprendimientos y EBITDA.ana
+
+Chance Mercado
+Title: Mercado
+Description: Suponemos que el Mercado es de 100 mil unidades pero nuestra equivocación pudiera estar alrededor de los 25 mil tanto para arriba como para abajo de esa cantidad.~
+Si suponemos equiprobabilidad hacia arriba y hacia abajo, la distribución Normal(100K, 25K) es la más apropiada.
+Definition: Normal(10K, 2.5K)
+NodeLocation: 224,72,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Chance Proporcion
+Title: Proporcion
+Units: %
+Description: Es el rango de participación del mercado en porcentaje (%) que esperamos capturar con probabilidades de 10%, 30% y 60%.~
+Para ellos, usamos una Tabla de Probabilidad (Prob Table) donde introducimos los %  y sus probabilidades respectivamente; cuidando que en Domain, estas sean números (Numbers) pues por defecto las considera Texto.
+Definition: ProbTable(Self)(0.1,0.3,0.6)
+NodeLocation: 224,128,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+DefnState: 2,40,50,400,300,0,DFNM
+ValueState: 2,40,50,400,300,1,PDFP
+NodeFont: Arial Rounded MT Bold,16
+ReformDef: [Null,Sys_LocalIndex('DomainIndex')]
+NumberFormat: 2,%,4,0,0,0,4,0,$,0,"ABBREV",0,,,0,0,15
+Domain: [0.3,0.4,0.6]
+{!40300|DomainExpr: Discrete(30%,40%,60%,type:'number')}
+{!50000|Att_ColumnWidths: [28]}
+
+Decision Precio
+Title: Precio
+Units: $
+Description: Es un nodo de Decisión por lo que el valor puesto ($10) es a elección.
+Definition: $10
+NodeLocation: 120,208,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Chance Costo_Variable
+Title: Costo Variable
+Units: $
+Description: El costo variable estará sujeto a las unidades a vender lo que depende directamente del % del mercado a capturar.~
+De allí la multiplicación de la proporción a capturar (en %) multiplicada por un 20% para cada escenario. 
+Definition: Proporcion*20%
+NodeLocation: 224,256,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Chance Costo_Fijo
+Title: Costo Fijo
+Units: $
+Description: Este costo es independiente de lo que vendamos pues son las cuentas que hay que pagar de todas maneras (planilla o plantilla, alquiler, agua, luz, mantenimiento, etc.).
+Definition: 20K
+NodeLocation: 224,320,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,16
+
+Objective Ganancia_EBITDA
+Title: Ganancia EBITDA
+Units: $
+Description: Como está en el mismo nombre, esta es la Ganancia Bruta. También se suele usar el acrónimo EBITDA.
+Definition: (Mercado*Proporcion)*(Precio-Costo_Variable) - Costo_Fijo
+NodeLocation: 416,104,1
+NodeSize: 56,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,1,CDFP
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Close EBITDA
+

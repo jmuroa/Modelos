@@ -1,0 +1,123 @@
+{ Analytica Model Poisson_y_Binomial, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 10K
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Poisson_y_Binomial
+Description: El modelo es el cálculos de las probabilidades obtenidas por las distribuciones de probabilidad Binomial y Poisson paso a paso tal como figura en el Diagrama de Influencia.~
+Para cada distribución se hace un cuadro en Compare1 y Compare2 a fin de ver la obtención de las probabilidades requeridas en un solo cuadro.~
+Si selecionados los nodos Compare1 y  Compare2 y hacemos clic, obtendremos los resultados comparativos entre una y otra distribución.
+Author: Jorge
+Date: vie, jul 13, 2018 9:27 a.m.
+DiagState: 2,1,0,624,289,17
+FontStyle: Arial Rounded MT Bold,15
+FileInfo: 0,Model Poisson_y_Binomial,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 6-5 Seguros Aéreos (Poisson y Binomial).ana
+
+Chance Poisson__4
+Title: Poisson ≤ 4
+Description: Probabilidad que la distribución de Poisson(4) sea <= 4
+Definition: Probability(Poisson(4) <= 4)
+NodeLocation: 120,64,1
+NodeSize: 56,24
+WindState: 2,102,77,476,224
+ValueState: 2,88,91,416,303,,MEAN
+NumberFormat: 2,F,4,4,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Chance Poisson___2
+Title: Poisson > 2
+Description: Probabilidad que la distribución de Poisson(4) sea > 2
+Definition: Probability(Poisson(4) > 2)
+NodeLocation: 120,192,1
+NodeSize: 56,24
+WindState: 2,102,77,476,224
+NumberFormat: 2,F,4,4,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Chance Poisson___12
+Title: Poisson = 12
+Description: Probabilidad que la distribución de Poisson(4) sea = 12
+Definition: Probability(Poisson(4) = 12)
+NodeLocation: 120,248,1
+NodeSize: 56,24
+WindState: 2,102,77,476,224
+NumberFormat: 2,F,4,4,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable l
+Title: λ (Valor Esperado Poisson)
+Description: Valor esperado de la distribución de Poisson(4)
+Definition: 4
+NodeLocation: 120,128,1
+NodeSize: 56,32
+WindState: 2,102,77,476,224
+
+Chance Binomial__4
+Title: Binomial ≤ 4
+Description: Probabilidad que la distribución Binomial(4K,1m) sea <= 4
+Definition: Probability(Binomial(4K,1m) <= 4)
+NodeLocation: 456,64,1
+NodeSize: 56,24
+WindState: 2,102,77,476,224
+ValueState: 2,88,91,416,303,,MEAN
+NumberFormat: 2,F,4,4,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Chance Binomial___12
+Title: Binomial = 12
+Description: Probabilidad que la distribución Binomial(4K,1m) sea = 12
+Definition: Probability(Binomial(4K,1m) = 12)
+NodeLocation: 456,256,1
+NodeSize: 56,24
+WindState: 2,102,77,476,224
+NumberFormat: 2,F,4,4,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Chance Binomial___2
+Title: Binomial > 2
+Description: Probabilidad que la distribución Binomial(4K,1m) sea > 2
+Definition: Probability(Binomial(4K,1m) > 2)
+NodeLocation: 456,200,1
+NodeSize: 56,24
+WindState: 2,102,77,476,224
+NumberFormat: 2,F,4,4,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable Valor_Esperado_Binom
+Title: Valor Esperado Binomial
+Description: Valor esperado de la distribución Binomial(4K*1m).
+Definition: 4K*1m
+NodeLocation: 456,128,1
+NodeSize: 56,32
+WindState: 2,102,77,476,224
+ValueState: 2,216,219,416,303,,MEAN
+
+Variable Compare1
+Description: Comparación entre todos los resultados planteados (Poisson).
+Definition: [l,Poisson__4,Poisson___2,Poisson___12]
+NodeLocation: 272,152,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,0,0,0,0,,0,1,0
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NumberFormat: 2,F,4,4,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable Compare2
+Description: Comparación entre todos los resultados planteados (Binomial).
+Definition: [Valor_Esperado_Binom,Binomial__4,Binomial___2,Binomial___12]
+NodeLocation: 616,160,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,0,0,0,0,,0,1,0
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NumberFormat: 2,F,4,4,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Close Poisson_y_Binomial
+
+
+{!-40499|MsgBox("This Analytica model file contains text characters encoded in UTF-8 (Unicode) format, not ASCII. It was saved from Analytica release 5.2. You need to upgrade to Analytica 5.2  to read the model correctly. If you use it with this release, the Unicode characters may look strange and parts of the model may not work.",16,"Analytica 5.2 required")}

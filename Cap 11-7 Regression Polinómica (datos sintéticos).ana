@@ -1,0 +1,269 @@
+{ Analytica Model Regression_examples, encoding="UTF-8" }
+SoftwareVersion 5.4.6
+
+
+{ System Variables with non-default values: }
+Time := Sequence( min(I,I), max(I,I)+50 )
+Description Time: Dynamic simulation periods are specified in Time's definition. This is usually a list of numbers or labels, typically in some unit of time (days, weeks, months, etc.).  Use the “Dynamic()” function in your variables to perform dynamic simulation.
+SampleSize := 250
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+Naming := 2
+{!40300|Sys_DomainSelfIndex := 1}
+{!40400|Sys_WindowsMaximized := 1}
+{!40400|Sys_AllNullTreatment := 1}
+{!50400|Sys_UseLegacyColors := 1}
+
+{!-50299|DiagramColor Model: 65535,65535,65535}
+{!-50299|DiagramColor Module: 65535,65535,65535}
+{!-50299|DiagramColor LinkModule: 65535,65535,65535}
+{!-50299|DiagramColor Library: 65535,65535,65535}
+{!-50299|DiagramColor LinkLibrary: 65535,65535,65535}
+{!-50299|DiagramColor Form: 65535,65535,65535}
+{!40300|ProactivelyEvaluate Index: 1}
+NodeColor Text: 65535,65535,65535
+
+
+
+Model Regression_examples
+Title: Regression Examples.ana
+Description: Este modelo demuestra el uso de la Regresión Lineal Generalizada mediante las curvas de mejor ajuste de varias formas de función a un conjunto de puntos (x, y).~
+Haciendo doble clic en el nodo módulo Regresión Polinómica, entramos a los detalles del modelo. También encontraremos una ventana en donde podemos ingresar 0..n para describir el grado del polinomio que deseamos.
+Author: Lonnie Chrisman~
+Lumina Decision Systems, Inc.  and Ask Jeeves, Inc.~
+59 N. Santa Cruz Ave., Suite Q~
+Los Gatos, CA 95030~
+(408) 354-1841
+Date: Fri, Apr 23, 1999 9:43 PM
+DefaultSize: 48,24
+DiagState: 2,1,0,422,371,17
+WindState: 1,345,92
+DiagramColor: 53199,53199,53199
+FontStyle: Arial, 13
+FileInfo: 0,Model Regression_examples,2,2,0,0,D:\DATA JORGE\Documents\00 Libro Estadística\Modelos Libro\Cap 11-7 Regression Polinómica (datos sintéticos).ana
+{!40400|Att_clearTypeFonts: -1}
+
+Index I
+Title: I
+Description: Nuestro índice que irá desde 1 hasta 250; de ahí la definición 1..250; es decir 1, 2, 3, ... , 250.
+Definition: 1..250
+NodeLocation: 80,128,1
+NodeSize: 48,24
+WindState: 2,0,0,720,350
+ValueState: 2,40,50,400,300,0,MIDM
+
+Variable X
+Title: X
+Description: Los valores X de los datos de la muestra.
+Definition: I/sampleSize
+NodeLocation: 80,184,1
+NodeSize: 48,24
+WindState: 2,0,0,720,350
+ValueState: 2,56,66,416,303,1,MIDM
+NumberFormat: 1,F,4,3,0,0
+
+Chance Y
+Title: Y
+Description: Estos son algunos datos de muestra.~
+Se define de manera más bien arbitraria para obtener algunos datos de apariencia razonable.~
+Al ver el resultado, se recomienda graficar esto como un gráfico XY, con este resultado graficado contra la variable X. Al hacerlo, verá el gráfico X-Y.  (Debería estar configurado de esta manera si no lo hemos cambiado).~
+Podemos reemplazar los datos en esta variable, y en la variable X, con nuestros propios datos y explorar los diferentes ajustes de la curva.
+Definition: using noise :=  Random(Normal(0, 0.1, over: I ) ) do~
+(X-.6)*(.2-X) - .3*sin((X-.25)*360) + noise
+NodeLocation: 80,240,1
+NodeSize: 48,24
+WindState: 1,102,90
+ValueState: 2,471,16,625,355,1,MIDM
+GraphSetup: DistSteps:1~
+CdfSteps:1~
+SymbolSize:6~
+LineStyle:4~
+Grid:1~
+StatsSelect:[1,1,1,1,1,0,0,0]~
+StatsLabels:['Min','Median','Mean','Max','Std. Dev.']~
+ProbIndex:[0.05,0.25,0.5,0.75,0.95]~
+Att_ContLineStyle Graph_Primary_Valdim:5
+FontStyle: Arial, 6
+ReformVal: [Run,I]
+NumberFormat: 2,F,4,2,0,0,4,0,$,0,"ABBREV",0,,,0,0,15
+XyExpr: X
+
+Text Te1
+Description: Series de datos (mirar Y para ver los datos)
+NodeLocation: 88,168,-1
+NodeSize: 72,120
+NodeInfo: 1,0,0,1,0,1,1,,0,
+NodeColor: 65535,62255,39321
+NodeFont: Arial Black, 13
+
+Index Indice_de_Referencia
+Att_PrevIndexValue: ['Datos Originales','Mejor Curva de Ajuste']
+Title: Indice de Referencia
+Description: Table en donde ponemos los datos originales y la Mejor Curva de Ajuste.~
+Notemos que podremos ingresar el número que deseemos como el grado de la ecuación a generar.
+Definition: ['Datos Originales','Mejor Curva de Ajuste']
+NodeLocation: 88,328,1
+NodeSize: 48,24
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+Aliases: Alias Al1538252116
+
+Function Ajuste_Comparado(Base,  Params: Array, K:Index)
+Title: Ajuste Comparado
+Description: Esta función -definida por el usuario, UDF de User-Defined Functions, genera una comparación (que se puede graficar) de los datos originales con el ajuste óptimo para una forma funcional arbitraria. Es conveniente para mostrar qué tan bien el mejor ajuste coincide con los datos.
+Definition: Table(Indice_de_Referencia)(Y,Sum( Params * Base, K ) )
+NodeLocation: 88,384,1
+NodeSize: 48,24
+WindState: 2,29,230,400,600
+DefnState: 2,40,50,400,300,0,DFNM
+Aliases: Alias Al1538252117
+
+Module Regresion_Polinomica
+Title:  Regresión Polinómica
+Description: Este módulo demuestra el ajuste de un polinomio de grado «n» a los datos (X,Y).~
+En este ejemplo, dado que la longitud del índice es variable y se derivan los nombres de los parámetros, se han separado el índice base (Indice Parámetros del Polinomio) de la definición de la base real.
+Author: Lonnie Chrisman~
+Lumina Decision Systems, Inc.  and Ask Jeeves, Inc.~
+59 N. Santa Cruz Ave., Suite Q~
+Los Gatos, CA 95030~
+(408) 354-1841
+Date: Fri, Apr 23, 1999 11:01 PM
+DefaultSize: 48,24
+NodeLocation: 264,136,1
+NodeSize: 56,32
+DiagState: 2,466,-17,581,139,17
+WindState: 1,332,301
+DiagramColor: 53199,53199,53199
+FontStyle: Arial Rounded MT Bold,15
+
+Variable Grado_del_polinomio
+Title: Grado del Polinomio
+Description: El número de términos que tendrá el polinomio que ajustemos a los datos.  ~
+Un polinomio de grado cero encajaría en una constante (es decir, encontraría la media de Y).  ~
+Grado=1 es idéntico a la interpolación lineal.  ~
+Grado=2 es idéntico a la interpolación cuadrática.~
+... cúbica.~
+... grado 4.~
+... grado 5.~
+... grado 6.~
+...
+Definition: 3
+Check: Grado_del_polinomio >= 0
+NodeLocation: 112,112,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+Aliases: FormNode Degree_of_polynomia1
+
+FormNode Degree_of_polynomia1
+Title: Degree of Polynomial
+Definition: 0
+NodeLocation: 192,48,1
+NodeSize: 128,16
+NodeInfo: 1,0,0,1,0,0,0,72,0,
+NodeColor: 58978,52427,65535
+Original: Grado_del_polinomio
+
+Index Indice_Parametros_de
+Title:  Indice Parámetros del Polinomio
+Description: Esto define un índice que utilizaremos para dimensionar los parámetros de nuestro polinomio ajustado.   Al definir este índice, también definimos los nombres de nuestros parámetros.  Los nombres son: c_i.
+Definition: 'c' & sequence(0,Grado_del_polinomio)
+NodeLocation: 264,112,1
+NodeSize: 64,32
+WindState: 1,92,50
+ValueState: 2,40,50,400,300,0,MIDM
+ReformVal: [Self,Undefined]
+{!50000|Att_ColumnWidths: [30,Self,\([29,20,27,,,])]}
+
+Variable Base_del_polinomio
+Title: Base del polinomio
+Description: Esto define la base como X^k, donde k es el término correspondiente a c_k, y k=0..Grado~
+~
+Esto hace uso de un truco conveniente con Cumulate que proporciona una matriz de posiciones correspondientes a un índice dado (en este caso Polynomial_Param_Index).
+Definition: X ^ (@Indice_Parametros_de - 1)
+NodeLocation: 112,200,1
+NodeSize: 48,24
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+ReformVal: [I,Indice_Parametros_de]
+
+Variable Parametros_del__Poli
+Title:  Parámetros del  Polinomio  Ajustado
+Definition: Regression( Y, Base_del_polinomio, I, Indice_Parametros_de )
+NodeLocation: 264,200,1
+NodeSize: 80,32
+WindState: 2,102,83,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NumberFormat: 2,F,4,2,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+{!50000|Att_ColumnWidths: [46]}
+
+Variable Ajuste_polinomico_y_
+Title: Ajuste polinómico y datos originales
+Description: Comparación de los 'datos sintéticos' (artificiales) y las curvar generadas por la Regresión.~
+Hemos usado, para claridad o 'limpieza'' del diagrama de influencia,el menú Diagram --> Set Node Style --> Output arrows para quitar el 'check' y así no aparezcan flechas de salida de este nodo. 
+Definition: Ajuste_Comparado(Base_del_polinomio, Parametros_del__Poli, Indice_Parametros_de )
+NodeLocation: 264,312,1
+NodeSize: 80,32
+NodeInfo: 1,1,0,1,1,1,0,,0,,0,,,
+WindState: 2,102,83,476,224
+ValueState: 2,94,47,705,503,1,MIDM
+NodeColor: 39321,1,1
+ReformVal: [I,Indice_de_Referencia]
+NodeFontColor: 65535,65535,65535
+
+Text Te1538247183
+NodeLocation: 192,48,-1
+NodeSize: 128,16
+NodeInfo: 1,,,,,1,0,0,,,,,,0
+NodeColor: 65535,62255,39321
+
+Alias Al1538252117
+Title: Compare Fit
+Definition: 1
+NodeLocation: 504,104,1
+NodeSize: 64,24
+Original: Ajuste_Comparado
+
+Alias Al1538252116
+Title: Reference Index
+Definition: 1
+NodeLocation: 512,40,1
+NodeSize: 56,24
+Original: Indice_de_Referencia
+
+Variable R2
+Title: R2
+Description: El Coeficiente de Determinación o R2 (r cuadrado) el cual es la Correlation()^2 (elevada al cuadrado.
+Definition: Correlation(Y, Ajuste_polinomico_y_, I)^2
+NodeLocation: 488,320,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NumberFormat: 2,%,4,2,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable Variable_muestreo_no
+Title: Variable muestreo normal
+Description: Esta es una muestra independiente (sin el componente sinusouidal) de los datos generados por la función 'Ruido' :=  Random(Normal(0,0.1, over: I)).~
+Si hacemos clic, claramente podremos ver que es un 'ruido' en el cual estarán subyacentes los dados sinusoidales.
+Definition: Random(Normal(0,0.1, over: I))
+NodeLocation: 488,248,1
+NodeSize: 48,32
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,1,MIDM
+
+Text Te1554682694
+Title: ~
+Este modelo permite ingresar el Grado del Polinomio que uno desee para ver qué ecuación con la potencia que queramos genera la mejor Curva de Ajuste.~
+~
+Evidentemente no hay que fiarnos de lo que veamos sino de los que nos dé el R^2. A mayor porcentaje en R^2, mejor será la curva que se ajuste a nuestros datos.
+NodeLocation: 780,192,-1
+NodeSize: 164,128
+NodeInfo: 1,,,,,1
+NodeColor: 52427,63897,65535
+NodeFontColor: 3277,3277,3277
+
+Close Regresion_Polinomica
+
+Close Regression_examples
+

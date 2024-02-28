@@ -1,0 +1,336 @@
+{ Analytica Model Tornado, encoding="UTF-8" }
+SoftwareVersion 5.3.3
+
+
+{ System Variables with non-default values: }
+SampleSize := 10K
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+FontStyle ProbIndex: Arial, 8
+DistSteps := 1
+CdfSteps := 1
+{!40300|Sys_DomainSelfIndex := 1}
+{!40400|Sys_WindowsMaximized := 1}
+{!40400|Sys_AllNullTreatment := 1}
+
+{!-50299|DiagramColor Model: 65535,65535,65535}
+{!-50299|DiagramColor Module: 65535,65535,65535}
+{!-50299|DiagramColor LinkModule: 65535,65535,65535}
+{!-50299|DiagramColor Library: 65535,65535,65535}
+{!-50299|DiagramColor LinkLibrary: 65535,65535,65535}
+{!-50299|DiagramColor Form: 65535,65535,65535}
+{!40300|ProactivelyEvaluate Index: 1}
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,1,,0,0
+NodeColor Text: 65535,65535,65535
+
+
+AskAttribute Recursive,Function,Yes
+
+Model Tornado
+Title: Tornado Diagrams
+Description: Un modelo de demostración para mostrar cómo generar diagramas de tornado.  Este ejemplo utiliza el modelo de costos de un automóvil que se encuentra en la carpeta del Tutorial Analytica como punto de partida para el análisis.~
+~
+Un diagrama Tornado es una herramienta común utilizada para representar la sensibilidad de un resultado a los cambios en las variables seleccionadas.  El análisis fundamental detrás de un diagrama tornado consiste en variar una sola variable de entrada a la vez, manteniendo todas las demás variables en sus valores nominales.  Típicamente, se seleccionan un valor "bajo" y un valor "alto" para cada entrada, y la variable de salida se calcula mientras que solo una variable varía a la vez.  El resultado se muestra como un tipo especial de gráfico de barras, con barras para cada variable de entrada que muestran la variación con respecto al valor nominal.  Es práctica habitual trazar las barras horizontalmente, ordenadas de forma que la barra más ancha se coloque en la parte superior. Cuando se dibuja de esta manera, el diagrama toma la apariencia de un tornado, de ahí su nombre.~
+El uso de fractiles en este modelo es debido a que se manejan los inputs o datos de entrada como variables inciertas modelizadas con las distribuciones Triangular, LogNormal, Uniform, y Normal.~
+~
+Encontraremos facilidades muy flexibles para realizar análisis de tipo Tornado, con una inmensa practicidad y flexibilidad para implementar variaciones personalizadas en un análisis básico.  La creación de un diagrama de estilo tornado consta de dos pasos fundamentales:~
+~
+1. Realización del análisis de tornados (obteniendo los resultados al variar cada variable por separado).~
+2. Graficar el resultado (lo que implica configurar adecuadamente los ajustes del gráfico).~
+~
+Hay dos maneras de crear tornados como ya explicamos en el modelo anterior de Tornado Cap 3-5 Diagrama Tornado (con porcentuales).ana donde hemos variado todas las entradas en la misma cantidad relativa en  bajo=90% del nominal, alto=110% del nominal.~
+~
+En este modelo se muestra  variando todas las entradas o inputs entre dos fratiles dados.  Esto solo tiene sentido si sus entradas son variables inciertas (de allí que lo hayamos reservado hasta ese Capítulo).~
+Ejemplo: Bajo=10% fractil, Alto=90% fractil.~
+
+Author: Lumina Decision Systems~
+Tim Nieman~
+July 1, 1999~
+Modified for Analytica 4.0 graphing engine by Lonnie Chrisman~
+Sept 20, 2006
+Date: Mon, Jan 22, 1996 12:16 PM
+DefaultSize: 48,24
+DiagState: 2,67,15,756,436,17
+WindState: 2,102,90,494,443
+DiagramColor: 52428,52428,52428
+FontStyle: Arial, 13
+FileInfo: 0,Model Tornado,2,2,0,0,D:\DATA JORGE\Documents\00 Libro Estadística\Modelos Libro\Cap 10-5 Diagramas Tornado (con fractiles).ana
+{!40400|Att_clearTypeFonts: -1}
+
+Module Detalles_del_Modelo_
+Title:  Detalles del Modelo:  ~
+Alto y Bajo Seleccionados mediante FRACTILES.
+Description: Los valores altos y bajos se seleccionan en este ejemplo eligiendo fractiles, por ejemplo, Bajo=10% fractil, Alto=90% fractil.
+Author: nieman
+Date: Sun, Jun 20, 1999 6:17 PM
+DefaultSize: 48,24
+NodeLocation: 144,72,1
+NodeSize: 136,32
+DiagState: 2,176,331,432,600,17
+
+Module Modulo_costo_Combust
+Title: Módulo costo Combust
+Author: lynda
+Date: Thu, Mar 28, 1996 2:25 PM
+DefaultSize: 48,24
+NodeLocation: 96,160,0
+NodeSize: 56,32
+DiagState: 2,1,0,432,45,17
+
+Chance Costo_Combust
+Title: Costo Combust
+Units: $/año
+Description: Costo anual del combustible.
+Definition: ((Precio_Combust*Km_por_ano)/Km_por_litro1)
+NodeLocation: 296,136,0
+NodeSize: 56,24
+WindState: 2,344,59,720,350
+ValueState: 1,120,130,416,303,0,MIDM
+
+Chance Precio_Combust
+Title: Precio Combust
+Units: $/litro
+Description: Precio de un litro de gasolina.~
+
+Definition: Normal(1.20,0.1)
+NodeLocation: 88,56,0
+NodeSize: 56,24
+WindState: 2,102,83,476,224
+ValueState: 1,104,114,416,303,1,PDFP
+Aliases: FormNode Fuel_price1
+
+Chance Km_por_ano
+Title: Km por año
+Units: Km/año
+Description: Promedio de Km que se conducen en  un año.
+Definition: Lognormal( 12k, 1.3 )
+NodeLocation: 216,56,0
+NodeSize: 56,24
+WindState: 2,102,83,476,224
+ValueState: 1,152,162,416,303,1,PDFP
+Aliases: FormNode Miles_per_year1
+
+Chance Km_por_litro1
+Title: Km por litro
+Units: Km/litro
+Description: Promedio de Km por litro que rinde  un auto.~
+
+Definition: Uniform( 20, 30 )
+NodeLocation: 88,136,0
+NodeSize: 56,24
+WindState: 2,102,83,476,224
+ValueState: 1,232,242,416,303,1,PDFP
+Aliases: FormNode Miles_per_gallon1
+
+Close Modulo_costo_Combust
+
+Chance Costo_Mantenimiento
+Title: Costo Mantenimiento
+Units: $/año
+Description: Costos anuales de mantenimiento del automóvil , como los cambios de aceite.
+Definition: Triangular( 2000, 2400, 3400 )
+NodeLocation: 96,48,0
+NodeSize: 56,24
+WindState: 2,268,353,400,600
+ValueState: 1,264,274,416,303,1,PDFP
+Aliases: FormNode Maintenance_cost3
+
+Objective Costo_Total
+Title: Costo Total
+Units: $/año
+Description: Costo total anual de conducir y mantener un automóvil.
+Definition: (Costo_Combust+Costo_Mantenimiento)
+NodeLocation: 208,104,0
+NodeSize: 56,24
+WindState: 2,0,0,720,350
+ValueState: 1,72,82,432,354,1,PDFP
+Aliases: FormNode Total_cost3
+GraphSetup: {!40400|Sys_PdfSmoothMethod:1}
+
+Module Analisis_Tornado1
+Title: Análisis Tornado 
+Description: Calcula un diagrama Tornado que varía de un conjunto de inputs inciertos hacia fractiles inputs Alto/Bajo (esto es, percentil 10 y percentil 90).
+Author: nieman
+Date: Sun, Jun 20, 1999 6:17 PM
+DefaultSize: 48,24
+NodeLocation: 336,104,1
+NodeSize: 48,24
+DiagState: 2,456,11,432,600,17
+WindState: 2,168,382,476,224
+
+Index Variables
+Att_PrevIndexValue: [Km_por_ano,Precio_Combust,Km_por_litro1,Costo_Mantenimiento]
+Title: Variables
+Description: Lista de variables para el análisis de tornado.
+Definition: [Km_por_ano,Precio_Combust,Km_por_litro1,Costo_Mantenimiento]
+NodeLocation: 88,48,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+
+Variable Percentiles
+Title: Percentiles
+Description: Variable para mantener las variaciones porcentuales utilizadas para definir valores altos y bajos.
+Definition: Table(Self)(Bajo,0.5,Alto)
+IndexVals: ['Bajo','Mediana','Alto']
+NodeLocation: 216,240,1
+NodeSize: 48,24
+WindState: 2,102,83,476,224
+DefnState: 2,377,305,416,303,0,DFNM
+ValueState: 2,40,50,400,300,0,MIDM
+NumberFormat: 1,%,4,0,0,0
+Att_PrevIndexValue: ['Bajo','Mediana','Alto']
+
+Variable Grafico_Tornado
+Title: Gráfico Tornado
+Description: Calcula y grafica los valores de un gráfico Tornado. Esta vez cuando las variables de entrada o inputs son variables inciertas.~
+~
+Este ejemplo difiere en un par de factores claves del primer ejemplo.  Primero, el tornado se calcula variando las entradas a niveles de percentil Alto/Bajo dados (en lugar de un múltiplo del valor original).  En segundo lugar, el nivel medio de cada entrada se utiliza como línea de base, en lugar del valor original.  Esto introduce una pequeña sutileza.  En general, es realmente posible que la línea de base varíe con la entrada (si las distribuciones de entrada están sesgadas).  Para calcular la línea de base, cada entrada se ajusta a su mediana una a la vez, mientras que las otras entradas no se tocan.  Finalmente, y quizás lo más importante, la forma de los resultados calculados es una única tabla 2-D, donde la dimensión Levels o Niveles contiene valores bajos, altos y medianos (línea de base).  ~
+~
+A diferencia del otro ejemplo, aquí todos los datos necesarios para el gráfico están contenidos en las columnas de la tabla.~
+~
+Este gráfico ya ha sido configurado para graficar como tornado.  Para establecer el estilo de la trama si se desea, hay que realizar los siguientes pasos:~
+1.  Mostrar el gráfico de resultados para esta variable.~
+2.  Hacer a doble clic en el gráfico para acceder a "Graph Setup" (Configuración de gráficos).~
+3. En la pestaña "Chart Type" (Tipo de gráfico), cambiar el estilo de línea a "Bar Graph" (Gráfico de barras).~
+4. Marcar la casilla de verificación "Variable Origin (e.g., Tornado)".  Esto selecciona automáticamente SwapXY y establece la superposición de barras al 100% en automático.~
+5. Marcar la casilla de verificación "Sort by data spread" (Ordenar por dispersión de datos).~
+6. Hacer clic en "Apply" (Aplicar).~
+7. En "graph view" (vista gráfica), ajustar los pivotantes de modo que el eje Y = Vars, Key=L (los niveles) y Origin = Median.~
+
+Definition: WhatIfAll(Costo_Total,Variables,getfract(Valores_Input_Orig_,Percentiles),Percentiles)
+NodeLocation: 216,56,1
+NodeSize: 48,24
+NodeInfo: 1,0,0
+WindState: 2,170,17,633,548
+ValueState: 2,266,131,593,358,1,MIDM
+Aliases: FormNode Tornado_analysis
+NodeColor: 65535,42597,19661
+GraphSetup: {!50000|Graph_SortBySpread:1}~
+Att__BarOrigin Grafico_Tornado:0~
+{!40000|Flip:8}~
+{!40000|Att_StackedBar Graph_Primary_Valdim:0}~
+BarOverlap:100~
+{!40000|Att_GraphValueRange Grafico_Tornado:1,,,0}
+ReformVal: [Variables,Percentiles]
+Att_OriginRole: Slice(Percentiles,Percentiles,2)
+{!40600|Att_ClusterIndex: Percentiles}
+
+Variable Valores_Input_Orig_
+Title: Valores Input Orig.
+Description: Tabla de valores de entrada indexados por lista de variables de entrada (auto indexados).
+Definition: Table(Variables)(Km_por_ano,Precio_Combust,Km_por_litro1,Costo_Mantenimiento)
+NodeLocation: 88,112,1
+NodeSize: 48,24
+WindState: 2,0,0,720,350
+DefnState: 2,118,212,416,303,0,DFNM
+ValueState: 2,120,130,416,303,0,STAT
+
+Decision Bajo
+Title: Bajo
+Units: fractil
+Description: Introducimos el número que representa el extremo inferior de la escala del tornado.
+Definition: 10%
+NodeLocation: 88,248,1
+NodeSize: 48,24
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+Aliases: FormNode Low1
+
+Decision Alto
+Title: Alto
+Units: fractil
+Description: Introducimos el número que representa el extremo superior de la escala del tornado.
+Definition: 90%
+NodeLocation: 88,184,1
+NodeSize: 48,24
+WindState: 2,391,119,400,600
+Aliases: FormNode High1
+
+Close Analisis_Tornado1
+
+Close Detalles_del_Modelo_
+
+Text Te2
+Description: Tornado: Ejemplo 2:~
+Alto/Bajo con Percentiles
+NodeLocation: 500,140,-1
+NodeSize: 156,124
+NodeInfo: 1,0,0,1,1,1,1,,0,
+NodeFont: Arial, 16
+
+FormNode Maintenance_cost3
+Title: Maintenance cost
+Definition: 0
+NodeLocation: 496,104,1
+NodeSize: 152,16
+NodeInfo: 0,0,0,0,0,0,0,72
+Original: Costo_Mantenimiento
+
+FormNode Fuel_price1
+Title: Fuel~
+price
+Definition: 0
+NodeLocation: 496,200,1
+NodeSize: 152,16
+NodeInfo: 0,0,0,0,0,0,0,72,,,,
+Original: Precio_Combust
+
+FormNode Miles_per_year1
+Title: Miles per year
+Definition: 0
+NodeLocation: 496,136,1
+NodeSize: 152,16
+NodeInfo: 1,0,0,1,0,0,0,72,0,,,
+Original: Km_por_ano
+
+FormNode Miles_per_gallon1
+Title: Miles per gallon
+Definition: 0
+NodeLocation: 496,168,1
+NodeSize: 152,16
+NodeInfo: 0,0,0,0,0,0,0,72,,,,
+Original: Km_por_litro1
+
+FormNode Total_cost3
+Title: Total cost
+Definition: 1
+NodeLocation: 496,232,1
+NodeSize: 152,16
+NodeInfo: 0,0,0,0,0,0,0,72,,,,
+Original: Costo_Total
+
+Text Te4
+Description: Análisis Tornado
+NodeLocation: 500,284,-1
+NodeSize: 60,20
+NodeInfo: 1,0,0,1,0,0,1,,0,
+NodeFont: Arial, 13
+
+FormNode Low1
+Title: Low
+Definition: 0
+NodeLocation: 500,312,1
+NodeSize: 100,16
+NodeInfo: 1,0,0,1,0,0,0,72,0,,,
+Original: Bajo
+
+FormNode High1
+Title: High
+Definition: 0
+NodeLocation: 500,344,1
+NodeSize: 100,16
+NodeInfo: 1,0,0,1,0,0,0,72,0,,,
+Original: Alto
+
+FormNode Tornado_analysis
+Title: Tornado Analysis
+Definition: 1
+NodeLocation: 508,376,1
+NodeSize: 108,16
+NodeInfo: 1,0,0,1,0,0,0,72,0,,,
+Original: Grafico_Tornado
+
+Close Tornado
+

@@ -1,0 +1,167 @@
+{ Analytica Model Flujos_con_escenario, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+Time := [1,2,3]
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Flujos_con_escenario
+Description: Dos maneras diferentes de calcular el VPN sin mover la variable Time la cual por defecto es 0, 1, 2. La podemos cambiar mediante Definition --> Edit Time y ponemos los periodos que deseemos o queramos. Si son consecutivos pondremos  1..n por simplicidad; y si no lo son Sequence(inicio, fin, step) siendo 'step' los saltos que queramos.~
+~
+Si fuera el caso que haya que poner texto (días, meses, etc.) entonces elegimos 'List of Text' del menú Definition.~
+El modelo a la izquierda (con VPN #1) es o pretende ser didáctico y el de la derecha (VPN #2) hace uso de un índice. Menos intuitivo quizá pero más sutil y nos permite hacer las cosas  en forma más eficiente. Para incorporarlo a nuestro conocimiento e intuición hay que ejercitarlo para cuando tengamos planteamientos más complejos.
+Author: Jorge
+Date: mié, jul 25, 2018 5:57 p.m.
+DiagState: 2,1,0,624,111,17
+FontStyle: Arial,15
+FileInfo: 0,Model Flujos_con_escenario,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 7-4 Flujos con escenarios -- modelos 1 y 2.ana
+
+Variable Flujo_al_5_
+Title: Flujo al 5%
+Units: $
+Description: Simplemente ponemos 5% o 0.05.
+Definition: Dynamic(100, Self [Time-1]*(1 + 0.05))
+NodeLocation: 108,176,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable Flujo_al_6_
+Title: Flujo al 6%
+Units: $
+Description: Simplemente ponemos 6% o 0.06.
+Definition: Dynamic(100, Self[Time-1]*(1 + 0.06))
+NodeLocation: 108,232,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable Flujo_al_7_
+Title: Flujo al 7%
+Units: $
+Description: Simplemente ponemos 7% o 0.07.
+Definition: Dynamic(100, Self[Time-1]*(1 + 0.07))
+NodeLocation: 120,304,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Constant Tasa_de_descuento
+Title: Tasa de descuento
+Units: %
+Description: El valor que el dinero cuesta a través del tiempo.
+Definition: 10%
+NodeLocation: 108,120,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Objective VP
+Title: VP
+Units: $
+Description: Aplicamos la instrucción NPV (Net Present Value) a los flujos multiplicados por sus respectivas probabilidades, y todo lo 'colapsamos' en el tiempo (Time, variable del sistema). Colapsar en el tiempo significa traer los flujos al valor de hoy o presente.
+Definition: Npv(Tasa_de_descuento, Flujo_al_5_*0.2 + Flujo_al_6_*0.6 + Flujo_al_7_*0.2,Time)
+NodeLocation: 240,192,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,88,91,416,303,,MIDM
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,F,4,0,0,1,4,0,$,0,"ABBREV",0,,,0,0,15
+
+Index Crecimiento
+Att_PrevIndexValue: [0.05,0.06,0.07]
+Title: Crecimiento
+Units: %
+Description: Nodo índice que ya contiene los escenarios de crecimiento: 5%, 6%, y 7%
+Definition: [5%,6%,7%]
+NodeLocation: 496,120,1
+NodeSize: 64,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,%,4,0,0,0,4,0,$,0,"ABBREV",0,,,0,0,15
+
+Variable Flujo
+Title: Flujo
+Units: $
+Description: Multiplicamos el flujo y sus probabilidades en forma directa a la Tabla Crecimiento usando el comando Dynamic().
+Definition: Dynamic(100, self [Time-1]*(1 + Crecimiento))
+NodeLocation: 496,320,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Constant Tasa_de_descuento1
+Title: Tasa de descuento
+Units: %
+Description: Cantidad que nos cuesta el dinero a través del tiempo.
+Definition: 10%
+NodeLocation: 496,176,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Probabilidad_de_Crec
+Title: Probabilidad de Crecimiento
+Description: Ahora ponemos el crecimiento como una tabla ( Table[5%, 6%, 7%] ) o indezada por el nodo Crecimiento. Luego introducimos las probabilidades de cada escenario de crecimiento.
+Definition: Table(Crecimiento)(0.2,0.6,0.2)
+NodeLocation: 496,240,1
+NodeSize: 64,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+DefnState: 2,40,50,400,300,0,DFNM
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,16
+
+Objective VP__2
+Title: VP #2
+Units: $
+Description: Cálculo del VPN con la tasa de descuento al inicio, la Suma de la multiplicación de los Flujos por su probabilidad a través del Crecimiento (índice de la Suma). ~
+Todo ello colapsado en el tiempo (Time).~
+Se usa la variable Time del sistema porque estamos haciendo uso de la función Dynamic que usa esta variable.
+Definition: Npv(Tasa_de_descuento1, Sum(Probabilidad_de_Crec*Flujo,Crecimiento), Time)
+NodeLocation: 624,216,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,F,4,0,0,1,4,0,$,0,"ABBREV",0,,,0,0,15
+
+Text Te1555702843
+Description: Segundo modelo
+NodeLocation: 496,72,-1
+NodeSize: 84,16
+NodeInfo: 1,0,0,1,0,1,1,,0,,0,,,
+NodeColor: 52427,63897,65535
+NodeFont: Arial Rounded MT Bold,16
+
+Text Te1555702946
+Title: Primer modelo
+NodeLocation: 108,76,-1
+NodeSize: 84,12
+NodeInfo: 1,,,,,1
+NodeColor: 52427,62259,65535
+
+Close Flujos_con_escenario
+

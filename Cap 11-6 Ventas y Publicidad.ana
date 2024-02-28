@@ -1,0 +1,140 @@
+{ Analytica Model Regresion1, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+Att_ContLineStyle Graph_Primary_Valdim: 0
+{!40400|Sys_WindowsMaximized := 1}
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Regresion1
+Description: Modelo que replica a los anteriores sobre Regresión Lineal, con el agregado que ahora tenemos dos conjuntos de datos 'Publicidad' y 'Ventas' dependiendo ambos del índice Año.~
+La Base RL (RL = Regresión Lineal) es similar con la sola diferencia que usaremos 'Publicidad' como variable independiente y 'Ventas' como variable dependiente.
+Author: Jorge
+Date: lun, sep 3, 2018 6:49 p.m.
+DiagState: 2,1,0,624,208,17
+FontStyle: Arial,15
+FileInfo: 0,Model Regresion1,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 11-4 Ventas y Publicidad.ana
+
+Index Ano
+Att_PrevIndexValue: [2009,2010,2011,2012,2013,2014,2015,2016,2017,2018]
+Title: Año
+Units: Año
+Description: Usamos dos puntos ( .. ) como manera rápida y directa de poner los años desde 2009 hasta 2018.
+Definition: 2009..2018
+NodeLocation: 88,48,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Publicidad
+Title: Publicidad
+Units: $
+Description: Table indexada por el índice Año. Los datos correspondientes ya han sido ingresados.
+Definition: Table(Ano)(35K,45K,55K,55K,65K,60K,70K,75K,80K,95K)
+NodeLocation: 208,48,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,83,476,224
+DefnState: 2,40,50,400,300,0,DFNM
+ValueState: 2,836,337,416,303,,MIDM
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+Att_GraphValueRange: 1,0
+
+Variable Ventas
+Title: Ventas
+Units: $
+Description: Table indexada por el índice Año. Los datos correspondientes ya han sido ingresados.
+Definition: Table(Ano)(1.1M,2.105M,3M,2M,3.2002M,2.6995M,3.1M,2.9M,4.07M,4.3M)
+NodeLocation: 328,48,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+DefnState: 2,40,50,400,300,0,DFNM
+ValueState: 2,751,118,416,303,1,MIDM
+GraphSetup: Att_ContLineStyle Graph_Primary_Valdim:4
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+XyExpr: Publicidad
+
+Variable Coef__RL
+Title: Coef. RL
+Description: Comando Regression en el que hacemos la regresión de 'Ventas' y 'Año', ambas con índice nuestra Base RL, término simplificado de lo que es la Base de la Regresión Lineal.~
+En este caso nuestra base es simple y es una Table (self-index) que consta de un «a» ~ 1 y un «b» ~ Publicidad. Entendiendo el símbolo ~ como 'está representada por'.
+Definition: Regression(Ventas,Base_RL, Ano, Base_RL)
+NodeLocation: 208,136,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,297,403,416,303,,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Base_RL
+Title: Base RL
+Description: Tabla donde ponemos para «a» ~ 1 y para «b» (la pendiente) la variable  'Publicidad'. Es esta última pendiente «b» es la que nos interesa pues describe el crecimiento (si «b» es positiva) o decrecimiento (si «b» es negativa) de una variable repecto a otra. En una regresión lineal, «a» tiene que existir con el fin que los programas puedan hacer una linea recta (la cual es definida por dos puntos) pero esta «a», en regresiones lineales, nos puede dar valores absurdos como ventas negativas por ejemplo. ~
+El símbolo ~ significa 'está representada por'.
+Definition: [1,Publicidad]
+IndexVals: ['a','b']
+NodeLocation: 88,136,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+DefnState: 2,314,394,416,303,,DFNM
+NodeFont: Arial Rounded MT Bold,15
+
+Variable Ventas_en_Ajuste
+Title: Ventas en Ajuste
+Description: Multiplicación del coeficiente 'b' encontrado por nuestra Base RL, luego sumamos estos puntos a través de nuestra base RL a fin de obtener la línea recta resultante.
+Definition: Sum( Base_RL * Coef__RL, Base_RL )
+NodeLocation: 328,136,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,401,102,503,332,1,MIDM
+GraphSetup: Att_ContLineStyle Graph_Primary_Valdim:5
+NodeFont: Arial Rounded MT Bold,15
+XyExpr: Publicidad
+
+Variable Comparar
+Title: Comparar
+Description: Comparación a traves de un Diagrama de Dispersión entre 'Ventas' y 'Publicidad'.~
+Una vez generado un gráfico vamos a Result --> Graph Setup y seleccionamos este tipo de diagrama o cualquiera que consideremos nos sea de utilidad.
+Definition: [Publicidad,Ventas]
+NodeLocation: 456,136,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,0,0,0,0,0,,0
+WindState: 2,102,77,476,224
+ValueState: 2,120,41,480,385,1,MIDM
+NodeColor: 39321,1,1
+GraphSetup: Att_ContLineStyle Graph_Primary_Valdim:4~
+Att_Stacked_Lines Graph_Primary_Valdim:0
+NodeFont: Arial Rounded MT Bold,15
+NodeFontColor: 65535,65535,65535
+Att_CoordinateIndex: Comparar
+
+Variable Correlacion
+Title: Correlación
+Description: Esta correlación es un concepto que nos indica la fuerza y también la dirección (positiva o negativa) de una relación lineal y en qué proporción están relacionadas dos variables que tengamos.
+Definition: Correlation(Ventas,Publicidad, Ano)
+NodeLocation: 456,48,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,0,0,720,350
+ValueState: 2,40,50,400,300,0,MIDM
+NodeColor: 1,4,52427
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,%,4,2,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+NodeFontColor: 65535,65535,65535
+
+Close Regresion1
+

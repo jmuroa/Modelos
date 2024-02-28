@@ -1,0 +1,116 @@
+{ Analytica Model Arrays, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Arrays
+Description: Uso de 'Intelligent Arrays'. O cómo hacer los nodos dependientes de otros nodos índices.~
+Podemos cambiar como queramos los nodos índices y se reflejará automáticamente en los nodos dependientes que hayan sido definidos mediante estos índices.~
+Esta es una característica de gran importancia puesto que ya no debemos preocuparnos si después cambiamos la composición de los índices: El modelo los reflejará en su totalidad.
+Author: Jorge
+Date: vie, ago 10, 2018 10:42 a.m.
+DiagState: 2,1,0,816,0,17
+FontStyle: Arial,15
+FileInfo: 0,Model Arrays,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 3-4 Arrays (auto y combustible).ana
+
+Index Tipo_de_Auto
+Att_PrevIndexValue: ['Gas','Gasolina']
+Title: Tipo de Auto
+Description: Nodo índice del tipo de autos. ~
+Esto puede ser cambiado a voluntad en cualquier momento y el modelo será actualizado en consecuencia.
+Definition: ['Gas','Gasolina']
+NodeLocation: 72,72,1
+NodeSize: 48,24
+WindState: 2,0,0,720,350
+
+Variable Precio_Combust
+Title: Precio Combust
+Units: $
+Description: Precio del combustible.
+Definition: $4*(1+10%)^(Anos-2018) 
+NodeLocation: 176,160,1
+NodeSize: 48,24
+ValueState: 2,216,219,416,303,0,MIDM
+ReformVal: [Undefined,Anos]
+NumberFormat: 2,F,4,2,0,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable Km_litro
+Title: Km/litro
+Units: Km/lt
+Description: Rendimiento en Km por litro de combustible.
+Definition: Table(Tipo_de_Auto)(40,35)
+NodeLocation: 176,104,1
+NodeSize: 48,24
+
+Variable Km_al_Ano
+Title: Km al Año
+Units: Km/año
+Description: Cantidad de Km recorridos al año.
+Definition: [6000,10K,14K]
+NodeLocation: 176,48,1
+NodeSize: 48,24
+WindState: 2,0,0,720,350
+ValueState: 2,136,139,416,303,,MIDM
+{!40300|Att_SlicerPopupSize: 188,78}
+
+Variable Costo_Combustible
+Title: Costo Combustible
+Units: $/año
+Definition: Precio_Combust*Km_al_Ano/Km_litro
+NodeLocation: 312,104,1
+NodeSize: 56,24
+ValueState: 2,248,251,416,303,,MIDM
+ReformVal: [Tipo_de_Auto,Anos]
+NumberFormat: 2,D,4,4,0,1,4,0,$,0,"ABBREV",0,,,0,0,15
+Att_ResultSliceState: [Km_al_Ano,1,Anos,1,Tipo_de_Auto,1]
+
+Index Anos
+Title: Años
+Units: Año
+Description: Nodo índice de los años a considerar. ~
+Esto puede ser cambiado a voluntad en cualquier momento y el modelo será actualizado en consecuencia.~
+Así, podríamos poner 2020..2023 lo que dará una actualización de la secuencia a:~
+2020, 2021, 2022, 2023.~
+Los dos puntos (..) reemplazan a la muy versatil Sequence(inicio, fin, step) que crea una lista de números desde el "inicio" hasta "fin" con incrementos (o decrementos) iguales de "salto" o 'step'. Se puede omitir "step", el cual, si no se pone, será 1 por defecto, debiendo ser un número positivo. El "inicio", el "fin" y el "salto" o 'step' deben ser números reales.~
+~
+Normalmente, si "inicio" es mayor que "fin", y "step" es positivo, la secuencia disminuye por "step". Lo podemos ver en el nodo "Sequence decreciente~
+(Step positivo)" en amarillo.~
+Si pusiéramos un signo negativo en Sequence(100, 0, -5 ), debemos agregar 'True': Sequence(100, 0, -5, True), esto nos dará 100, 95, 90, ... , 10, 5, 0.~
+Esto lo mostramos en el nodo "Sequence decreciente (Step negativo)" en color naranja.~
+
+Definition: 2018..2021
+NodeLocation: 72,136,1
+NodeSize: 48,24
+WindState: 2,0,0,720,350
+
+Variable Sequence_decreciente
+Title: Sequence decreciente~
+(Step positivo)
+Definition: Sequence(100, 0, 5)
+NodeLocation: 464,56,1
+NodeSize: 64,32
+ValueState: 2,52,53,416,303,,MIDM
+NodeColor: 65535,65531,1
+
+Variable Sequence_decrecient1
+Title: Sequence decreciente~
+(Step negativo)
+Definition: Sequence(100, 0, -5, True)
+NodeLocation: 608,56,1
+NodeSize: 64,32
+ValueState: 2,52,53,416,303,,MIDM
+NodeColor: 65535,42597,19661
+
+Close Arrays
+

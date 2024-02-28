@@ -1,0 +1,112 @@
+{ Analytica Model Precio_Oro, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 10K
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Att_GraphValueRange Graph_KDE_Valdim: 1,0,0,1,,,,0,14u,0}
+{!40400|Sys_PdfSmoothMethod := 1}
+{!40400|Sys_WindowsMaximized := 1}
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Precio_Oro
+Title: Precio Oro
+Description: Una compañía minera obtiene derechos para extraer un depósito de oro durante un periodo de una semana el próximo año, antes que un proyecto de construcción comience a operar en el sitio.~
+Extraer del depósito costará $ 900K.~
+¿El tamaño del depósito?~
+LogNormal (Mean: 1K, Stddev: 300) oz. (está expresado en onzas).  La distribución LogNormal() no tiene valores negativos a diferencia de la Normal que sí los tiene. Recordar que para definir una LogNormal hay que poner Mean: Valor 1 y Stddev: Valor 2 pues hay otras maneras de definirla como con la Mediana  o la Desviación Estántar Geométrica (algunos usarán estos parámetros pero no es común su uso).~
+¿El precio del oro el próximo año?~
+LogNormal (Mean: $ 1K, stddev: $ 500). Ídem, la LogNormal() no tiene valores negativos a diferencia de la Normal que sí los tiene~
+~
+¿Cuál es el valor esperado de estos derechos mineros? Comparemos con el resultado ignorando la incertidumbre (la mediana o Mid Value).~
+El condicional en el nodo 'Extraer' supone que Tamaño Lote * Precio Oro > Costos lo que nos quita escenarios de pérdida dado que, de antemano, ¿quién invertiría en un proyecto que arroje pérdidas?~
+~
+Es de suponer además que el precio del oro el próximo año se conocerá antes de la decisión de proceder con la extracción pero este modelo nos otorga valores para saber si invertir a futuro o no.
+Author: Jorge
+Date: dom, jul 22, 2018 7:29 p.m.
+DiagState: 2,1,0,624,192,17
+FontStyle: Arial Rounded MT Bold,15
+FileInfo: 0,Model Precio_Oro,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 7-3 Oro V.3.ana
+
+Chance Precio_Oro2
+Title: Precio Oro
+Units: $/onza
+Description: Precio del oro a un año, que desccribimos con la distribución LogNormal(mean:$1K, stddev:$500)
+Definition: LogNormal(mean:1000,stddev:500)
+NodeLocation: 128,112,1
+NodeSize: 64,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+DefnState: 2,40,50,400,300,0,DFNM
+ValueState: 2,214,43,416,303,0,SAMP
+GraphSetup: {!40400|Sys_PdfSmoothMethod:1}
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Chance Tamano_Lote
+Title: Tamaño Lote
+Units: m2
+Description: Tamaño del lote, pero con la diferencia que esta vez ya no es conocido (m2) sino un valor incierto con un margen de error de 300. De allí LogNormal(mean:1K, stddev:300)
+Definition: LogNormal(mean:1K, stddev:300)
+NodeLocation: 120,48,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Costos
+Title: Costos
+Units: $
+Description: Una cantidad fija que se sigue manteniendo puesto que en un proyecto esto es conocido con antelación.
+Definition: $900K
+NodeLocation: 120,192,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Objective Ganancia
+Title: Ganancia
+Units: $
+Description: Se ha multiplicado las Ganancia por el nodo Extraer (que dará solo 0 y 1) por cuanto si no es rentable no se extraerá. Nadie invierte dinero si sabe que va a haber pérdida.
+Definition: Extraer*(Tamano_Lote*Precio_Oro2 - Costos)
+NodeLocation: 264,192,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+ValueState: 2,404,134,506,364,0,MEAN
+GraphSetup: Att_GraphValueRange Ganancia:|1:1,,0,,,,,0,4M,0~
+Att_GraphValueRange Graph_Cdf_Valdim:1,,0,1,,,,0,1,0~
+CdfResol:10
+NodeFont: Arial Rounded MT Bold,16
+NumberFormat: 2,F,4,0,1,1,4,1,$,0,"ABBREV",0,,,0,0,15
+{!40200|Att_GraphSetupSlices: [3,1,DensityIndex,1]}
+
+Decision Extraer
+Title: Extraer
+Units: lógicas (0 o 1)
+Description: Este es un nodo 'lógico', es decir nos dará 0 o 1 dependiendo si la condición lógica Tamaño Lote * Precio Oro > Costos. Es decir, si el Tamano Lote multiplicado por el Precio Oro es mayor a Costos nos dará 1. Si es menor, nos dará cero.~
+Esto configura contemplar solo los escenarios en que es rentable extraer el recurso (ahora llamado reservas puesto que sí es rentable extraerlas).
+Definition: Tamano_Lote*Precio_Oro2 > Costos
+NodeLocation: 264,56,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,102,77,476,224
+NodeFont: Arial Rounded MT Bold,16
+
+Variable Resumen_de_cifras
+Title: Resumen de cifras
+Definition: [Precio_Oro2,Tamano_Lote,Ganancia]
+NodeLocation: 424,104,1
+NodeSize: 48,24
+ValueState: 2,40,50,400,300,0,MEAN
+
+Close Precio_Oro
+

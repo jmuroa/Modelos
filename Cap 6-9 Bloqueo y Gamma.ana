@@ -1,0 +1,50 @@
+{ Analytica Model Bloqueo_y_Gamma, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_PdfSmoothMethod := 1}
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Bloqueo_y_Gamma
+Description: Cálculo de la proporción en cuanto a la cantidad de autos que lograrán pasar el semáforo antes que cambie de verde a rojo, siendo que el semáforo está programado para dar luz verde por 90 seg.
+Author: Jorge
+Date: mié, ene 23, 2019 7:25 p.m.
+DiagState: 2,1,0,624,324,17
+FontStyle: Arial,15
+FileInfo: 0,Model Bloqueo_y_Gamma,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 6-9 Bloqueo y Gamma.ana
+
+Chance Tiempo_hasta_bloqueo
+Title: Tiempo hasta bloqueo
+Units: seg
+Description: Uso de la distribución de probabilidades Gamma()
+Definition: Gamma(10, 60/5)
+NodeLocation: 112,88,1
+NodeSize: 48,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,104,107,416,303,1,CDFP
+NodeFont: Arial Rounded MT Bold,15
+
+Objective Proporcion_de_autos_
+Title: Proporcion de autos bloqueados
+Units: %
+Description: Probabilidad de la cantidad de autos que circulan en 90 seg.~
+En un lapso mayor a 90 seg habrá una proporción de autos que no lograrán pasar el semáforo.
+Definition: Probability(Tiempo_hasta_bloqueo <90)
+NodeLocation: 248,88,1
+NodeSize: 56,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,436,73,416,303,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,%,4,1,0,0,4,0,$,0,"ABBREV",0,,,0,0,15
+
+Close Bloqueo_y_Gamma
+

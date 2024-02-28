@@ -1,0 +1,106 @@
+{ Analytica Model Dating_game, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 10K
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_PdfSmoothMethod := 1}
+{!40400|Sys_WindowsMaximized := 1}
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Dating_game
+Description: Modelo que trata nuesdtro caso Un Juego de Citas para ver el resultado en forma gráfica. Los detalles de este modelo no han sido incluidos en el libro por brevedad y para evitar redundancia de conceptos; por ello solo pusimos los resultados. El gráfico resultante en el nodo de resultados (hexagonal rojo).~
+
+Author: Lonnie
+Date: Mon, Jul 9, 2018 5:04 PM
+DiagState: 2,10,7,1264,0,17
+FontStyle: Arial,15
+FileInfo: 0,Model Dating_game,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 6-8 Un Juego de Citas (modelo gráfico).ana
+
+Index Nro_de_Candidatos
+Title: Nro de Candidatos
+Description: Los candidatos (compañeros potenciales) a considerar.
+Definition: 1..100
+NodeLocation: 104,56,1
+NodeSize: 56,24
+
+Chance Calificacion
+Title: Calificación
+Description: Calificación de los candidatos, lo que significa que una mayor calificación significa más preferible. Por si fuera poco, estos se escalan a una escala de 0-10 (ya que un "10 perfecto" sería el compañero/a ideal. Las calificaciones se han distribuido de manera que no puede haber duplicados - cada candidato/a es mejor o peor que cualquier otro candidato.
+Definition: Shuffle( Nro_de_Candidatos, Nro_de_Candidatos, over:Uniform(0,1) ) * 10 / IndexLength(Nro_de_Candidatos)
+NodeLocation: 360,40,1
+NodeSize: 56,24
+WindState: 2,604,284,720,350
+ValueState: 2,915,58,348,542,,MIDM
+
+Decision Candidatos_a__entrev
+Title: Candidatos a "entrevistar"
+Description: Cuántas citas fechas se deben hacer inicialmente, antes de pasar al "modo de selección".
+Definition: 10..50
+NodeLocation: 96,144,1
+NodeSize: 56,32
+
+Variable Mejor_calificacion_d
+Title: Mejor calificación de la muestra
+Description: De la ronda inicial de citas de la muestra, la calificación de las mejores vistas hasta ahora.
+Definition: CondMax( Calificacion, cond: Nro_de_Candidatos <= Candidatos_a__entrev, I: Nro_de_Candidatos )
+NodeLocation: 264,120,1
+NodeSize: 56,40
+ValueState: 2,826,15,416,303,,SAMP
+
+Variable Candidato_elegido
+Title: Candidato elegido
+Description: Se seleccionará el primer candidato que encuentre que sea mejor que el mejor visto en la muestra. Cuando no se encuentra ningún candidato, se selecciona el último.
+Definition: Local n := ~
+	CondMin( Nro_de_Candidatos, ~
+		cond: Nro_de_Candidatos>Candidatos_a__entrev and Calificacion>=Mejor_calificacion_d,~
+		I: Nro_de_Candidatos );~
+if n=INF then Max(Nro_de_Candidatos) else n
+NodeLocation: 352,264,1
+NodeSize: 48,24
+ValueState: 2,823,26,416,303,,SAMP
+
+Variable Calificacion_de_los_
+Title: Calificación de los elegidos
+Description: La calificación del candidato realmente elegido.
+Definition: Calificacion[ Nro_de_Candidatos=Candidato_elegido]
+NodeLocation: 480,264,1
+NodeSize: 56,32
+ValueState: 2,835,348,416,303,,SAMP
+
+Variable A_Fue_mejor_seleccio
+Title: ¿Fue mejor seleccionado?
+Description: Verdadero (1) cuando el candidato elegido sea el mejor.
+Definition: Calificacion_de_los_ = Max(Calificacion,Nro_de_Candidatos)
+NodeLocation: 640,264,1
+NodeSize: 64,24
+ValueState: 2,875,376,416,303,,SAMP
+
+Objective Prob_de_seleccionar_
+Title: Prob de seleccionar al mejor
+Description: Probabilidad de seleccionar al mejor candidato.
+Definition: Probability( A_Fue_mejor_seleccio )
+NodeLocation: 808,264,1
+NodeSize: 56,32
+WindState: 2,102,83,476,224
+ValueState: 2,611,46,508,336,1,MIDM
+
+Decision Optar_por_el_numero_
+Title: Optar por el número de muestra
+Description: El número óptimo de candidatos a muestrear para maximizar la probabilidad de seleccionar el mejor absoluto.  ~
+~
+Cuando la decisión (Candidatos a "entrevistar") no tiene una lista de posibilidades, entonces no hay nada que maximizar y sólo devuelve el único valor considerado.
+Definition: if size(Candidatos_a__entrev)>0 then ArgMax(Prob_de_seleccionar_,Candidatos_a__entrev) else Candidatos_a__entrev
+NodeLocation: 808,352,1
+NodeSize: 48,40
+ValueState: 2,40,50,400,300,0,MEAN
+
+Close Dating_game
+

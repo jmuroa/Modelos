@@ -1,0 +1,108 @@
+{ Analytica Model Paises_e_Index, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+Time := 2018..2021
+SampleSize := 1000
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Paises_e_Index
+Description: Ejemplo del uso de nodos índices (País, Años) para hacer cálculos con el comando Dynamic(), que opera con la variable de sistema Time (Definition --> Edit Time) en forma similar a operar en Excel con una celda multiplicada (o cualquier operación) por la anterior y un valor. (1 + Tasa de Crecimiento) en este modelo. 
+Author: Jorge
+Date: jue, ago 9, 2018 8:37 p.m.
+DiagState: 2,1,0,624,0,17
+FontStyle: Arial,15
+FileInfo: 0,Model Paises_e_Index,2,2,0,0,C:\Users\Jorge\Documents\00 Libro Estadística\Modelos Libro\Cap 3-3 Paises e Index.ana
+
+Index Pais
+Title: País
+Description: Indice conteniendo algunos países.
+Definition: ['Argentina','Brasil','Colombia','Chile','España','México','Perú']
+NodeLocation: 96,56,1
+NodeSize: 48,24
+WindState: 2,0,0,720,350
+Att_PrevIndexValue: ['Argentina','Brasil','Colombia','Chile','España','México','Perú']
+
+Variable Poblacion
+Title: Población
+Units: Nro
+Description: Uso del comando Dynamic() con valor inicial 'Edad Promedio' con la variable de sistema Time y la multiplicamos por (1 + tasa de crecimiento).~
+Este comando es similar a multiplicar (o cualquier operación que se haga) en Excel por la celda anterior.
+Definition: Dynamic(Edad_Promedio, Edad_Promedio[Time-1]*(1+Tasa_de___Crecimient))
+NodeLocation: 152,192,1
+NodeSize: 48,24
+WindState: 2,0,0,720,350
+DefnState: 2,584,144,416,303,,DFNM
+ValueState: 2,516,147,416,303,,MIDM
+ReformDef: [0,Pais]
+Att_EditSliceState: [Anos,1,Pais,1]
+{!40700|Att_CellFormat: CellFormats(CellSpan(Time,CellNumberFormat('General',2,1,0,dateFormat:'ABBREV',fullPrecision:0,numbersAsDates:0,datesAsNumbers:0),2,4,header:0),CellSpan(Time,CellNumberFormat('General',4,1,0,dateFormat:'ABBREV',fullPrecision:0,numbersAsDates:0,datesAsNumbers:0),2,4,header:0))}
+
+Index Anos
+Title: Años
+Units: Año
+Description: Secuencia desde 2019 a 2021. Usamos el comando dos puntos (..) para indicar que vaya incrementando por 1 año a partir de 2019 hasta 2021.
+Definition: 2019..2021
+NodeLocation: 224,56,1
+NodeSize: 48,24
+WindState: 2,0,0,720,350
+
+Variable Edad_Promedio
+Title: Edad Promedio
+Units: Años
+Description: Se ha puesto una 'edad promedio' arbitraria mediante una Table indexada por el nodo País.
+Definition: Table(Pais)(35,34,33,36,45,32,32)
+NodeLocation: 424,192,1
+NodeSize: 48,24
+NodeInfo: 1,1,0,1,1,1,0,,0,,0,,,
+Aliases: Alias Al1560025153
+
+Variable Tasa_de___Crecimient
+Title: Tasa de  ~
+Crecimiento
+Units: %
+Description: Hemos puesto una tasa de crecimiento arbitraria mediante una Table indexada por País.
+Definition: Table(Pais)(0.01,0.02,0.03,0.02,0,0.03,0.03)
+NodeLocation: 424,48,1
+NodeSize: 56,24
+NodeInfo: 1,0,0,1,1,1,0,,0,,0,,,
+NumberFormat: 2,%,4,0,0,0,4,0,$,0,"ABBREV",0,,,0,0,15
+
+Alias Al1560025153
+Title: Edad Promedio
+Definition: 1
+NodeLocation: 424,112,1
+NodeSize: 48,24
+NodeInfo: 1,1,0,1,1,1,0,,0,,0,,,
+Original: Edad_Promedio
+
+Index Edad_Promedio1
+Title: Edad Promedio
+Description: Hemos puesto una Edad Promedio arbitraria para cada país. No son datos reales.
+Definition: Table(Pais)(35,34,33,36,45,32,32)
+NodeLocation: 96,120,1
+NodeSize: 48,24
+WindState: 2,0,0,720,350
+DefnState: 2,40,50,400,300,0,DFNM
+
+Index Tasa_de_Crecimiento
+Title: Tasa de Crecimiento
+Description: Hemos puesto una Tasa de Crecimiento arbitraria para cada país. No son datos reales.
+Definition: Table(Pais)(0.01,0.02,0.03,0.02,0,0.03,0.03)
+NodeLocation: 224,120,1
+NodeSize: 56,24
+WindState: 2,0,0,720,350
+DefnState: 2,40,50,400,300,0,DFNM
+NumberFormat: 2,%,4,0,0,0,4,0,$,0,"ABBREV",0,,,0,0,15
+
+Close Paises_e_Index
+

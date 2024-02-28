@@ -1,0 +1,143 @@
+{ Analytica Model Mest_7_0__Control_de, encoding="UTF-8" }
+SoftwareVersion 5.2.9
+
+
+{ System Variables with non-default values: }
+SampleSize := 30K
+TypeChecking := 1
+Checking := 1
+SaveOptions := 2
+SaveValues := 0
+{!40400|Sys_WindowsMaximized := 1}
+
+NodeInfo FormNode: 1,0,0,1,0,0,0,,0,0,,0,0
+
+
+
+Model Mest_7_0__Control_de
+Description: Modelo para el ejercicio 'Control de calidad'.~
+Este planteamiento y solución  son simples puesto que podemos usar no solo el operador  <=  sino también el  >=  lo que nos simplifica mucho el planteamiento de los cálculos.~
+Hemos puesto el Sample Size (número de iteraciones) en 10K (con Ctrl+U) con el solo propósito de ver las precisiones, pero si ponemos 30K en Sample Size, dará lo mismo. Es solo una manera de asegurarnos.~
+La versión Analytica Free 101 (gratuita) nos permite un máximo de 32K iteraciones o Sample Size, pero estas precisiones rara vez, si alguna, son necesarias para asuntos de negocios siendo que, en modelos grandes, pueden retrasar innecesariamente los cálculos. Si vemos el enlace http://lumina.com/why-analytica/who-uses-analytica/ veremos que la NASA, por ejemplo, utiliza este software por lo que sí pudiera requerir -es una suposición razonable- de precisiones mayores; o el Oak Ridge National Laboratory (https://es.wikipedia.org/wiki/Laboratorio_Nacional_Oak_Ridge) que hace investigaciones científicas y tecnológicas que requieren gran precisión; sus bases de datos son quizá las mejor protegidas. Por ello las versiones Professional o Enterprise permiten una cantidad ilimitada de iteraciones en Sample Size así como 100 millones de dimensión de elementos por índice y también la aplicación del Profiler (versión Enterprise) para ver el esfuerzo computacional por variable y determinar las variables críticas.
+Author: Jorge
+Date: mié, mar 20, 2019 1:17 p.m.
+DiagState: 2,1,0,638,14,17
+FontStyle: Arial,15
+FileInfo: 0,Model Mest_7_0__Control_de,2,2,0,0,D:\DATA JORGE\Documents\00 Libro Estadística\Modelos Libro\Cap 6-12 Control de Calidad.ana
+
+Chance s__0_001_Baja_V_
+Title: σ ≥ 0.001~
+Baja V.
+Description: DdP Normal mayor o igual a un número
+Definition: Probability(Normal(17, .001) >= 17.007)
+NodeLocation: 88,224,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeColor: 52427,63897,65535
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,4,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Chance s__0_001_Baja_V_1
+Title: σ ≤ 0.001~
+Baja V.
+Description: DdP Normal menor o igual a un número
+Definition: Probability(Normal(17, .001) < 16.996)
+NodeLocation: 88,280,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,98,77,720,350
+NodeColor: 52427,63897,65535
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,4,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable E
+Title: E(Costo / Alta Velocidad)
+Description: Multiplicación de los Costos por las probabilidades que sean defectuosas y no lo sean. Como son parte de un nodo de incertidumbre, las probabilidades en el nodo deben sumar 1
+Definition: Defectuosa_Alta__Vel*$45 + (1-Defectuosa_Alta__Vel)*$34
+NodeLocation: 352,96,1
+NodeSize: 64,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,0,0,720,350
+NodeColor: 52427,58983,65535
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,2,0,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Chance Normal___BV
+Title: σ ≥ 0.002~
+ Alta V.
+Description: DdP Normal mayor o igual a un número
+Definition: Probability(Normal(17, .002) >= 17.007)
+NodeLocation: 88,72,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+NodeColor: 52427,63897,65535
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,4,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Chance s__0_002_Alta_V_
+Title: σ ≤ 0.002~
+Alta V.
+Description: DdP Normal menor o igual a un número
+Definition: Probability(Normal(17, .002) < 16.996)
+NodeLocation: 88,136,1
+NodeSize: 48,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,116,117,416,303,,MIDM
+NodeColor: 52427,63897,65535
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,4,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable E2
+Title: E(Costo / Baja Velocidad)
+Description: Multiplicación de los Costos por las probabilidades que sean defectuosas y no lo sean. Como son parte de un nodo de incertidumbre, las probabilidades en el nodo deben sumar 1
+Definition: Defectuosa_Baja_Velo*$46 + (1-Defectuosa_Baja_Velo)*$35
+NodeLocation: 352,248,1
+NodeSize: 64,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+ValueState: 2,212,213,416,303,,MIDM
+NodeColor: 52427,58983,65535
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,2,0,1,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable Defectuosa_Alta__Vel
+Title: Defectuosa Alta  Velocidad
+Description: Suma de las probabilidades cuando se tienen las correspondientes a Alta Velocidad para cada escenario: por encima y por debajo de la preción permitida.~
+Estas hay que sumarlas pues en ambos casos la pieza será defectuosa y es lo que hacemos en este nodo.
+Definition: Normal___BV + s__0_002_Alta_V_
+NodeLocation: 208,96,1
+NodeSize: 56,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,0,0,720,350
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+NumberFormat: 2,F,4,5,0,0,4,1,$,0,"ABBREV",0,,,0,0,15
+
+Variable Defectuosa_Baja_Velo
+Title: Defectuosa Baja Velocidad
+Description: Suma de las probabilidades cuando se tienen las correspondientes a Baja Velocidad para cada escenario: por encima y por debajo de la preción permitida.~
+Estas hay que sumarlas pues en ambos casos la pieza será defectuosa y es lo que hacemos en este nodo.
+Definition: s__0_001_Baja_V_ + s__0_001_Baja_V_1
+NodeLocation: 208,248,1
+NodeSize: 56,32
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,0,0,720,350
+ValueState: 2,40,50,400,300,0,MIDM
+NodeFont: Arial Rounded MT Bold,15
+
+Objective Comparar
+Title: Comparar
+Description: Comparación de los costos esperados de operar a Alta y Baja Velocidad.
+Definition: [E,E2]
+NodeLocation: 456,176,1
+NodeSize: 56,24
+NodeInfo: 1,1,1,1,1,1,1,,0,,0,,,
+WindState: 2,0,0,720,350
+ValueState: 2,40,50,400,300,0,MIDM
+NodeColor: 39321,1,1
+NodeFont: Arial Rounded MT Bold,15
+NodeFontColor: 65535,65535,65535
+
+Close Mest_7_0__Control_de
+
+
+{!-40499|MsgBox("This Analytica model file contains text characters encoded in UTF-8 (Unicode) format, not ASCII. It was saved from Analytica release 5.2. You need to upgrade to Analytica 5.2  to read the model correctly. If you use it with this release, the Unicode characters may look strange and parts of the model may not work.",16,"Analytica 5.2 required")}
